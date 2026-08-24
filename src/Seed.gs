@@ -32,6 +32,9 @@ function seedDemoData() {
     row({ id: 'profile-customer-1', user_id: 'user-customer-1', first_name: 'Valeria', last_name: 'Torres', document_type: 'DNI', document_masked: '******42', phone_masked: '*** *** 841', marketing_consent: true }),
     row({ id: 'profile-customer-2', user_id: 'user-customer-2', first_name: 'Diego', last_name: 'Ramos', document_type: 'DNI', document_masked: '******19', phone_masked: '*** *** 224', marketing_consent: false })
   ]);
+  upsertRowsById_('MERCHANT_USERS', [
+    row({ id: 'merchant-user-owner-demo', merchant_id: 'merchant-sabores', user_id: 'user-merchant-owner', role: 'MERCHANT_OWNER', branch_ids_json: '["branch-sabores-miraflores","branch-sabores-barranco"]' })
+  ]);
   upsertRowsById_('MERCHANTS', [
     row({ id: 'merchant-sabores', trade_name: 'Sabores de Lima', legal_name: 'Sabores de Lima Demo SAC', ruc_masked: '20*******01', category_id: 'cat-food', city_id: 'city-lima', description: 'Cocina peruana contemporánea.', rating: 4.8, review_count: 342, onboarding_status: 'APROBADO' }),
     row({ id: 'merchant-kantu', trade_name: 'Kantu Spa', legal_name: 'Kantu Bienestar Demo SAC', ruc_masked: '20*******02', category_id: 'cat-beauty', city_id: 'city-lima', description: 'Bienestar y relajación.', rating: 4.7, review_count: 186, onboarding_status: 'APROBADO' }),

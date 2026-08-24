@@ -1,7 +1,7 @@
 <div class="app-shell" id="appShell">
   <div class="demo-ribbon" role="status">
     <span class="pulse-dot"></span>
-    Fase 1 · Entorno demostrativo · No procesa pagos ni canjes
+    Fase 2 · Identidad y permisos · Pagos y canjes aún desactivados
   </div>
   <header class="site-header" id="siteHeader">
     <div class="header-main container">
@@ -25,16 +25,19 @@
       <nav class="header-actions" aria-label="Acciones de usuario">
         <button class="icon-button" type="button" aria-label="Favoritos"><span class="icon" data-icon="heart"></span></button>
         <button class="profile-switcher" id="profileSwitcher" type="button" aria-expanded="false">
-          <span class="avatar avatar-savings" id="headerAvatar">V</span>
-          <span class="profile-copy"><small>Vista demo</small><strong id="profileLabel">Cliente</strong></span>
+          <span class="avatar avatar-savings" id="headerAvatar">T</span>
+          <span class="profile-copy"><small id="authStateLabel">Tu cuenta</small><strong id="profileLabel">Ingresar</strong></span>
           <span class="icon icon-sm" data-icon="chevron"></span>
         </button>
       </nav>
       <div class="profile-menu" id="profileMenu" hidden>
-        <p>Cambiar experiencia</p>
+        <p id="profileMenuTitle">Tu experiencia</p>
+        <button type="button" id="loginMenuButton"><span class="menu-icon savings"><span class="icon" data-icon="user"></span></span><span><strong>Ingresar o registrarme</strong><small>Google o código por correo</small></span></button>
         <button type="button" data-route="customer"><span class="menu-icon savings"><span class="icon" data-icon="user"></span></span><span><strong>Cliente</strong><small>Compras y cupones</small></span></button>
         <button type="button" data-route="merchant"><span class="menu-icon navy"><span class="icon" data-icon="store"></span></span><span><strong>Comercio</strong><small>Ventas y campañas</small></span></button>
         <button type="button" data-route="home"><span class="menu-icon cream"><span class="icon" data-icon="compass"></span></span><span><strong>Portal público</strong><small>Catálogo de ofertas</small></span></button>
+        <button type="button" id="sessionsMenuButton" hidden><span class="menu-icon navy"><span class="icon" data-icon="shield"></span></span><span><strong>Seguridad y sesiones</strong><small>Revisa tus dispositivos</small></span></button>
+        <button type="button" id="logoutMenuButton" hidden><span class="menu-icon cream"><span class="icon" data-icon="close"></span></span><span><strong>Cerrar sesión</strong><small>Salir de este dispositivo</small></span></button>
       </div>
     </div>
     <div class="category-strip" id="categoryStrip"><div class="container skeleton-line"></div></div>

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 — 2026-08-24
+
+- Se implementó Google Identity Services con nonce y validación servidor-a-servidor para desarrollo/staging.
+- Se implementó OTP real por correo con hash, caducidad, límite de intentos y rate limit.
+- Se añadieron sesiones propias con token opaco, hash persistido, revocación y limpieza lógica.
+- Se añadió RBAC backend para dashboards de cliente y comercio.
+- Se añadió perfil de cliente, datos privados protegidos, ciudades y aceptaciones versionadas.
+- Se creó el servicio de idempotencia y se aplicó a identidad y perfil.
+- Se añadió un workflow de GitHub Pages para publicar el index visual compuesto.
+- Se documentó el flujo completo de macOS, clasp, setup, diagnóstico y despliegue.
+
 ## 0.1.2 — 2026-08-24
 
 - Se corrigió la aplicación visual del tema para que el amarillo sea realmente dominante.

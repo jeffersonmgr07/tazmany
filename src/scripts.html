@@ -10,12 +10,12 @@
   const date = value => value ? new Intl.DateTimeFormat('es-PE',{day:'2-digit',month:'short',year:'numeric',timeZone:'America/Lima'}).format(new Date(value)) : '';
   const escapeHtml = value => String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
-  const state = { view:'home', publicData:null, query:'', categoryId:'', favorites:new Set(), customerLoaded:false, merchantLoaded:false };
+  const state = { view:'home', publicData:null, query:'', categoryId:'', favorites:new Set(), customerLoaded:false, merchantLoaded:false, auth:null, otpChallenge:null, googleNonce:'' };
   const fallback = createFallbackData();
 
   document.addEventListener('DOMContentLoaded', init);
-  function init(){
-    applyLogo(); hydrateIcons(document); bindGlobalEvents(); loadPublicData(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);
+  async function init(){
+    applyLogo(); hydrateIcons(document); bindGlobalEvents(); loadPublicData(); await restoreSession(); initGoogleIdentity(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);
   }
   function applyLogo(){
     const url=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.logoUrl;
@@ -32,7 +32,14 @@
       if(event.target.closest('[data-close-dialog]'))event.target.closest('dialog')?.close();
       if(!event.target.closest('#profileSwitcher')&&!event.target.closest('#profileMenu'))closeProfileMenu();
     });
-    document.getElementById('profileSwitcher').addEventListener('click',()=>{const menu=document.getElementById('profileMenu');menu.hidden=!menu.hidden;document.getElementById('profileSwitcher').setAttribute('aria-expanded',String(!menu.hidden))});
+    document.getElementById('profileSwitcher').addEventListener('click',()=>{if(!state.auth&&!isStaticPreview()){openAuthDialog();return}const menu=document.getElementById('profileMenu');menu.hidden=!menu.hidden;document.getElementById('profileSwitcher').setAttribute('aria-expanded',String(!menu.hidden))});
+    document.getElementById('loginMenuButton').addEventListener('click',openAuthDialog);
+    document.getElementById('logoutMenuButton').addEventListener('click',logout);
+    document.getElementById('sessionsMenuButton').addEventListener('click',openSessionsDialog);
+    document.getElementById('otpRequestForm').addEventListener('submit',requestOtp);
+    document.getElementById('otpVerifyForm').addEventListener('submit',verifyOtp);
+    document.getElementById('otpBackButton').addEventListener('click',resetOtpForm);
+    document.getElementById('profileForm').addEventListener('submit',saveProfile);
     ['topSearchForm','mobileSearchForm'].forEach(id=>document.getElementById(id).addEventListener('submit',e=>{e.preventDefault();state.query=e.currentTarget.querySelector('input').value.trim();syncSearchInputs(state.query);navigate('home');renderOffers();document.getElementById('offersSection').scrollIntoView({behavior:'smooth'})}));
     ['topSearchInput','mobileSearchInput'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{state.query=e.target.value.trim();syncSearchInputs(state.query);renderOffers()}));
     document.getElementById('exploreOffers').addEventListener('click',()=>document.getElementById('offersSection').scrollIntoView({behavior:'smooth'}));
@@ -40,7 +47,7 @@
     document.getElementById('offerDialog').querySelector('.dialog-close').addEventListener('click',()=>document.getElementById('offerDialog').close());
     document.getElementById('howDialog').querySelector('.dialog-close').addEventListener('click',()=>document.getElementById('howDialog').close());
     document.getElementById('scanDialog').querySelector('.dialog-close').addEventListener('click',()=>document.getElementById('scanDialog').close());
-    document.getElementById('demoBuyButton').addEventListener('click',()=>showToast('Checkout reservado para Fase 4','No se realizó ningún cobro.'));
+    document.getElementById('demoBuyButton').addEventListener('click',()=>{if(!state.auth&&!isStaticPreview()){document.getElementById('offerDialog').close();openAuthDialog();return}showToast('Checkout reservado para Fase 4','No se realizó ningún cobro.');});
     document.getElementById('newsletterForm').addEventListener('submit',e=>{e.preventDefault();showToast('¡Gracias por tu interés!','La suscripción se conectará en una fase posterior.');e.currentTarget.reset()});
     window.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();navigate('home');document.getElementById('topSearchInput').focus()}});
   }
@@ -49,12 +56,18 @@
   function callServer(name,args,fallbackValue){
     return new Promise(resolve=>{if(!(window.google&&google.script&&google.script.run)){resolve(fallbackValue);return}const runner=google.script.run.withSuccessHandler(response=>resolve(response&&response.ok?response.data:fallbackValue)).withFailureHandler(()=>resolve(fallbackValue));runner[name](...(args||[]))});
   }
+  function callServerStrict(name,args){
+    return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run)){reject({code:'STATIC_PREVIEW',message:'Esta acción funciona en la Web App de Apps Script.'});return}const runner=google.script.run.withSuccessHandler(response=>response&&response.ok?resolve(response.data):reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'})).withFailureHandler(error=>reject({code:'SERVER_ERROR',message:error&&error.message||'No pudimos conectar con el servidor.'}));runner[name](...(args||[]))});
+  }
   async function loadPublicData(){state.publicData=await callServer('apiGetPublicBootstrap',[],fallback);renderCategories();renderOffers();renderMerchants()}
   function navigate(view,push=true){
     if(!['home','customer','merchant','admin'].includes(view))view='home';state.view=view;
+    if(view!=='home'&&!state.auth&&!isStaticPreview()){openAuthDialog();view='home';state.view='home'}
+    if(view==='merchant'&&state.auth&&!hasClientPermission('merchant.dashboard.read')){showToast('Acceso restringido','Esta cuenta no está vinculada a un comercio.');view='home';state.view='home'}
+    if(view==='admin'&&state.auth&&!hasClientPermission('admin.dashboard.read')&&!hasClientPermission('*')){showToast('Acceso restringido','Tu cuenta no tiene permisos administrativos.');view='home';state.view='home'}
     document.querySelectorAll('.view').forEach(section=>section.hidden=section.dataset.view!==view);
     document.querySelectorAll('.mobile-nav [data-route]').forEach(button=>button.classList.toggle('active',button.dataset.route===view));
-    const labels={home:['Portal','T'],customer:['Cliente','V'],merchant:['Comercio','S'],admin:['Admin','A']};document.getElementById('profileLabel').textContent=labels[view][0];document.getElementById('headerAvatar').textContent=labels[view][1];
+    updateAuthUi();
     document.getElementById('categoryStrip').hidden=view!=='home';document.querySelector('.site-footer').hidden=view!=='home';
     if(view==='customer')loadCustomer();if(view==='merchant')loadMerchant();if(view==='admin')renderAdmin();
     if(push&&history.pushState)history.pushState({view},'',`${location.pathname}?view=${view}`);window.scrollTo({top:0,behavior:'smooth'});document.getElementById('mainContent').focus({preventScroll:true});
@@ -84,7 +97,7 @@
   }
   function renderMerchants(){const box=document.getElementById('featuredMerchants');box.innerHTML='';state.publicData.featuredMerchants.forEach(merchant=>{const initials=merchant.name.split(' ').map(x=>x[0]).slice(0,2).join('');box.insertAdjacentHTML('beforeend',`<article class="merchant-card"><span>${escapeHtml(initials)}</span><h3>${escapeHtml(merchant.name)}</h3><p>${escapeHtml(merchant.description)}</p><b>★ ${Number(merchant.rating).toFixed(1)}</b></article>`)})}
   async function loadCustomer(){
-    const target=document.getElementById('customerView');if(!state.customerLoaded){target.innerHTML='<div class="loading-panel"><div><div class="loading-spinner"></div>Cargando tu espacio…</div></div>';const data=await callServer('apiGetCustomerDashboard',[],fallback.customer);renderCustomer(data);state.customerLoaded=true}
+    const target=document.getElementById('customerView');if(!state.customerLoaded){target.innerHTML='<div class="loading-panel"><div><div class="loading-spinner"></div>Cargando tu espacio…</div></div>';try{const data=isStaticPreview()?fallback.customer:await callServerStrict('apiGetCustomerDashboard',[sessionToken()]);renderCustomer(data);state.customerLoaded=true}catch(error){handleProtectedError(error,target)}}
   }
   function renderCustomer(data){
     const target=document.getElementById('customerView');target.innerHTML='';target.append(document.getElementById('customerDashboardTemplate').content.cloneNode(true));target.querySelector('[data-customer-name]').textContent=data.profile.name;target.querySelector('[data-customer-first-name]').textContent=data.profile.name.split(' ')[0];target.querySelector('[data-customer-initials]').textContent=data.profile.initials;
@@ -93,7 +106,7 @@
     const activity=target.querySelector('[data-activity-list]');data.activity.forEach(item=>activity.insertAdjacentHTML('beforeend',`<article class="activity-row"><span><i class="icon" data-icon="${item.amountCents?'wallet':'verified'}"></i></span><div><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.detail)} · ${escapeHtml(item.dateLabel)}</small></div><b>${item.amountCents?'+'+money(item.amountCents):''}</b></article>`));hydrateIcons(target);target.querySelectorAll('[data-route]').forEach(button=>button.onclick=()=>navigate(button.dataset.route));target.querySelectorAll('.coupon-row button').forEach(button=>button.onclick=()=>showToast('Vista de cupón','El QR seguro se implementará en la Fase 4.'));
   }
   async function loadMerchant(){
-    const target=document.getElementById('merchantView');if(!state.merchantLoaded){target.innerHTML='<div class="loading-panel"><div><div class="loading-spinner"></div>Cargando panel del comercio…</div></div>';const data=await callServer('apiGetMerchantDashboard',[],fallback.merchant);renderMerchant(data);state.merchantLoaded=true}
+    const target=document.getElementById('merchantView');if(!state.merchantLoaded){target.innerHTML='<div class="loading-panel"><div><div class="loading-spinner"></div>Cargando panel del comercio…</div></div>';try{const data=isStaticPreview()?fallback.merchant:await callServerStrict('apiGetMerchantDashboard',[sessionToken()]);renderMerchant(data);state.merchantLoaded=true}catch(error){handleProtectedError(error,target)}}
   }
   function renderMerchant(data){
     const target=document.getElementById('merchantView');target.innerHTML='';target.append(document.getElementById('merchantDashboardTemplate').content.cloneNode(true));target.querySelector('[data-merchant-name]').textContent=data.merchant.name;target.querySelector('[data-merchant-initials]').textContent=data.merchant.initials;Object.entries(data.summary).forEach(([key,value])=>{const plain=target.querySelector(`[data-stat="${key}"]`);const cash=target.querySelector(`[data-stat-money="${key}"]`);if(plain)plain.textContent=value;if(cash)cash.textContent=money(value)});
@@ -101,6 +114,58 @@
     target.querySelector('[data-campaign-table]').innerHTML=data.campaigns.map(campaign=>`<tr><td><div class="campaign-name"><img src="${escapeHtml(campaign.imageUrl)}" alt=""><strong>${escapeHtml(campaign.title)}</strong></div></td><td><span class="status-pill ${campaign.status.toLowerCase()}">${escapeHtml(campaign.status)}</span></td><td>${campaign.sold}</td><td>${campaign.sold}/${campaign.inventory}<div class="stock-progress"><i style="width:${Math.min(100,campaign.sold/campaign.inventory*100)}%"></i></div></td><td><strong>${money(campaign.revenueCents)}</strong></td><td><button class="table-menu" type="button">•••</button></td></tr>`).join('');hydrateIcons(target);target.querySelector('#scanCouponButton').onclick=()=>document.getElementById('scanDialog').showModal();target.querySelectorAll('.dashboard-nav button,.table-menu,.campaign-panel .button').forEach(button=>button.onclick=()=>showToast('Módulo preparado','Se conectará a reglas y permisos en su fase correspondiente.'));
   }
   function renderAdmin(){const target=document.getElementById('adminView');if(target.childElementCount)return;target.append(document.getElementById('adminDashboardTemplate').content.cloneNode(true));hydrateIcons(target);target.querySelector('[data-route]').onclick=()=>navigate('home')}
+  function isStaticPreview(){return Boolean(window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.isStaticPreview)}
+  function sessionToken(){return localStorage.getItem('tazmany_session_token')||''}
+  function newIdempotencyKey(scope){const id=window.crypto&&crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`;return `web:${scope}:${id}`}
+  function deviceLabel(){const mobile=/Mobi|Android/i.test(navigator.userAgent);return `${mobile?'Móvil':'Computadora'} · ${navigator.platform||'Navegador'}`.slice(0,80)}
+  function hasClientPermission(permission){const permissions=state.auth&&state.auth.user&&state.auth.user.permissions||[];return permissions.some(item=>item==='*'||item===permission||(item.endsWith('.*')&&permission.startsWith(item.slice(0,-1))))}
+  async function restoreSession(){
+    const token=sessionToken();if(!token||isStaticPreview()){updateAuthUi();return}
+    try{state.auth=await callServerStrict('apiGetSession',[token])}catch(error){localStorage.removeItem('tazmany_session_token');state.auth=null}updateAuthUi();
+  }
+  function acceptAuth(auth){state.auth=auth;localStorage.setItem('tazmany_session_token',auth.sessionToken);state.customerLoaded=false;state.merchantLoaded=false;updateAuthUi();document.getElementById('authDialog').close();showToast('Sesión iniciada',`Hola, ${auth.user.displayName||'bienvenido a Tazmany'}.`);if(auth.needsProfile)setTimeout(openProfileDialog,180)}
+  function updateAuthUi(){
+    const user=state.auth&&state.auth.user;const label=document.getElementById('profileLabel');const note=document.getElementById('authStateLabel');const avatar=document.getElementById('headerAvatar');
+    if(user){label.textContent=(user.displayName||user.email).split(' ')[0];note.textContent='Sesión protegida';avatar.textContent=(user.displayName||user.email).split(/\s|@/).map(x=>x[0]).slice(0,2).join('').toUpperCase();document.getElementById('loginMenuButton').hidden=true;document.getElementById('logoutMenuButton').hidden=false;document.getElementById('sessionsMenuButton').hidden=false}
+    else{label.textContent=isStaticPreview()?'Vista previa':'Ingresar';note.textContent=isStaticPreview()?'GitHub Pages':'Tu cuenta';avatar.textContent='T';document.getElementById('loginMenuButton').hidden=false;document.getElementById('logoutMenuButton').hidden=true;document.getElementById('sessionsMenuButton').hidden=true}
+  }
+  function openAuthDialog(){closeProfileMenu();resetOtpForm();const message=document.getElementById('googleAuthMessage');if(isStaticPreview()){message.hidden=false;message.textContent='La vista de GitHub Pages es visual. El acceso real funciona en la Web App de Apps Script.'}document.getElementById('authDialog').showModal();initGoogleIdentity()}
+  function resetOtpForm(){state.otpChallenge=null;document.getElementById('otpRequestForm').hidden=false;document.getElementById('otpVerifyForm').hidden=true;setStatus('authStatus','',false)}
+  function setStatus(id,message,isError){const box=document.getElementById(id);box.textContent=message||'';box.hidden=!message;box.classList.toggle('error',Boolean(isError))}
+  function setFormBusy(form,busy){form.querySelectorAll('button,input,select').forEach(control=>control.disabled=busy)}
+  async function requestOtp(event){
+    event.preventDefault();const form=event.currentTarget;const email=form.email.value.trim();setFormBusy(form,true);setStatus('authStatus','Enviando tu código…',false);
+    try{const result=await callServerStrict('apiRequestEmailOtp',[email,deviceLabel(),newIdempotencyKey('otp-request')]);state.otpChallenge={email,challengeId:result.challengeId};document.getElementById('otpEmailMasked').textContent=result.emailMasked;form.hidden=true;document.getElementById('otpVerifyForm').hidden=false;document.getElementById('otpCode').focus();setStatus('authStatus','Código enviado. Revisa también tu carpeta de spam.',false)}catch(error){setStatus('authStatus',error.message||'No pudimos enviar el código.',true)}finally{setFormBusy(form,false)}
+  }
+  async function verifyOtp(event){
+    event.preventDefault();const form=event.currentTarget;if(!state.otpChallenge)return resetOtpForm();setFormBusy(form,true);setStatus('authStatus','Confirmando el código…',false);
+    try{const auth=await callServerStrict('apiVerifyEmailOtp',[state.otpChallenge.email,state.otpChallenge.challengeId,form.code.value,deviceLabel(),newIdempotencyKey('otp-verify')]);acceptAuth(auth)}catch(error){setStatus('authStatus',error.message||'No pudimos confirmar el código.',true)}finally{setFormBusy(form,false)}
+  }
+  function initGoogleIdentity(){
+    const config=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.auth||{};const message=document.getElementById('googleAuthMessage');if(isStaticPreview())return;
+    if(!config.googleClientId){message.hidden=false;message.textContent='Google aún no está configurado. Puedes ingresar con código por correo.';return}
+    if(!(window.google&&google.accounts&&google.accounts.id)){setTimeout(initGoogleIdentity,300);return}
+    if(document.getElementById('googleButton').dataset.ready)return;state.googleNonce=newIdempotencyKey('google-nonce');google.accounts.id.initialize({client_id:config.googleClientId,callback:handleGoogleCredential,nonce:state.googleNonce,ux_mode:'popup'});google.accounts.id.renderButton(document.getElementById('googleButton'),{theme:'outline',size:'large',shape:'pill',text:'continue_with',width:360});document.getElementById('googleButton').dataset.ready='1';
+  }
+  async function handleGoogleCredential(response){
+    setStatus('authStatus','Confirmando tu identidad con Google…',false);
+    try{const auth=await callServerStrict('apiAuthenticateGoogle',[response.credential,state.googleNonce,deviceLabel(),newIdempotencyKey('google-login')]);acceptAuth(auth)}catch(error){setStatus('authStatus',error.message||'No pudimos confirmar tu cuenta de Google.',true)}
+  }
+  async function logout(){
+    const token=sessionToken();try{if(token)await callServerStrict('apiLogout',[token])}catch(error){}localStorage.removeItem('tazmany_session_token');state.auth=null;state.customerLoaded=false;state.merchantLoaded=false;closeProfileMenu();updateAuthUi();navigate('home');showToast('Sesión cerrada','Tu acceso en este dispositivo terminó.');
+  }
+  async function openProfileDialog(){
+    if(!state.auth)return openAuthDialog();const form=document.getElementById('profileForm');const cities=state.publicData&&state.publicData.cities||fallback.cities;const select=document.getElementById('profileCity');select.innerHTML=cities.map(city=>`<option value="${escapeHtml(city.id)}">${escapeHtml(city.name)}</option>`).join('');
+    try{const profile=await callServerStrict('apiGetMyProfile',[sessionToken()]);form.firstName.value=profile.firstName||'';form.lastName.value=profile.lastName||'';form.documentType.value=profile.documentType||'DNI';form.phone.value='';form.primaryCityId.value=profile.primaryCityId||'city-lima';form.marketingConsent.checked=Boolean(profile.marketingConsent)}catch(error){}setStatus('profileStatus','',false);document.getElementById('profileDialog').showModal();
+  }
+  async function saveProfile(event){
+    event.preventDefault();const form=event.currentTarget;const data=new FormData(form);const payload={firstName:data.get('firstName'),lastName:data.get('lastName'),documentType:data.get('documentType'),documentNumber:data.get('documentNumber'),phone:data.get('phone'),primaryCityId:data.get('primaryCityId'),cityIds:[data.get('primaryCityId')],acceptTerms:data.get('acceptTerms')==='on',acceptPrivacy:data.get('acceptPrivacy')==='on',marketingConsent:data.get('marketingConsent')==='on'};setFormBusy(form,true);setStatus('profileStatus','Guardando de forma segura…',false);
+    try{await callServerStrict('apiSaveCustomerProfile',[sessionToken(),payload,newIdempotencyKey('profile-save')]);state.auth.needsProfile=false;state.auth.user.displayName=`${payload.firstName} ${payload.lastName}`;updateAuthUi();document.getElementById('profileDialog').close();showToast('Perfil actualizado','Tu información y aceptaciones quedaron registradas.')}catch(error){setStatus('profileStatus',error.message||'No pudimos guardar tu perfil.',true)}finally{setFormBusy(form,false)}
+  }
+  async function openSessionsDialog(){
+    closeProfileMenu();const list=document.getElementById('sessionsList');list.innerHTML='<div class="loading-spinner"></div>';document.getElementById('sessionsDialog').showModal();try{const sessions=await callServerStrict('apiListSessions',[sessionToken()]);list.innerHTML=sessions.map(item=>`<article class="session-row"><span><i class="icon" data-icon="shield"></i></span><div><strong>${escapeHtml(item.deviceLabel)}</strong><small>Vence ${date(item.expiresAt)}</small></div>${item.current?'<b class="session-current">Actual</b>':`<button type="button" data-revoke-session="${escapeHtml(item.id)}">Cerrar</button>`}</article>`).join('');hydrateIcons(list);list.querySelectorAll('[data-revoke-session]').forEach(button=>button.onclick=async()=>{await callServerStrict('apiRevokeSession',[sessionToken(),button.dataset.revokeSession]);button.closest('.session-row').remove();showToast('Sesión cerrada','El otro dispositivo perdió el acceso.')})}catch(error){list.innerHTML=`<div class="auth-status error">${escapeHtml(error.message||'No pudimos cargar tus sesiones.')}</div>`}
+  }
+  function handleProtectedError(error,target){target.innerHTML=`<div class="dashboard-placeholder"><span class="brand-mark"><span>T</span></span><h1>Acceso protegido</h1><p>${escapeHtml(error.message||'Inicia sesión para continuar.')}</p><button class="button button-primary" type="button" id="protectedLoginButton">Ingresar</button></div>`;target.querySelector('#protectedLoginButton').onclick=openAuthDialog}
   function showToast(title,message){const toast=make('div','toast',`<strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span>`);document.getElementById('toastRegion').append(toast);setTimeout(()=>toast.remove(),3500)}
   function make(tag,className,html){const el=document.createElement(tag);el.className=className;el.innerHTML=html;return el}function setText(id,value){document.getElementById(id).textContent=value||''}function normalize(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
   function createFallbackData(){

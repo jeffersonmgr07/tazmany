@@ -2,9 +2,13 @@ var TAZMANY_SCHEMA = Object.freeze({
   CONFIG: ['id', 'key', 'value', 'scope', 'description', 'created_at', 'updated_at', 'status', 'version'],
   COUNTERS: ['id', 'counter_name', 'current_value', 'prefix', 'created_at', 'updated_at', 'status', 'version'],
   USERS: ['id', 'email', 'display_name', 'phone_masked', 'user_type', 'roles_json', 'email_verified', 'city_id', 'last_login_at', 'created_at', 'updated_at', 'status', 'version'],
+  AUTH_IDENTITIES: ['id', 'user_id', 'provider', 'provider_subject', 'email', 'email_verified', 'last_authenticated_at', 'created_at', 'updated_at', 'status', 'version'],
+  OTP_CHALLENGES: ['id', 'email', 'code_hash', 'attempts', 'max_attempts', 'expires_at', 'consumed_at', 'device_label', 'created_at', 'updated_at', 'status', 'version'],
   USER_SESSIONS: ['id', 'user_id', 'token_hash', 'device_label', 'expires_at', 'revoked_at', 'created_at', 'updated_at', 'status', 'version'],
   CUSTOMER_PROFILES: ['id', 'user_id', 'first_name', 'last_name', 'document_type', 'document_masked', 'phone_masked', 'marketing_consent', 'created_at', 'updated_at', 'status', 'version'],
+  CUSTOMER_PRIVATE_DATA: ['id', 'user_id', 'phone_e164', 'phone_verified_at', 'document_type', 'document_number_hash', 'document_last4', 'created_at', 'updated_at', 'status', 'version'],
   USER_CITY_PREFERENCES: ['id', 'user_id', 'city_id', 'is_primary', 'created_at', 'updated_at', 'status', 'version'],
+  TERMS_ACCEPTANCES: ['id', 'user_id', 'terms_version', 'privacy_version', 'marketing_consent', 'accepted_at', 'evidence_json', 'created_at', 'updated_at', 'status', 'version'],
   CITIES: ['id', 'name', 'department', 'country_code', 'time_zone', 'sort_order', 'created_at', 'updated_at', 'status', 'version'],
   DISTRICTS: ['id', 'city_id', 'name', 'ubigeo', 'latitude', 'longitude', 'created_at', 'updated_at', 'status', 'version'],
   MERCHANTS: ['id', 'trade_name', 'legal_name', 'ruc_masked', 'category_id', 'city_id', 'description', 'logo_url', 'rating', 'review_count', 'onboarding_status', 'created_at', 'updated_at', 'status', 'version'],
@@ -57,7 +61,7 @@ var TAZMANY_SCHEMA = Object.freeze({
 });
 
 function setupTazmany() {
-  return withScriptLock_(function () {
+  var result = withScriptLock_(function () {
     var properties = PropertiesService.getScriptProperties();
     var spreadsheetId = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.SPREADSHEET_ID);
     var spreadsheet;
@@ -74,14 +78,21 @@ function setupTazmany() {
     ensureDriveFolder_(properties);
     properties.setProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.ENVIRONMENT,
       properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.ENVIRONMENT) || 'development');
+    ensurePhase2Properties_(properties);
 
     upsertRowsById_('SCHEMA_MIGRATIONS', [{
       id: 'migration-001', migration_key: '001-initial-schema', description: 'Esquema inicial de Fase 1',
       applied_at: nowIso_(), checksum: 'tazmany-v0.1.0', created_at: nowIso_(), updated_at: nowIso_(), status: 'APPLIED', version: 1
     }]);
+    upsertRowsById_('SCHEMA_MIGRATIONS', [{
+      id: 'migration-002', migration_key: '002-auth-sessions-rbac', description: 'Identidades, OTP, sesiones propias, perfil privado y aceptaciones versionadas',
+      applied_at: nowIso_(), checksum: 'tazmany-v0.2.0', created_at: nowIso_(), updated_at: nowIso_(), status: 'APPLIED', version: 1
+    }]);
     seedDemoData();
     return { ok: true, spreadsheetId: spreadsheet.getId(), spreadsheetUrl: spreadsheet.getUrl(), sheets: Object.keys(TAZMANY_SCHEMA).length };
   });
+  console.log(JSON.stringify(result, null, 2));
+  return result;
 }
 
 function ensureSheet_(spreadsheet, sheetName, headers) {
@@ -95,7 +106,7 @@ function ensureSheet_(spreadsheet, sheetName, headers) {
   sheet.getRange(1, 1, 1, headers.length)
     .setBackground('#182635').setFontColor('#FFFFFF').setFontWeight('bold').setWrap(true);
   sheet.autoResizeColumns(1, Math.min(headers.length, 12));
-  if (['PAYMENTS', 'PAYMENT_EVENTS', 'CASHBACK_LEDGER', 'SETTLEMENTS', 'SETTLEMENT_ITEMS', 'PAYOUTS', 'AUDIT_LOG'].indexOf(sheetName) >= 0) {
+  if (['AUTH_IDENTITIES', 'OTP_CHALLENGES', 'USER_SESSIONS', 'CUSTOMER_PRIVATE_DATA', 'TERMS_ACCEPTANCES', 'PAYMENTS', 'PAYMENT_EVENTS', 'CASHBACK_LEDGER', 'SETTLEMENTS', 'SETTLEMENT_ITEMS', 'PAYOUTS', 'AUDIT_LOG'].indexOf(sheetName) >= 0) {
     var existingProtection = sheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0];
     if (!existingProtection) sheet.protect().setDescription('Zona financiera/auditoría: cambios controlados').setWarningOnly(true);
   }

@@ -1,0 +1,55 @@
+<dialog class="auth-dialog" id="authDialog" aria-labelledby="authDialogTitle">
+  <button class="dialog-close icon-button" type="button" aria-label="Cerrar" data-close-dialog><span class="icon" data-icon="close"></span></button>
+  <div class="auth-brand"><span class="brand-mark"><span>T</span></span><div><small>Bienvenido a</small><strong>Tazmany</strong></div></div>
+  <h2 id="authDialogTitle">Ingresa para guardar y disfrutar tus ofertas</h2>
+  <p class="auth-lead">Usa tu cuenta de Google o recibe un código seguro en tu correo.</p>
+  <div id="googleAuthArea" class="google-auth-area">
+    <div id="googleButton"></div>
+    <p id="googleAuthMessage" class="form-help" hidden></p>
+  </div>
+  <div class="auth-divider"><span>o continúa con correo</span></div>
+  <form id="otpRequestForm" class="auth-form">
+    <label for="otpEmail">Correo electrónico</label>
+    <input id="otpEmail" name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+    <button class="button button-primary button-block" type="submit">Enviarme un código</button>
+  </form>
+  <form id="otpVerifyForm" class="auth-form" hidden>
+    <p>Enviamos un código a <strong id="otpEmailMasked"></strong>.</p>
+    <label for="otpCode">Código de 6 dígitos</label>
+    <input id="otpCode" name="code" class="otp-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required>
+    <button class="button button-primary button-block" type="submit">Confirmar e ingresar</button>
+    <button class="text-button auth-back" id="otpBackButton" type="button">Usar otro correo</button>
+  </form>
+  <div class="auth-status" id="authStatus" role="status" aria-live="polite" hidden></div>
+  <small class="auth-legal">Al continuar confirmas que eres titular del correo. Los términos y privacidad se aceptan al completar el perfil.</small>
+</dialog>
+
+<dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle">
+  <button class="dialog-close icon-button" type="button" aria-label="Cerrar" data-close-dialog><span class="icon" data-icon="close"></span></button>
+  <span class="section-kicker">Un último paso</span>
+  <h2 id="profileDialogTitle">Completa tu perfil de cliente</h2>
+  <p>Necesitamos estos datos antes de habilitar una compra. Tu celular quedará pendiente de verificación hasta integrar SMS.</p>
+  <form id="profileForm" class="profile-form">
+    <div class="form-grid two-columns">
+      <label>Nombres<input name="firstName" autocomplete="given-name" maxlength="60" required></label>
+      <label>Apellidos<input name="lastName" autocomplete="family-name" maxlength="80" required></label>
+      <label>Tipo de documento<select name="documentType" required><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option><option value="PASSPORT">Pasaporte</option></select></label>
+      <label>Número de documento<input name="documentNumber" autocomplete="off" maxlength="12" required></label>
+      <label>Celular peruano<input name="phone" inputmode="tel" autocomplete="tel" placeholder="999 999 999" required></label>
+      <label>Ciudad principal<select name="primaryCityId" id="profileCity" required><option value="city-lima">Lima</option></select></label>
+    </div>
+    <label class="check-row"><input name="acceptTerms" type="checkbox" required><span>Acepto los Términos y condiciones vigentes.</span></label>
+    <label class="check-row"><input name="acceptPrivacy" type="checkbox" required><span>Acepto la Política de privacidad vigente.</span></label>
+    <label class="check-row optional"><input name="marketingConsent" type="checkbox"><span>Quiero recibir ofertas y novedades. Es opcional.</span></label>
+    <div class="auth-status" id="profileStatus" role="status" aria-live="polite" hidden></div>
+    <button class="button button-primary button-block" type="submit">Guardar mi perfil</button>
+  </form>
+</dialog>
+
+<dialog class="sessions-dialog" id="sessionsDialog" aria-labelledby="sessionsDialogTitle">
+  <button class="dialog-close icon-button" type="button" aria-label="Cerrar" data-close-dialog><span class="icon" data-icon="close"></span></button>
+  <span class="section-kicker">Seguridad</span>
+  <h2 id="sessionsDialogTitle">Tus sesiones activas</h2>
+  <p>Puedes cerrar el acceso de otro dispositivo sin afectar el actual.</p>
+  <div id="sessionsList" class="sessions-list"></div>
+</dialog>

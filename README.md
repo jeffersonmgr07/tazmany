@@ -1,122 +1,192 @@
 # Tazmany Web App
 
-Marketplace peruano de ofertas y cupones digitales. Esta primera entrega usa Google Apps Script como backend y servidor, Google Sheets como repositorio inicial, Google Drive para documentos y HTML/CSS/JavaScript para la interfaz.
+Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google Apps Script, Google Sheets, Google Drive y HTML/CSS/JavaScript.
 
-## Estado de la entrega
+## Estado
 
-Versión `0.1.2` — Fase 1 ejecutable con tema visual “Ahorro amarillo dominante + ámbar”.
+Versión `0.2.0` — Fase 2: identidad, sesiones, perfil de cliente, RBAC backend e idempotencia base.
 
-- Portal público responsive con selector de ciudad, buscador, categorías, catálogo, detalle de oferta y comercios destacados.
-- Dashboard demo de cliente con resumen, cupones y cashback.
-- Dashboard demo de comercio con ventas, canjes, campañas y liquidación estimada.
-- `setupTazmany()` crea 55 hojas, formatos, advertencias de protección, una carpeta de Drive y datos demo.
-- El frontend consume el backend mediante `google.script.run`; nunca accede directamente a Sheets.
-- La UI funciona con datos locales de respaldo si se abre `dist/preview.html`.
-- El sistema visual usa amarillo `#F2B705` como superficie dominante del hero y para ahorro/acción, ámbar `#D77800` para promociones y navy `#182635` para confianza y contraste.
-- El azul marino y coral originales se conservan exclusivamente en el logotipo oficial, sin recolorear la mascota.
+### Real en la Web App de Apps Script
 
-No están habilitados todavía: autenticación, pagos, QR, canje, liquidaciones reales, notificaciones ni acciones administrativas. Los botones correspondientes informan el alcance sin alterar datos.
+- Portal público y dashboards responsive con la identidad “Ahorro amarillo + ámbar + navy”.
+- Inicio de sesión por código OTP enviado con `MailApp`.
+- Sesiones propias: el navegador recibe el token una sola vez y Sheets guarda solo su hash.
+- Perfil de cliente, ciudades, consentimiento de marketing separado y aceptaciones legales versionadas.
+- RBAC verificado en backend para los paneles de cliente y comercio.
+- Idempotencia para solicitudes OTP, verificación y guardado de perfil.
+- Google Identity Services en desarrollo/staging cuando se configura el Client ID.
+
+### Visual o simulado
+
+- GitHub Pages publica una vista visual navegable con catálogo y dashboards demo. No tiene acceso a Sheets ni ejecuta autenticación.
+- Datos de órdenes, cupones, cashback y liquidaciones siguen siendo ficticios.
+
+### Pendiente o bloqueado
+
+- La verificación de Google mediante `tokeninfo` está permitida solo en desarrollo/staging. Producción exige configurar un relay que valide criptográficamente el ID token con una biblioteca oficial de Google.
+- El celular se registra, pero queda `phoneVerified: false` hasta integrar un proveedor SMS.
+- Mercado Pago, compras, QR, canjes y operaciones financieras permanecen desactivados.
 
 ## Arquitectura
 
 ```text
-Navegador responsive
-  └─ HtmlService + parciales HTML
-       └─ google.script.run
-            └─ Servicios Apps Script
-                 ├─ SheetRepository → Google Sheets
-                 └─ DriveApp → Google Drive
+GitHub (fuente oficial)
+  ├─ GitHub Pages → preview estático generado desde los parciales
+  └─ clasp → src/ → proyecto Apps Script independiente
+                    ├─ HtmlService
+                    ├─ google.script.run
+                    ├─ servicios + RBAC + idempotencia
+                    ├─ Google Sheets
+                    └─ Google Drive / MailApp
 ```
 
-GitHub es la fuente oficial. `clasp` sincroniza únicamente `src/` con un proyecto Apps Script independiente por ambiente.
+El navegador nunca lee ni escribe Sheets directamente. Cada ambiente debe tener su propio proyecto Apps Script, Spreadsheet, carpeta Drive y deployment ID.
 
-## Estructura
+## Estructura principal
 
 ```text
-├── .github/workflows/       CI y despliegue manual
-├── assets/brand/            instrucciones para el logo oficial
-├── docs/                    arquitectura, bitácora, manuales y ADR
+├── .github/workflows/
+│   ├── ci.yml
+│   ├── deploy.yml
+│   └── pages.yml
+├── assets/brand/
+├── docs/
 ├── src/
-│   ├── *.gs                 backend Apps Script
-│   ├── index.html           documento principal HtmlService
-│   ├── styles.html          sistema visual responsive
-│   ├── app.html             portal público
-│   ├── components.html      tarjetas y diálogos
-│   ├── customer.html        dashboard cliente
-│   ├── merchant.html        dashboard comercio
-│   ├── admin.html           shell reservado
-│   └── scripts.html         interacción del frontend
-├── tests/unit/              pruebas con Node.js integrado
-├── tools/                   validación y composición de preview
-└── dist/preview.html        generado localmente, no se publica
+│   ├── *Service.gs
+│   ├── Setup.gs
+│   ├── Phase2Setup.gs
+│   ├── appsscript.json
+│   ├── index.html
+│   ├── auth.html
+│   ├── styles.html
+│   └── scripts.html
+├── tests/unit/
+├── tools/
+└── dist/                  generado; no versionado
 ```
 
-## Preparación local
+## Vista visual en GitHub Pages
 
-Requisitos: Git, Node.js 20 o superior, una cuenta Google y `clasp`.
+1. Sube el repositorio completo a GitHub y usa `main` como rama principal.
+2. Abre **Settings → Pages**.
+3. En **Build and deployment → Source**, elige **GitHub Actions**.
+4. Abre **Actions** y ejecuta `Deploy visual preview to GitHub Pages`, o haz un nuevo push a `main`.
+5. La URL aparecerá en el job `deploy` y en **Settings → Pages**.
+
+El workflow compone los parciales Apps Script como `dist/index.html`; por eso el index sí se ve en GitHub. No subas secretos: la vista Pages es pública y estática.
+
+## Subir todos los archivos a Apps Script desde macOS
+
+Requisitos: Node.js 20 o superior, Git y una cuenta Google.
 
 ```bash
+cd ~/Downloads/tazmany-webapp
+node -v
 npm install
-npm run verify
 npm install --global @google/clasp
 clasp login
 ```
 
-`Node.js` se usa solo para desarrollo, pruebas y despliegue. La Web App productiva no depende de un servidor Node.
-
-## Crear el proyecto Apps Script
-
-1. Crea un proyecto independiente en [script.google.com](https://script.google.com/).
-2. Copia su Script ID desde **Configuración del proyecto**.
-3. Duplica `.clasp.example.json` como `.clasp.json` y reemplaza el Script ID.
-4. Ejecuta:
+Activa **Google Apps Script API** en <https://script.google.com/home/usersettings>. Luego crea un proyecto independiente en <https://script.google.com/>, copia su **Script ID** y ejecuta:
 
 ```bash
-clasp push
-clasp open
+cp .clasp.example.json .clasp.json
+nano .clasp.json
 ```
 
-5. En el editor Apps Script, selecciona `setupTazmany` y pulsa **Ejecutar**.
-6. Autoriza Sheets y Drive. La función devuelve la URL del Spreadsheet y guarda sus IDs en Script Properties.
-7. Publica `assets/brand/tazmany-logo.png` en una ubicación controlada y agrega esa URL como `TAZMANY_LOGO_URL` en **Configuración del proyecto → Propiedades de la secuencia de comandos**. La copia incluida conserva el archivo original sin modificar.
+Contenido local de `.clasp.json`:
 
-Propiedades creadas o esperadas:
+```json
+{
+  "scriptId": "PEGA_AQUI_EL_SCRIPT_ID",
+  "rootDir": "src"
+}
+```
 
-| Propiedad | Uso | Secreto |
+Guarda en `nano` con `Control + O`, `Enter` y sal con `Control + X`. Después:
+
+```bash
+npm run verify
+clasp status
+clasp push
+clasp open-script
+```
+
+`.clasp.json` y `.clasprc.json` están ignorados por Git y no deben subirse.
+
+## Funciones que debes ejecutar
+
+En el editor de Apps Script, ejecuta en este orden y acepta los permisos solicitados:
+
+1. `setupTazmany()` — crea o actualiza el Spreadsheet, las 59 hojas, Drive, migraciones y datos demo.
+2. `setupTazmanyPhase2()` — confirma las hojas de autenticación y genera el pepper secreto y valores seguros por defecto. Es idempotente.
+3. `installTazmanyAuthTriggers()` — instala una limpieza lógica diaria de sesiones, OTP e idempotencias vencidas.
+4. `getTazmanyPhase2Diagnostics()` — comprueba configuración, modo de Google y cuota restante de correo.
+
+`seedDemoData()` ya es llamado por `setupTazmany()`. Solo ejecútalo aparte si deseas reponer datos ficticios determinísticos.
+
+## Propiedades de la secuencia de comandos
+
+En **Configuración del proyecto → Propiedades de la secuencia de comandos**:
+
+| Propiedad | Valor de desarrollo | Secreto |
 | --- | --- | --- |
-| `TAZMANY_SPREADSHEET_ID` | Spreadsheet maestro del ambiente | No, pero no se versiona |
-| `TAZMANY_DRIVE_FOLDER_ID` | Carpeta documental | No, pero no se versiona |
-| `TAZMANY_ENVIRONMENT` | `development`, `staging` o `production` | No |
-| `TAZMANY_LOGO_URL` | Logo controlado opcional | No |
-| `MERCADO_PAGO_ACCESS_TOKEN` | Se añadirá en Fase 4 | Sí |
+| `TAZMANY_ENVIRONMENT` | `development` | No |
+| `TAZMANY_GOOGLE_CLIENT_ID` | Client ID web de Google | No |
+| `TAZMANY_GOOGLE_VERIFY_MODE` | `TOKENINFO` solo en dev/staging | No |
+| `TAZMANY_GOOGLE_VERIFY_URL` | URL HTTPS del relay para producción | No |
+| `TAZMANY_GOOGLE_VERIFY_RELAY_SECRET` | secreto compartido del relay | Sí |
+| `TAZMANY_AUTH_PEPPER` | generado por setup | Sí |
+| `TAZMANY_SESSION_TTL_HOURS` | `168` | No |
+| `TAZMANY_OTP_TTL_MINUTES` | `10` | No |
+| `TAZMANY_OTP_MAX_ATTEMPTS` | `5` | No |
+| `TAZMANY_TERMS_VERSION` | `2026-08-24` | No |
+| `TAZMANY_PRIVACY_VERSION` | `2026-08-24` | No |
+
+Los IDs de Spreadsheet y Drive son creados automáticamente. Nunca copies el pepper ni el secreto del relay al repositorio.
+
+## Configurar Google Identity Services
+
+1. En Google Cloud crea/configura la pantalla de consentimiento OAuth.
+2. Crea una credencial **OAuth client ID → Web application**.
+3. Añade los orígenes HTTPS que realmente sirven la Web App. Comienza con `https://script.google.com`; si Google reporta `unregistered_origin`, agrega también el origen exacto `https://…script.googleusercontent.com` mostrado por el navegador, sin ruta ni `/exec`.
+4. Copia el Client ID en `TAZMANY_GOOGLE_CLIENT_ID`.
+5. Mantén `TAZMANY_GOOGLE_VERIFY_MODE=TOKENINFO` únicamente en development/staging.
+
+La identidad persistente usa el claim `sub`, no el correo. El backend valida audiencia, emisor, expiración, correo verificado y nonce. Cuentas Google con correo externo a Gmail/Workspace deben completar OTP adicional.
 
 ## Desplegar la Web App
 
-1. En Apps Script: **Implementar → Nueva implementación → Aplicación web**.
-2. Ejecutar como: **tú, propietario del proyecto**.
-3. Acceso para desarrollo: el grupo de pruebas definido por el equipo. Abre a público solo cuando autenticación, políticas y monitoreo estén listos.
-4. Prueba las rutas:
+Primera publicación:
 
-```text
-.../exec?view=home
-.../exec?view=customer
-.../exec?view=merchant
-```
+1. En Apps Script abre **Implementar → Nueva implementación → Aplicación web**.
+2. Ejecutar como: **propietario del proyecto**.
+3. Para desarrollo, habilita solo las personas de prueba necesarias. Abre acceso general cuando el checklist de producción esté aprobado.
+4. Prueba `.../exec?view=home`, inicia sesión y luego abre cliente/comercio desde el menú.
 
-Para una actualización:
+Actualizaciones posteriores:
 
 ```bash
 clasp push
-clasp version "Fase 1 - ajuste controlado"
+clasp version "Tazmany Fase 2 v0.2.0"
+clasp deployments
+clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 2 v0.2.0"
 ```
 
-Publicar una nueva versión desde el panel de implementaciones conserva el deployment ID cuando se edita la implementación existente.
+La guía ampliada está en [`docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md`](docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md).
 
-## Datos demo
+## Idempotencia
 
-`seedDemoData()` es idempotente y usa IDs determinísticos. Incluye dos clientes, cinco comercios, ocho campañas, dos cupones y una liquidación. No contiene contraseñas ni credenciales reales.
+Idempotencia significa que repetir la misma solicitud no duplica el efecto. Tazmany guarda un hash de una llave única y del contenido solicitado:
 
-## Verificación
+- dos clics para pedir OTP producen un solo desafío;
+- repetir una verificación no crea varias sesiones;
+- reenviar el guardado de perfil no duplica aceptaciones;
+- en fases futuras, un webhook repetido no podrá crear dos pagos o dos cupones.
+
+Si la misma llave llega con datos diferentes, el backend la rechaza como conflicto.
+
+## Verificación local
 
 ```bash
 npm run lint
@@ -125,18 +195,13 @@ npm run build:preview
 npm run verify
 ```
 
-Abre `dist/preview.html` para revisar el diseño sin Apps Script. Esta vista usa datos de respaldo y no prueba integración con Sheets.
+Abre `dist/index.html` para revisar la composición estática local. La autenticación se prueba en la URL `/exec` de Apps Script.
 
-## Seguridad y límites
+## Seguridad relevante
 
-- No se guardan secretos en el repositorio ni en el frontend.
-- Las APIs públicas devuelven DTOs limitados y mensajes de error no sensibles.
-- La Fase 1 no ejecuta operaciones financieras ni canjes.
-- Las fechas operativas se guardan en UTC y la visualización usa `America/Lima`.
-- El dinero se modela como céntimos enteros.
-- Las hojas financieras y de auditoría se marcan con advertencia de protección; los permisos de edición definitivos se configuran por ambiente.
-- Google Sheets no es la base definitiva. Ver [criterios de migración](docs/arquitectura/ARQUITECTURA_FASE_1.md).
-
-## Próximo paso recomendado
-
-Fase 2: Google Identity Services, OTP, sesiones propias, perfil de cliente y RBAC backend. No conectar Mercado Pago hasta que identidad, permisos e idempotencia estén probados.
+- Solo se almacenan hashes de sesión, OTP, documento e idempotencia.
+- Las hojas privadas y de auditoría reciben protección de advertencia y deben tener acceso humano mínimo.
+- OTP vence en 10 minutos, permite 5 intentos y aplica límites temporales.
+- RBAC se decide en backend; ocultar un botón nunca reemplaza la autorización.
+- Las fechas se guardan en UTC y se muestran en `America/Lima`.
+- Mercado Pago sigue fuera de alcance hasta aprobar identidad, permisos e idempotencia.

@@ -9,9 +9,9 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  // Fase 1 no procesa webhooks. Se registra el intento sin ejecutar efectos financieros.
+  // Fase 2 no procesa webhooks ni efectos financieros.
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: false, code: 'NOT_IMPLEMENTED_PHASE_1' }))
+    .createTextOutput(JSON.stringify({ ok: false, code: 'NOT_IMPLEMENTED_PHASE_2' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -32,15 +32,17 @@ function apiGetOfferDetails(campaignId) {
   });
 }
 
-function apiGetCustomerDashboard() {
+function apiGetCustomerDashboard(sessionToken) {
   return executeApi_(function () {
-    return getCustomerDashboardDemo_();
+    var context = requirePermission_(sessionToken, 'customer.dashboard.read');
+    return getCustomerDashboardForUser_(context.user.id);
   });
 }
 
-function apiGetMerchantDashboard() {
+function apiGetMerchantDashboard(sessionToken) {
   return executeApi_(function () {
-    return getMerchantDashboardDemo_();
+    var context = requirePermission_(sessionToken, 'merchant.dashboard.read');
+    return getMerchantDashboardForContext_(context);
   });
 }
 
