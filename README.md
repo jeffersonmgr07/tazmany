@@ -4,7 +4,7 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.2.0` — Fase 2: identidad, sesiones, perfil de cliente, RBAC backend e idempotencia base.
+Versión `0.2.1` — Fase 2: identidad, sesiones, perfil de cliente, RBAC backend, idempotencia base e index visual publicable desde la raíz.
 
 ### Real en la Web App de Apps Script
 
@@ -31,7 +31,7 @@ Versión `0.2.0` — Fase 2: identidad, sesiones, perfil de cliente, RBAC backen
 
 ```text
 GitHub (fuente oficial)
-  ├─ GitHub Pages → preview estático generado desde los parciales
+  ├─ GitHub Pages → index.html estático en la raíz
   └─ clasp → src/ → proyecto Apps Script independiente
                     ├─ HtmlService
                     ├─ google.script.run
@@ -47,8 +47,8 @@ El navegador nunca lee ni escribe Sheets directamente. Cada ambiente debe tener 
 ```text
 ├── .github/workflows/
 │   ├── ci.yml
-│   ├── deploy.yml
-│   └── pages.yml
+│   └── deploy.yml
+├── index.html            vista visual para GitHub Pages
 ├── assets/brand/
 ├── docs/
 ├── src/
@@ -67,13 +67,27 @@ El navegador nunca lee ni escribe Sheets directamente. Cada ambiente debe tener 
 
 ## Vista visual en GitHub Pages
 
-1. Sube el repositorio completo a GitHub y usa `main` como rama principal.
+1. Sube `index.html` a la raíz del repositorio, al mismo nivel que `README.md`.
 2. Abre **Settings → Pages**.
-3. En **Build and deployment → Source**, elige **GitHub Actions**.
-4. Abre **Actions** y ejecuta `Deploy visual preview to GitHub Pages`, o haz un nuevo push a `main`.
-5. La URL aparecerá en el job `deploy` y en **Settings → Pages**.
+3. En **Build and deployment → Source**, elige **Deploy from a branch**.
+4. Selecciona la rama **main** y la carpeta **/(root)**; luego pulsa **Save**.
+5. Espera la publicación y abre la URL mostrada por GitHub Pages.
 
-El workflow compone los parciales Apps Script como `dist/index.html`; por eso el index sí se ve en GitHub. No subas secretos: la vista Pages es pública y estática.
+El `index.html` raíz ya contiene los parciales visuales compilados y usa el logotipo existente en `assets/brand/tazmany-logo.png`. Es una vista pública y estática: no accede a Sheets ni ejecuta autenticación. La Web App funcional continúa desplegándose desde `src/` con clasp.
+
+Si el repositorio todavía contiene `.github/workflows/pages.yml`, elimínalo una sola vez al cambiar a **Deploy from a branch**. Los workflows `ci.yml` y `deploy.yml` se conservan.
+
+## Entregas incrementales a GitHub
+
+A partir de `0.2.1`, cada avance manual se entrega como actualización incremental:
+
+- el ZIP incluye solamente archivos nuevos o modificados;
+- cada archivo conserva su ruta exacta dentro del repositorio;
+- los assets sin cambios no se repiten;
+- las eliminaciones se indican expresamente en la entrega;
+- un paquete completo se genera solo al solicitarlo o al cerrar un hito.
+
+Cuando cambie la interfaz, el `index.html` raíz se incluirá entre los modificados para que GitHub Pages muestre la versión más reciente.
 
 ## Subir todos los archivos a Apps Script desde macOS
 
@@ -168,9 +182,9 @@ Actualizaciones posteriores:
 
 ```bash
 clasp push
-clasp version "Tazmany Fase 2 v0.2.0"
+clasp version "Tazmany Fase 2 v0.2.1"
 clasp deployments
-clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 2 v0.2.0"
+clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 2 v0.2.1"
 ```
 
 La guía ampliada está en [`docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md`](docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md).
@@ -195,7 +209,7 @@ npm run build:preview
 npm run verify
 ```
 
-Abre `dist/index.html` para revisar la composición estática local. La autenticación se prueba en la URL `/exec` de Apps Script.
+Abre `index.html` para revisar exactamente la vista que publica GitHub Pages. `dist/index.html` sigue disponible como artefacto local. La autenticación se prueba en la URL `/exec` de Apps Script.
 
 ## Seguridad relevante
 

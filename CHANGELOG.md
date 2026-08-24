@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-08-24
+
+- Se añadió un `index.html` estático real en la raíz para GitHub Pages.
+- Se cambió la guía visual a **Deploy from a branch → main → /(root)**.
+- El generador produce el index raíz y mantiene el artefacto local de `dist/`.
+- Se incorporó la validación del index compilado y de la ruta del logotipo existente.
+- Se adoptó el formato de entregas incrementales con solo archivos nuevos o modificados.
+
 ## 0.2.0 — 2026-08-24
 
 - Se implementó Google Identity Services con nonce y validación servidor-a-servidor para desarrollo/staging.
