@@ -3,16 +3,17 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 const root = process.cwd();
-const required = ['index.html','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/appsscript.json','README.md'];
+const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','src/appsscript.json','README.md'];
 for (const file of required) if (!fs.existsSync(path.join(root,file))) throw new Error(`Missing required file: ${file}`);
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root,'src/appsscript.json'),'utf8'));
 if (manifest.runtimeVersion !== 'V8') throw new Error('Apps Script runtime must be V8');
 if (manifest.timeZone !== 'America/Lima') throw new Error('Apps Script timezone must be America/Lima');
 if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/script.send_mail')) throw new Error('Mail scope is required for OTP delivery');
+if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/documents')) throw new Error('Documents scope is required for versioned contract generation');
 
 const setup = fs.readFileSync(path.join(root,'src/Setup.gs'),'utf8');
-const expectedSheets = ['USERS','AUTH_IDENTITIES','OTP_CHALLENGES','USER_SESSIONS','CUSTOMER_PROFILES','CUSTOMER_PRIVATE_DATA','TERMS_ACCEPTANCES','IDEMPOTENCY_KEYS','MERCHANTS','CAMPAIGNS','ORDERS','PAYMENTS','COUPONS','SETTLEMENTS','AUDIT_LOG','ERROR_LOG'];
+const expectedSheets = ['USERS','AUTH_IDENTITIES','OTP_CHALLENGES','USER_SESSIONS','CUSTOMER_PROFILES','CUSTOMER_PRIVATE_DATA','TERMS_ACCEPTANCES','IDEMPOTENCY_KEYS','MERCHANTS','MERCHANT_PRIVATE_DATA','MERCHANT_DOCUMENTS','MERCHANT_BANK_ACCOUNTS','CAMPAIGNS','CAMPAIGN_VERSIONS','CAMPAIGN_OPTIONS','CONTRACTS','CONTRACT_ACCEPTANCES','ORDERS','PAYMENTS','COUPONS','SETTLEMENTS','AUDIT_LOG','ERROR_LOG'];
 for (const sheet of expectedSheets) if (!setup.includes(`${sheet}: [`)) throw new Error(`Missing schema: ${sheet}`);
 
 for (const file of fs.readdirSync(path.join(root,'src')).filter(name=>name.endsWith('.gs'))) {
@@ -28,7 +29,7 @@ const styles = fs.readFileSync(path.join(root, 'src', 'styles.html'), 'utf8');
 for (const token of ['--yellow:#F2B705', '--amber:#D77800', '--navy:#182635', '--cream:#FFF7D6']) {
   if (!styles.includes(token)) throw new Error(`Missing approved theme token: ${token}`);
 }
-if (!styles.includes('--logo-navy:#0A264E') || !styles.includes('--logo-coral:#FD653A')) {
+if (!styles.includes('--logo-navy:#0A264E') || !styles.includes(':root{--logo-coral:#F2A000}')) {
   throw new Error('Official wordmark colors must remain isolated from functional UI colors.');
 }
 const rootIndex = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -39,4 +40,11 @@ const authSource = fs.readdirSync(path.join(root, 'src')).filter(file => file.en
 for (const requiredControl of ['LockService.getScriptLock()', 'token_hash', 'code_hash', 'IDEMPOTENCY_KEYS', 'requirePermission_', 'TAZMANY_AUTH_PEPPER']) {
   if (!authSource.includes(requiredControl)) throw new Error(`Missing Phase 2 security control: ${requiredControl}`);
 }
+const phase3Source = ['MerchantOnboardingService.gs','CampaignWorkflowService.gs','ContractService.gs','ModerationService.gs'].map(file => fs.readFileSync(path.join(root,'src',file),'utf8')).join('\n');
+for (const requiredControl of ['runIdempotent_', 'merchant.campaigns.manage', 'admin.merchants.review', 'admin.campaigns.review', 'document_hash', 'CAMPAIGN_VERSIONS']) {
+  if (!phase3Source.includes(requiredControl)) throw new Error(`Missing Phase 3 control: ${requiredControl}`);
+}
+const categoryIcons = fs.readFileSync(path.join(root, 'src', 'category-icons.html'), 'utf8');
+for (const icon of ['restaurant','sparkles','fitness','car','ticket']) if (!categoryIcons.includes(`id="taz-cat-${icon}"`)) throw new Error(`Missing custom category icon: ${icon}`);
+if (/🍽|✨|🏋|🚗|🎟/.test(frontendSource)) throw new Error('Category emojis must not be used in the frontend.');
 console.log(`Validated ${required.length} required files, manifest, schemas and Apps Script syntax.`);

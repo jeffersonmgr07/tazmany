@@ -11,18 +11,19 @@ var TAZMANY_SCHEMA = Object.freeze({
   TERMS_ACCEPTANCES: ['id', 'user_id', 'terms_version', 'privacy_version', 'marketing_consent', 'accepted_at', 'evidence_json', 'created_at', 'updated_at', 'status', 'version'],
   CITIES: ['id', 'name', 'department', 'country_code', 'time_zone', 'sort_order', 'created_at', 'updated_at', 'status', 'version'],
   DISTRICTS: ['id', 'city_id', 'name', 'ubigeo', 'latitude', 'longitude', 'created_at', 'updated_at', 'status', 'version'],
-  MERCHANTS: ['id', 'trade_name', 'legal_name', 'ruc_masked', 'category_id', 'city_id', 'description', 'logo_url', 'rating', 'review_count', 'onboarding_status', 'created_at', 'updated_at', 'status', 'version'],
+  MERCHANTS: ['id', 'trade_name', 'legal_name', 'ruc_masked', 'category_id', 'city_id', 'description', 'logo_url', 'rating', 'review_count', 'onboarding_status', 'created_at', 'updated_at', 'status', 'version', 'representative_name', 'representative_document_masked', 'fiscal_address', 'commercial_address', 'business_mode', 'website_url', 'social_urls_json', 'commercial_email', 'commercial_phone_masked', 'review_notes', 'submitted_at', 'approved_at', 'approved_by'],
+  MERCHANT_PRIVATE_DATA: ['id', 'merchant_id', 'ruc_hash', 'ruc_last4', 'representative_document_type', 'representative_document_hash', 'representative_document_last4', 'commercial_phone_e164', 'created_at', 'updated_at', 'status', 'version'],
   MERCHANT_USERS: ['id', 'merchant_id', 'user_id', 'role', 'branch_ids_json', 'created_at', 'updated_at', 'status', 'version'],
   MERCHANT_STATUS_HISTORY: ['id', 'merchant_id', 'previous_status', 'new_status', 'reason', 'actor_user_id', 'created_at', 'updated_at', 'status', 'version'],
-  BRANCHES: ['id', 'merchant_id', 'name', 'city_id', 'district_id', 'address', 'latitude', 'longitude', 'phone_masked', 'created_at', 'updated_at', 'status', 'version'],
+  BRANCHES: ['id', 'merchant_id', 'name', 'city_id', 'district_id', 'address', 'latitude', 'longitude', 'phone_masked', 'created_at', 'updated_at', 'status', 'version', 'business_mode', 'commercial_email'],
   BRANCH_HOURS: ['id', 'branch_id', 'day_of_week', 'opens_at', 'closes_at', 'is_closed', 'created_at', 'updated_at', 'status', 'version'],
-  MERCHANT_DOCUMENTS: ['id', 'merchant_id', 'document_type', 'drive_file_id', 'expires_at', 'review_status', 'created_at', 'updated_at', 'status', 'version'],
-  MERCHANT_BANK_ACCOUNTS: ['id', 'merchant_id', 'bank_name', 'currency', 'account_masked', 'cci_masked', 'holder_name', 'verified_at', 'created_at', 'updated_at', 'status', 'version'],
+  MERCHANT_DOCUMENTS: ['id', 'merchant_id', 'document_type', 'drive_file_id', 'expires_at', 'review_status', 'created_at', 'updated_at', 'status', 'version', 'file_name', 'mime_type', 'document_hash', 'review_notes'],
+  MERCHANT_BANK_ACCOUNTS: ['id', 'merchant_id', 'bank_name', 'currency', 'account_masked', 'cci_masked', 'holder_name', 'verified_at', 'created_at', 'updated_at', 'status', 'version', 'account_hash', 'cci_hash', 'ownership_proof_drive_file_id', 'review_status', 'change_effective_at'],
   CATEGORIES: ['id', 'name', 'slug', 'icon', 'sort_order', 'featured', 'created_at', 'updated_at', 'status', 'version'],
   CATEGORY_REQUIREMENTS: ['id', 'category_id', 'requirement_type', 'label', 'required', 'created_at', 'updated_at', 'status', 'version'],
-  CAMPAIGNS: ['id', 'merchant_id', 'category_id', 'title', 'slug', 'summary', 'description', 'image_url', 'gallery_json', 'normal_price_cents', 'offer_price_cents', 'cashback_basis_points', 'inventory_total', 'inventory_sold', 'low_stock_threshold', 'max_per_customer', 'sales_start_at', 'sales_end_at', 'redemption_start_at', 'redemption_end_at', 'district_label', 'city_id', 'tags_json', 'includes_json', 'excludes_json', 'restrictions_json', 'rating', 'review_count', 'sold_count', 'commission_basis_points', 'created_at', 'updated_at', 'status', 'version'],
+  CAMPAIGNS: ['id', 'merchant_id', 'category_id', 'title', 'slug', 'summary', 'description', 'image_url', 'gallery_json', 'normal_price_cents', 'offer_price_cents', 'cashback_basis_points', 'inventory_total', 'inventory_sold', 'low_stock_threshold', 'max_per_customer', 'sales_start_at', 'sales_end_at', 'redemption_start_at', 'redemption_end_at', 'district_label', 'city_id', 'tags_json', 'includes_json', 'excludes_json', 'restrictions_json', 'rating', 'review_count', 'sold_count', 'commission_basis_points', 'created_at', 'updated_at', 'status', 'version', 'requires_booking', 'minimum_notice_hours', 'customer_eligibility', 'reservation_minutes', 'review_notes', 'submitted_at', 'approved_at', 'approved_by', 'published_version_id'],
   CAMPAIGN_VERSIONS: ['id', 'campaign_id', 'version_number', 'snapshot_json', 'approved_by', 'approved_at', 'created_at', 'updated_at', 'status', 'version'],
-  CAMPAIGN_OPTIONS: ['id', 'campaign_id', 'name', 'normal_price_cents', 'offer_price_cents', 'inventory_total', 'inventory_sold', 'sort_order', 'created_at', 'updated_at', 'status', 'version'],
+  CAMPAIGN_OPTIONS: ['id', 'campaign_id', 'name', 'normal_price_cents', 'offer_price_cents', 'inventory_total', 'inventory_sold', 'sort_order', 'created_at', 'updated_at', 'status', 'version', 'description', 'low_stock_threshold', 'max_per_customer'],
   CAMPAIGN_BRANCHES: ['id', 'campaign_id', 'branch_id', 'created_at', 'updated_at', 'status', 'version'],
   CAMPAIGN_SCHEDULES: ['id', 'campaign_id', 'day_of_week', 'start_time', 'end_time', 'created_at', 'updated_at', 'status', 'version'],
   BLACKOUT_DATES: ['id', 'campaign_id', 'branch_id', 'date', 'reason', 'created_at', 'updated_at', 'status', 'version'],
@@ -88,6 +89,10 @@ function setupTazmany() {
       id: 'migration-002', migration_key: '002-auth-sessions-rbac', description: 'Identidades, OTP, sesiones propias, perfil privado y aceptaciones versionadas',
       applied_at: nowIso_(), checksum: 'tazmany-v0.2.0', created_at: nowIso_(), updated_at: nowIso_(), status: 'APPLIED', version: 1
     }]);
+    upsertRowsById_('SCHEMA_MIGRATIONS', [{
+      id: 'migration-003', migration_key: '003-merchants-campaigns', description: 'Onboarding KYC, sucursales, contratos, campañas, versiones y moderación',
+      applied_at: nowIso_(), checksum: 'tazmany-v0.3.0', created_at: nowIso_(), updated_at: nowIso_(), status: 'APPLIED', version: 1
+    }]);
     seedDemoData();
     return { ok: true, spreadsheetId: spreadsheet.getId(), spreadsheetUrl: spreadsheet.getUrl(), sheets: Object.keys(TAZMANY_SCHEMA).length };
   });
@@ -98,15 +103,22 @@ function setupTazmany() {
 function ensureSheet_(spreadsheet, sheetName, headers) {
   var sheet = spreadsheet.getSheetByName(sheetName) || spreadsheet.insertSheet(sheetName);
   if (sheet.getMaxColumns() < headers.length) sheet.insertColumnsAfter(sheet.getMaxColumns(), headers.length - sheet.getMaxColumns());
-  var current = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-  var isEmpty = current.every(function (value) { return value === ''; });
-  if (isEmpty) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  else if (current.join('|') !== headers.join('|')) throw new Error('Schema mismatch in sheet ' + sheetName + '. Apply a controlled migration.');
+  var inspectedWidth = Math.max(1, Math.min(sheet.getLastColumn(), headers.length));
+  var current = sheet.getRange(1, 1, 1, inspectedWidth).getValues()[0];
+  while (current.length && current[current.length - 1] === '') current.pop();
+  if (!current.length) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  else {
+    var expectedPrefix = headers.slice(0, current.length);
+    if (current.join('|') !== expectedPrefix.join('|')) throw new Error('Schema mismatch in sheet ' + sheetName + '. Apply a controlled migration.');
+    if (current.length < headers.length) {
+      sheet.getRange(1, current.length + 1, 1, headers.length - current.length).setValues([headers.slice(current.length)]);
+    }
+  }
   sheet.setFrozenRows(1);
   sheet.getRange(1, 1, 1, headers.length)
     .setBackground('#182635').setFontColor('#FFFFFF').setFontWeight('bold').setWrap(true);
   sheet.autoResizeColumns(1, Math.min(headers.length, 12));
-  if (['AUTH_IDENTITIES', 'OTP_CHALLENGES', 'USER_SESSIONS', 'CUSTOMER_PRIVATE_DATA', 'TERMS_ACCEPTANCES', 'PAYMENTS', 'PAYMENT_EVENTS', 'CASHBACK_LEDGER', 'SETTLEMENTS', 'SETTLEMENT_ITEMS', 'PAYOUTS', 'AUDIT_LOG'].indexOf(sheetName) >= 0) {
+  if (['AUTH_IDENTITIES', 'OTP_CHALLENGES', 'USER_SESSIONS', 'CUSTOMER_PRIVATE_DATA', 'MERCHANT_PRIVATE_DATA', 'MERCHANT_DOCUMENTS', 'MERCHANT_BANK_ACCOUNTS', 'TERMS_ACCEPTANCES', 'CONTRACTS', 'CONTRACT_ACCEPTANCES', 'PAYMENTS', 'PAYMENT_EVENTS', 'CASHBACK_LEDGER', 'SETTLEMENTS', 'SETTLEMENT_ITEMS', 'PAYOUTS', 'AUDIT_LOG'].indexOf(sheetName) >= 0) {
     var existingProtection = sheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0];
     if (!existingProtection) sheet.protect().setDescription('Zona financiera/auditoría: cambios controlados').setWarningOnly(true);
   }

@@ -8,13 +8,13 @@ var TAZMANY_ROLE_PERMISSIONS = Object.freeze({
   MERCHANT_FINANCE_READ: ['merchant.dashboard.read', 'merchant.finances.read'],
   SUPERADMIN: ['*'],
   ADMIN: ['admin.*'],
-  COMMERCIAL: ['admin.merchants.read', 'admin.merchants.write'],
-  KYC_REVIEWER: ['admin.merchants.review'],
-  MODERATOR: ['admin.campaigns.review'],
-  FINANCE: ['admin.finance.*'],
-  SUPPORT: ['admin.support.*', 'admin.coupons.read'],
-  COMPLAINTS_MANAGER: ['admin.complaints.*'],
-  AUDITOR: ['admin.audit.read']
+  COMMERCIAL: ['admin.dashboard.read', 'admin.merchants.read', 'admin.merchants.write'],
+  KYC_REVIEWER: ['admin.dashboard.read', 'admin.merchants.read', 'admin.merchants.review'],
+  MODERATOR: ['admin.dashboard.read', 'admin.campaigns.read', 'admin.campaigns.review'],
+  FINANCE: ['admin.dashboard.read', 'admin.finance.*'],
+  SUPPORT: ['admin.dashboard.read', 'admin.support.*', 'admin.coupons.read'],
+  COMPLAINTS_MANAGER: ['admin.dashboard.read', 'admin.complaints.*'],
+  AUDITOR: ['admin.dashboard.read', 'admin.audit.read']
 });
 
 function permissionsForRoles_(roles) {

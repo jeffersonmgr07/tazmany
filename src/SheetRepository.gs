@@ -33,13 +33,18 @@ function upsertRowsById_(sheetName, records) {
     : [];
   var idIndex = headers.indexOf('id');
   var rowById = {};
-  existing.forEach(function (row, index) { rowById[String(row[idIndex])] = index + 2; });
-  var inserts = [];
+  existing.forEach(function (row, index) { rowById[String(row[idIndex])] = index; });
   records.forEach(function (record) {
-    var row = headers.map(function (header) { return record[header] === undefined ? '' : record[header]; });
-    var targetRow = rowById[String(record.id)];
-    if (targetRow) sheet.getRange(targetRow, 1, 1, headers.length).setValues([row]);
-    else inserts.push(row);
+    var targetIndex = rowById[String(record.id)];
+    var previous = targetIndex !== undefined ? existing[targetIndex] : [];
+    var row = headers.map(function (header, columnIndex) {
+      return record[header] === undefined ? (previous[columnIndex] === undefined ? '' : previous[columnIndex]) : record[header];
+    });
+    if (targetIndex !== undefined) existing[targetIndex] = row;
+    else {
+      rowById[String(record.id)] = existing.length;
+      existing.push(row);
+    }
   });
-  if (inserts.length) sheet.getRange(sheet.getLastRow() + 1, 1, inserts.length, headers.length).setValues(inserts);
+  if (existing.length) sheet.getRange(2, 1, existing.length, headers.length).setValues(existing);
 }

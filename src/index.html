@@ -16,12 +16,14 @@
       window.TAZMANY_CONFIG = <?!= appConfig ?>;
       window.TAZMANY_INITIAL_VIEW = '<?= initialView ?>';
     </script>
+    <?!= include('category-icons'); ?>
     <?!= include('app'); ?>
     <?!= include('components'); ?>
     <?!= include('auth'); ?>
     <?!= include('customer'); ?>
     <?!= include('merchant'); ?>
     <?!= include('admin'); ?>
+    <?!= include('phase3'); ?>
     <?!= include('scripts'); ?>
   </body>
 </html>

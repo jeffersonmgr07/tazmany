@@ -26,37 +26,43 @@ function seedDemoData() {
     row({ id: 'user-moderator', email: 'moderacion@demo.tazmany.pe', display_name: 'Moderación Demo', user_type: 'TAZMANY', roles_json: '["MODERATOR"]', email_verified: true, city_id: 'city-lima' }),
     row({ id: 'user-customer-1', email: 'cliente1@demo.tazmany.pe', display_name: 'Valeria Torres', user_type: 'CUSTOMER', roles_json: '["CUSTOMER"]', email_verified: true, city_id: 'city-lima' }),
     row({ id: 'user-customer-2', email: 'cliente2@demo.tazmany.pe', display_name: 'Diego Ramos', user_type: 'CUSTOMER', roles_json: '["CUSTOMER"]', email_verified: true, city_id: 'city-lima' }),
-    row({ id: 'user-merchant-owner', email: 'comercio@demo.tazmany.pe', display_name: 'Mariana Salazar', user_type: 'MERCHANT', roles_json: '["MERCHANT_OWNER"]', email_verified: true, city_id: 'city-lima' })
+    row({ id: 'user-merchant-owner', email: 'comercio@demo.tazmany.pe', display_name: 'Mariana Salazar', user_type: 'MERCHANT', roles_json: '["MERCHANT_OWNER"]', email_verified: true, city_id: 'city-lima' }),
+    row({ id: 'user-merchant-pending', email: 'casa.nativa@demo.tazmany.pe', display_name: 'Lucía Paredes', user_type: 'MERCHANT', roles_json: '["MERCHANT_OWNER"]', email_verified: true, city_id: 'city-lima' })
   ]);
   upsertRowsById_('CUSTOMER_PROFILES', [
     row({ id: 'profile-customer-1', user_id: 'user-customer-1', first_name: 'Valeria', last_name: 'Torres', document_type: 'DNI', document_masked: '******42', phone_masked: '*** *** 841', marketing_consent: true }),
     row({ id: 'profile-customer-2', user_id: 'user-customer-2', first_name: 'Diego', last_name: 'Ramos', document_type: 'DNI', document_masked: '******19', phone_masked: '*** *** 224', marketing_consent: false })
   ]);
   upsertRowsById_('MERCHANT_USERS', [
-    row({ id: 'merchant-user-owner-demo', merchant_id: 'merchant-sabores', user_id: 'user-merchant-owner', role: 'MERCHANT_OWNER', branch_ids_json: '["branch-sabores-miraflores","branch-sabores-barranco"]' })
+    row({ id: 'merchant-user-owner-demo', merchant_id: 'merchant-sabores', user_id: 'user-merchant-owner', role: 'MERCHANT_OWNER', branch_ids_json: '["branch-sabores-miraflores","branch-sabores-barranco"]' }),
+    row({ id: 'merchant-user-pending-demo', merchant_id: 'merchant-casa-nativa', user_id: 'user-merchant-pending', role: 'MERCHANT_OWNER', branch_ids_json: '["branch-casa-nativa"]' })
   ]);
   upsertRowsById_('MERCHANTS', [
-    row({ id: 'merchant-sabores', trade_name: 'Sabores de Lima', legal_name: 'Sabores de Lima Demo SAC', ruc_masked: '20*******01', category_id: 'cat-food', city_id: 'city-lima', description: 'Cocina peruana contemporánea.', rating: 4.8, review_count: 342, onboarding_status: 'APROBADO' }),
+    row({ id: 'merchant-sabores', trade_name: 'Sabores de Lima', legal_name: 'Sabores de Lima Demo SAC', ruc_masked: '20*******01', category_id: 'cat-food', city_id: 'city-lima', description: 'Cocina peruana contemporánea.', rating: 4.8, review_count: 342, onboarding_status: 'ACTIVO' }),
     row({ id: 'merchant-kantu', trade_name: 'Kantu Spa', legal_name: 'Kantu Bienestar Demo SAC', ruc_masked: '20*******02', category_id: 'cat-beauty', city_id: 'city-lima', description: 'Bienestar y relajación.', rating: 4.7, review_count: 186, onboarding_status: 'APROBADO' }),
     row({ id: 'merchant-pulso', trade_name: 'Pulso Fitness', legal_name: 'Pulso Fitness Demo SAC', ruc_masked: '20*******03', category_id: 'cat-fitness', city_id: 'city-lima', description: 'Entrenamiento funcional.', rating: 4.9, review_count: 221, onboarding_status: 'APROBADO' }),
     row({ id: 'merchant-motor', trade_name: 'MotorLab', legal_name: 'MotorLab Demo SAC', ruc_masked: '20*******04', category_id: 'cat-auto', city_id: 'city-lima', description: 'Cuidado automotriz profesional.', rating: 4.6, review_count: 98, onboarding_status: 'APROBADO' }),
-    row({ id: 'merchant-zona', trade_name: 'Zona Aventura', legal_name: 'Zona Aventura Demo SAC', ruc_masked: '20*******05', category_id: 'cat-fun', city_id: 'city-lima', description: 'Experiencias para compartir.', rating: 4.8, review_count: 154, onboarding_status: 'APROBADO' })
+    row({ id: 'merchant-zona', trade_name: 'Zona Aventura', legal_name: 'Zona Aventura Demo SAC', ruc_masked: '20*******05', category_id: 'cat-fun', city_id: 'city-lima', description: 'Experiencias para compartir.', rating: 4.8, review_count: 154, onboarding_status: 'APROBADO' }),
+    row({ id: 'merchant-casa-nativa', trade_name: 'Casa Nativa', legal_name: 'Casa Nativa Demo SAC', ruc_masked: '20*******41', category_id: 'cat-food', city_id: 'city-lima', description: 'Cocina local de temporada.', rating: 0, review_count: 0, onboarding_status: 'PENDIENTE_VERIFICACION', business_mode: 'PRESENCIAL', commercial_email: 'casa.nativa@demo.tazmany.pe', submitted_at: now })
   ]);
   upsertRowsById_('BRANCHES', [
     row({ id: 'branch-sabores-miraflores', merchant_id: 'merchant-sabores', name: 'Miraflores', city_id: 'city-lima', district_id: 'district-miraflores', address: 'Av. Demo 245, Miraflores' }),
     row({ id: 'branch-sabores-barranco', merchant_id: 'merchant-sabores', name: 'Barranco', city_id: 'city-lima', district_id: 'district-barranco', address: 'Jr. Ejemplo 118, Barranco' }),
-    row({ id: 'branch-kantu-sanborja', merchant_id: 'merchant-kantu', name: 'San Borja', city_id: 'city-lima', district_id: 'district-san-borja', address: 'Av. Muestra 820, San Borja' })
+    row({ id: 'branch-kantu-sanborja', merchant_id: 'merchant-kantu', name: 'San Borja', city_id: 'city-lima', district_id: 'district-san-borja', address: 'Av. Muestra 820, San Borja' }),
+    row({ id: 'branch-casa-nativa', merchant_id: 'merchant-casa-nativa', name: 'Barranco', city_id: 'city-lima', district_id: 'district-barranco', address: 'Calle Demostración 510, Barranco' })
   ]);
 
   var campaigns = getDemoCampaignSeed_(now);
   upsertRowsById_('CAMPAIGNS', campaigns);
   upsertRowsById_('CAMPAIGN_VERSIONS', campaigns.map(function (campaign, index) {
-    return row({ id: 'version-demo-' + (index + 1), campaign_id: campaign.id, version_number: 1, snapshot_json: JSON.stringify({ title: campaign.title, offer_price_cents: campaign.offer_price_cents, restrictions_json: campaign.restrictions_json }), approved_by: 'user-moderator', approved_at: now, status: 'APPROVED' });
+    var submitted = campaign.status === 'ENVIADA_A_REVISION';
+    return row({ id: 'version-demo-' + (index + 1), campaign_id: campaign.id, version_number: 1, snapshot_json: JSON.stringify({ title: campaign.title, offer_price_cents: campaign.offer_price_cents, restrictions_json: campaign.restrictions_json }), approved_by: submitted ? '' : 'user-moderator', approved_at: submitted ? '' : now, status: submitted ? 'SUBMITTED' : 'APPROVED' });
   }));
   upsertRowsById_('CAMPAIGN_OPTIONS', campaigns.map(function (campaign, index) {
     return row({ id: 'option-' + (index + 1), campaign_id: campaign.id, name: 'Opción principal', normal_price_cents: campaign.normal_price_cents, offer_price_cents: campaign.offer_price_cents, inventory_total: campaign.inventory_total, inventory_sold: campaign.inventory_sold, sort_order: 1 });
   }));
   seedDemoOperations_(row);
+  seedDemoPhase3Workflow_(row, now);
   CacheService.getScriptCache().remove('public-bootstrap-v1');
   return { ok: true, campaigns: campaigns.length };
 }
@@ -72,8 +78,24 @@ function getDemoCampaignSeed_(now) {
     c({ id: 'campaign-bowling', merchant_id: 'merchant-zona', category_id: 'cat-fun', title: '1 hora de bowling para 4', slug: 'bowling-para-4', summary: 'Un plan divertido para familia o amigos.', description: 'Una pista de bowling durante 60 minutos para hasta cuatro personas.', image_url: 'https://images.unsplash.com/photo-1573509078860-0197f7e4b5b3?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 14000, offer_price_cents: 7990, cashback_basis_points: 100, inventory_total: 90, inventory_sold: 53, low_stock_threshold: 10, district_label: 'San Miguel', tags_json: '["Regalable","Reserva requerida"]', includes_json: '["1 pista por 60 minutos","Calzado"]', excludes_json: '["Alimentos y bebidas"]', restrictions_json: '["Máximo 4 personas"]', rating: 4.8, review_count: 154, sold_count: 53, status: 'ACTIVA' }),
     c({ id: 'campaign-brunch', merchant_id: 'merchant-sabores', category_id: 'cat-food', title: 'Brunch criollo para 2', slug: 'brunch-criollo-2', summary: 'Sabores peruanos para comenzar un gran día.', description: 'Brunch criollo para dos personas con bebida caliente.', image_url: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 9600, offer_price_cents: 5790, cashback_basis_points: 100, inventory_total: 75, inventory_sold: 67, low_stock_threshold: 10, district_label: 'Barranco', tags_json: '["Últimas unidades"]', includes_json: '["2 brunch criollos","2 bebidas calientes"]', excludes_json: '["Bebidas frías"]', restrictions_json: '["Sábados y domingos de 9 a 12"]', rating: 4.8, review_count: 128, sold_count: 67, status: 'PAUSADA' }),
     c({ id: 'campaign-yoga', merchant_id: 'merchant-pulso', category_id: 'cat-fitness', title: 'Pack de 4 clases de yoga', slug: 'pack-4-yoga', summary: 'Respira, fortalece y mejora tu movilidad.', description: 'Cuatro clases grupales de yoga para usar durante 30 días.', image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 12000, offer_price_cents: 6990, cashback_basis_points: 100, inventory_total: 50, inventory_sold: 12, low_stock_threshold: 6, district_label: 'Santiago de Surco', tags_json: '["Reserva requerida"]', includes_json: '["4 clases grupales"]', excludes_json: '["Mat personal"]', restrictions_json: '["Válido por 30 días desde el primer uso"]', rating: 4.9, review_count: 74, sold_count: 12, status: 'PROGRAMADA' }),
-    c({ id: 'campaign-limpieza-auto', merchant_id: 'merchant-motor', category_id: 'cat-auto', title: 'Lavado ecológico completo', slug: 'lavado-ecologico', summary: 'Tu auto impecable usando menos agua.', description: 'Lavado exterior e interior con productos biodegradables.', image_url: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 8000, offer_price_cents: 4490, cashback_basis_points: 100, inventory_total: 40, inventory_sold: 40, low_stock_threshold: 5, district_label: 'La Molina', tags_json: '["Agotada"]', includes_json: '["Lavado exterior","Aspirado interior"]', excludes_json: '["Pulido"]', restrictions_json: '["Con cita previa"]', rating: 4.6, review_count: 52, sold_count: 40, status: 'AGOTADA' })
+    c({ id: 'campaign-limpieza-auto', merchant_id: 'merchant-motor', category_id: 'cat-auto', title: 'Lavado ecológico completo', slug: 'lavado-ecologico', summary: 'Tu auto impecable usando menos agua.', description: 'Lavado exterior e interior con productos biodegradables.', image_url: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 8000, offer_price_cents: 4490, cashback_basis_points: 100, inventory_total: 40, inventory_sold: 40, low_stock_threshold: 5, district_label: 'La Molina', tags_json: '["Agotada"]', includes_json: '["Lavado exterior","Aspirado interior"]', excludes_json: '["Pulido"]', restrictions_json: '["Con cita previa"]', rating: 4.6, review_count: 52, sold_count: 40, status: 'AGOTADA' }),
+    c({ id: 'campaign-cena-review', merchant_id: 'merchant-sabores', category_id: 'cat-food', title: 'Cena peruana para dos', slug: 'cena-peruana-para-dos', summary: 'Menú para compartir con ingredientes locales.', description: 'Entrada, dos fondos y bebidas sin alcohol en sedes seleccionadas.', image_url: 'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 14000, offer_price_cents: 7990, cashback_basis_points: 0, inventory_total: 80, inventory_sold: 0, low_stock_threshold: 8, district_label: 'Miraflores y Barranco', tags_json: '["Reserva requerida"]', includes_json: '["1 entrada","2 fondos","2 bebidas"]', excludes_json: '["Bebidas alcohólicas"]', restrictions_json: '["Reserva con 24 horas"]', rating: 0, review_count: 0, sold_count: 0, submitted_at: now, status: 'ENVIADA_A_REVISION' })
   ];
+}
+
+function seedDemoPhase3Workflow_(row, now) {
+  upsertRowsById_('CONTRACTS', [row({
+    id: 'contract-demo-sabores', merchant_id: 'merchant-sabores', campaign_id: '', contract_type: 'MARCO_COMERCIO',
+    document_version: 'MARCO-DEMO-v1', drive_file_id: '', document_hash: 'demo-hash-no-valido-produccion', status: 'ACCEPTED'
+  })]);
+  upsertRowsById_('CONTRACT_ACCEPTANCES', [row({
+    id: 'acceptance-demo-sabores', contract_id: 'contract-demo-sabores', user_id: 'user-merchant-owner', accepted_at: now,
+    ip_address: '', evidence_json: '{"notice":"Dato ficticio de desarrollo"}', status: 'ACCEPTED'
+  })]);
+  upsertRowsById_('CAMPAIGN_BRANCHES', [
+    row({ id: 'campaign-branch-cena-1', campaign_id: 'campaign-cena-review', branch_id: 'branch-sabores-miraflores' }),
+    row({ id: 'campaign-branch-cena-2', campaign_id: 'campaign-cena-review', branch_id: 'branch-sabores-barranco' })
+  ]);
 }
 
 function seedDemoOperations_(row) {

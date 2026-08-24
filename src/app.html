@@ -1,7 +1,7 @@
 <div class="app-shell" id="appShell">
   <div class="demo-ribbon" role="status">
     <span class="pulse-dot"></span>
-    Fase 2 · Identidad y permisos · Pagos y canjes aún desactivados
+    Fase 3 · Comercios y campañas · Pagos y canjes aún desactivados
   </div>
   <header class="site-header" id="siteHeader">
     <div class="header-main container">
@@ -35,6 +35,7 @@
         <button type="button" id="loginMenuButton"><span class="menu-icon savings"><span class="icon" data-icon="user"></span></span><span><strong>Ingresar o registrarme</strong><small>Google o código por correo</small></span></button>
         <button type="button" data-route="customer"><span class="menu-icon savings"><span class="icon" data-icon="user"></span></span><span><strong>Cliente</strong><small>Compras y cupones</small></span></button>
         <button type="button" data-route="merchant"><span class="menu-icon navy"><span class="icon" data-icon="store"></span></span><span><strong>Comercio</strong><small>Ventas y campañas</small></span></button>
+        <button type="button" data-route="admin" id="adminMenuButton" hidden><span class="menu-icon navy"><span class="icon" data-icon="shield"></span></span><span><strong>Administración</strong><small>Moderación de Fase 3</small></span></button>
         <button type="button" data-route="home"><span class="menu-icon cream"><span class="icon" data-icon="compass"></span></span><span><strong>Portal público</strong><small>Catálogo de ofertas</small></span></button>
         <button type="button" id="sessionsMenuButton" hidden><span class="menu-icon navy"><span class="icon" data-icon="shield"></span></span><span><strong>Seguridad y sesiones</strong><small>Revisa tus dispositivos</small></span></button>
         <button type="button" id="logoutMenuButton" hidden><span class="menu-icon cream"><span class="icon" data-icon="close"></span></span><span><strong>Cerrar sesión</strong><small>Salir de este dispositivo</small></span></button>
@@ -65,7 +66,7 @@
             <div class="orb orb-one"></div><div class="orb orb-two"></div>
             <div class="deal-ticket">
               <div class="ticket-top"><span>OFERTA DEL DÍA</span><strong>-44%</strong></div>
-              <div class="ticket-illustration"><span class="plate">🍽️</span><span class="mini-badge">S/ 69.90</span></div>
+              <div class="ticket-illustration"><span class="plate"><svg class="category-icon category-icon-hero" viewBox="0 0 32 32" aria-hidden="true"><use href="#taz-cat-restaurant"></use></svg></span><span class="mini-badge">S/ 69.90</span></div>
               <div class="ticket-body"><small>Sabores de Lima</small><strong>Ceviche para dos</strong><div><span>Antes S/ 118</span><b>+1% cashback</b></div></div>
             </div>
             <div class="floating-chip chip-rating">★ <strong>4.8</strong><small>342 reseñas</small></div>
@@ -122,7 +123,7 @@
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-grid"><div><span class="brand-lockup footer-brand"><span class="brand-mark"><span>T</span></span><span class="brand-name"><span>Tazma</span><strong>ny</strong></span></span><p>Planes locales, mejores historias.</p></div><div><strong>Descubre</strong><a href="#offersSection">Ofertas</a><a href="#howSection">Cómo funciona</a><a href="#">Regala Tazmany</a></div><div><strong>Ayuda</strong><a href="#">Centro de ayuda</a><a href="#">Política de devoluciones</a><a href="#">Libro de Reclamaciones</a></div><div><strong>Legal</strong><a href="#">Términos y condiciones</a><a href="#">Privacidad</a><a href="#">Derechos ARCO</a></div></div>
+    <div class="container footer-grid"><div><img id="footerBrandLogo" class="footer-logo-image" alt="Tazmany" hidden><span id="footerBrandFallback" class="brand-lockup footer-brand"><span class="brand-mark"><span>T</span></span><span class="brand-name"><span>Tazma</span><strong>ny</strong></span></span><p>Planes locales, mejores historias.</p></div><div><strong>Descubre</strong><a href="#offersSection">Ofertas</a><a href="#howSection">Cómo funciona</a><a href="#">Regala Tazmany</a></div><div><strong>Ayuda</strong><a href="#">Centro de ayuda</a><a href="#">Política de devoluciones</a><a href="#">Libro de Reclamaciones</a></div><div><strong>Legal</strong><a href="#">Términos y condiciones</a><a href="#">Privacidad</a><a href="#">Derechos ARCO</a></div></div>
     <div class="container footer-bottom"><span>© 2026 Tazmany. Demo de desarrollo.</span><span>Lima, Perú 🇵🇪</span></div>
   </footer>
 

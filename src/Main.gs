@@ -9,9 +9,9 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  // Fase 2 no procesa webhooks ni efectos financieros.
+  // Fase 3 no procesa webhooks ni efectos financieros.
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: false, code: 'NOT_IMPLEMENTED_PHASE_2' }))
+    .createTextOutput(JSON.stringify({ ok: false, code: 'NOT_IMPLEMENTED_PHASE_3' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — 2026-08-24
+
+- Se incorporó el logotipo oficial transparente y se aumentó su presencia en el encabezado y footer.
+- Se sustituyeron los emojis de categorías por un sistema SVG original y reutilizable.
+- Se implementó onboarding de comercios con estados, validación, sucursales, documentos y cuenta enmascarada.
+- Se implementaron contratos PDF versionados en Drive con hash y aceptación operativa auditable.
+- Se implementó creación, envío, versionado y moderación de campañas con RBAC e idempotencia.
+- Se añadió el panel administrativo de moderación y datos demo pendientes de revisión.
+- Se amplió el esquema a 60 hojas y se añadió `setupTazmanyPhase3()`.
+
 ## 0.2.1 — 2026-08-24
 
 - Se añadió un `index.html` estático real en la raíz para GitHub Pages.

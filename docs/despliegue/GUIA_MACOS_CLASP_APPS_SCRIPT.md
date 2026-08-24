@@ -61,10 +61,12 @@ Ejecuta desde el editor, en orden:
 
 | Orden | Función | Resultado esperado |
 | --- | --- | --- |
-| 1 | `setupTazmany()` | Spreadsheet, 59 hojas, Drive, migraciones y seeds |
+| 1 | `setupTazmany()` | Spreadsheet, 60 hojas, Drive, migraciones y seeds |
 | 2 | `setupTazmanyPhase2()` | pepper, propiedades y hojas privadas verificadas |
 | 3 | `installTazmanyAuthTriggers()` | trigger diario único |
-| 4 | `getTazmanyPhase2Diagnostics()` | diagnóstico en el registro de ejecución |
+| 4 | `setupTazmanyPhase3()` | comercios, contratos, campañas y carpetas privadas |
+| 5 | `getTazmanyPhase2Diagnostics()` | diagnóstico de identidad y correo |
+| 6 | `getTazmanyPhase3Diagnostics()` | diagnóstico de comercios y campañas |
 
 Autoriza Sheets, Drive, UrlFetch, MailApp y triggers cuando Google lo solicite.
 
@@ -95,16 +97,16 @@ git pull
 npm install
 npm run verify
 clasp push
-clasp version "Tazmany Fase 2 v0.2.0"
+clasp version "Tazmany Fase 3 v0.3.0"
 clasp deployments
-clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 2 v0.2.0"
+clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 3 v0.3.0"
 ```
 
 Si prefieres, puedes editar la implementación existente desde Apps Script; conserva el mismo deployment ID.
 
 ## 8. Vista visual de GitHub
 
-En GitHub abre **Settings → Pages**, selecciona **GitHub Actions** y ejecuta el workflow `Deploy visual preview to GitHub Pages`. Este preview no se conecta a Sheets; la autenticación real se prueba en `/exec`.
+En GitHub abre **Settings → Pages**, selecciona **Deploy from a branch**, rama **main** y carpeta **/(root)**. GitHub publicará el `index.html` raíz. Este preview no se conecta a Sheets; la autenticación real se prueba en `/exec`.
 
 ## Solución rápida de errores
 

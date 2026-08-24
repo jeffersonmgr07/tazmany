@@ -1,9 +1,10 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.2.0',
+  VERSION: '0.3.0',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
+  DEFAULT_PUBLIC_LOGO_URL: 'https://jeffersonmgr07.github.io/tazmany/assets/brand/tazmany-logo.png',
   CACHE_SECONDS: 300,
   SCRIPT_PROPERTIES: Object.freeze({
     SPREADSHEET_ID: 'TAZMANY_SPREADSHEET_ID',
@@ -23,7 +24,7 @@ var TAZMANY_CONFIG = Object.freeze({
   }),
   PUBLIC_VIEWS: Object.freeze(['home', 'customer', 'merchant', 'admin']),
   CAMPAIGN_PUBLIC_STATES: Object.freeze(['ACTIVA', 'PROGRAMADA', 'AGOTADA']),
-  DEMO_NOTICE: 'Fase 2: identidad, sesiones y permisos. Pagos y canjes permanecen desactivados.'
+  DEMO_NOTICE: 'Fase 3: comercios, contratos, campañas y moderación. Pagos y canjes permanecen desactivados.'
 });
 
 function getAppConfig_() {
@@ -32,7 +33,7 @@ function getAppConfig_() {
     appName: TAZMANY_CONFIG.APP_NAME,
     version: TAZMANY_CONFIG.VERSION,
     environment: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.ENVIRONMENT) || 'development',
-    logoUrl: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.LOGO_URL) || '',
+    logoUrl: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.LOGO_URL) || TAZMANY_CONFIG.DEFAULT_PUBLIC_LOGO_URL,
     currency: TAZMANY_CONFIG.CURRENCY,
     timeZone: TAZMANY_CONFIG.TIME_ZONE,
     demoNotice: TAZMANY_CONFIG.DEMO_NOTICE,

@@ -58,7 +58,7 @@ function findOrCreateCustomerUser_(email, displayName) {
   if (existing && existing.status !== 'ACTIVE') throw createPublicError_('ACCOUNT_UNAVAILABLE', 'Esta cuenta requiere revisión. Contacta a soporte.');
   if (existing) return existing;
   var now = nowIso_();
-  user = {
+  var user = {
     id: Utilities.getUuid(), email: email, display_name: sanitizePlainText_(displayName || 'Cliente Tazmany', 100),
     phone_masked: '', user_type: 'CUSTOMER', roles_json: '["CUSTOMER"]', email_verified: true,
     city_id: TAZMANY_CONFIG.DEFAULT_CITY_ID, last_login_at: now, created_at: now, updated_at: now, status: 'ACTIVE', version: 1

@@ -16,7 +16,7 @@ test('usa la paleta aprobada ahorro amarillo + ámbar', () => {
 
 test('protege los colores oficiales del wordmark', () => {
   assert.match(styles, /--logo-navy:#0A264E/);
-  assert.match(styles, /--logo-coral:#FD653A/);
+  assert.match(styles, /:root\{--logo-coral:#F2A000\}/);
   assert.match(styles, /\.brand-name\{color:var\(--logo-navy\)\}/);
   assert.match(styles, /\.brand-name strong\{color:var\(--logo-coral\)\}/);
 });

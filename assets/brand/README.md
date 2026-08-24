@@ -3,7 +3,7 @@
 `tazmany-logo.png` es una copia sin modificar del logotipo oficial proporcionado. Su hash SHA-256 es:
 
 ```text
-b1d0f71304d62a987b25ff1b3f72af7eccec276fc6d28a7b7b15df80628df1c0
+d2c00d2c43a30d58d1a02088181179d074d2ac0fb2b05257b11d4d32185b82ab
 ```
 
 La vista previa local lo carga desde esta carpeta. Apps Script no sirve automáticamente archivos binarios del repositorio; en el ambiente desplegado configura una URL pública controlada mediante `TAZMANY_LOGO_URL`.
@@ -20,4 +20,4 @@ El tema funcional aprobado para la interfaz es “Ahorro amarillo + ámbar”:
 - Crema `#FFF7D6`: fondos cálidos y cercanos.
 - Grafito `#2A2D31`: descuentos y texto de alta importancia.
 
-Estos colores no sustituyen los colores internos del logotipo. El wordmark conserva `#0A264E` para “Tazma” y `#FD653A` para “ny”.
+Estos colores no sustituyen los colores internos del logotipo. El archivo oficial usa navy para “Tazma” y ámbar para “ny”; el fallback textual replica esa relación con `#0A264E` y `#F2A000`.

@@ -4,7 +4,7 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.2.1` — Fase 2: identidad, sesiones, perfil de cliente, RBAC backend, idempotencia base e index visual publicable desde la raíz.
+Versión `0.3.0` — Fase 3: incorporación de comercios, contratos preliminares, campañas versionadas, moderación backend e identidad visual oficial.
 
 ### Real en la Web App de Apps Script
 
@@ -15,10 +15,15 @@ Versión `0.2.1` — Fase 2: identidad, sesiones, perfil de cliente, RBAC backen
 - RBAC verificado en backend para los paneles de cliente y comercio.
 - Idempotencia para solicitudes OTP, verificación y guardado de perfil.
 - Google Identity Services en desarrollo/staging cuando se configura el Client ID.
+- Expediente de comercio con estados, RUC validado, sucursales, cuenta enmascarada y datos sensibles hasheados.
+- Contrato marco PDF versionado en Drive con hash y evidencia de aceptación operativa.
+- Creación de campañas, opciones, stock, vigencias, sedes y versiones inmutables.
+- Moderación con permisos separados para comercios y campañas, motivos y auditoría.
+- Logotipo oficial transparente de Tazmany e iconografía SVG propia para categorías.
 
 ### Visual o simulado
 
-- GitHub Pages publica una vista visual navegable con catálogo y dashboards demo. No tiene acceso a Sheets ni ejecuta autenticación.
+- GitHub Pages publica una vista visual navegable con catálogo, paneles de cliente/comercio y moderación demo. No tiene acceso a Sheets ni ejecuta autenticación.
 - Datos de órdenes, cupones, cashback y liquidaciones siguen siendo ficticios.
 
 ### Pendiente o bloqueado
@@ -55,9 +60,16 @@ El navegador nunca lee ni escribe Sheets directamente. Cada ambiente debe tener 
 │   ├── *Service.gs
 │   ├── Setup.gs
 │   ├── Phase2Setup.gs
+│   ├── Phase3Setup.gs
+│   ├── MerchantOnboardingService.gs
+│   ├── CampaignWorkflowService.gs
+│   ├── ContractService.gs
+│   ├── ModerationService.gs
 │   ├── appsscript.json
 │   ├── index.html
 │   ├── auth.html
+│   ├── category-icons.html
+│   ├── phase3.html
 │   ├── styles.html
 │   └── scripts.html
 ├── tests/unit/
@@ -132,10 +144,12 @@ clasp open-script
 
 En el editor de Apps Script, ejecuta en este orden y acepta los permisos solicitados:
 
-1. `setupTazmany()` — crea o actualiza el Spreadsheet, las 59 hojas, Drive, migraciones y datos demo.
+1. `setupTazmany()` — crea o actualiza el Spreadsheet, las 60 hojas, Drive, migraciones y datos demo.
 2. `setupTazmanyPhase2()` — confirma las hojas de autenticación y genera el pepper secreto y valores seguros por defecto. Es idempotente.
 3. `installTazmanyAuthTriggers()` — instala una limpieza lógica diaria de sesiones, OTP e idempotencias vencidas.
-4. `getTazmanyPhase2Diagnostics()` — comprueba configuración, modo de Google y cuota restante de correo.
+4. `setupTazmanyPhase3()` — aplica las estructuras de comercios, documentos, campañas, contratos y carpetas privadas.
+5. `getTazmanyPhase2Diagnostics()` — comprueba configuración, modo de Google y cuota restante de correo.
+6. `getTazmanyPhase3Diagnostics()` — resume comercios, campañas, contratos y problemas pendientes.
 
 `seedDemoData()` ya es llamado por `setupTazmany()`. Solo ejecútalo aparte si deseas reponer datos ficticios determinísticos.
 
@@ -146,6 +160,7 @@ En **Configuración del proyecto → Propiedades de la secuencia de comandos**:
 | Propiedad | Valor de desarrollo | Secreto |
 | --- | --- | --- |
 | `TAZMANY_ENVIRONMENT` | `development` | No |
+| `TAZMANY_LOGO_URL` | URL HTTPS del logo oficial; opcional si se conserva el valor público inicial | No |
 | `TAZMANY_GOOGLE_CLIENT_ID` | Client ID web de Google | No |
 | `TAZMANY_GOOGLE_VERIFY_MODE` | `TOKENINFO` solo en dev/staging | No |
 | `TAZMANY_GOOGLE_VERIFY_URL` | URL HTTPS del relay para producción | No |
@@ -182,9 +197,9 @@ Actualizaciones posteriores:
 
 ```bash
 clasp push
-clasp version "Tazmany Fase 2 v0.2.1"
+clasp version "Tazmany Fase 3 v0.3.0"
 clasp deployments
-clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 2 v0.2.1"
+clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 3 v0.3.0"
 ```
 
 La guía ampliada está en [`docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md`](docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md).
@@ -196,6 +211,7 @@ Idempotencia significa que repetir la misma solicitud no duplica el efecto. Tazm
 - dos clics para pedir OTP producen un solo desafío;
 - repetir una verificación no crea varias sesiones;
 - reenviar el guardado de perfil no duplica aceptaciones;
+- repetir el alta del comercio, guardado de campaña, contrato o decisión de moderación no duplica el efecto;
 - en fases futuras, un webhook repetido no podrá crear dos pagos o dos cupones.
 
 Si la misma llave llega con datos diferentes, el backend la rechaza como conflicto.
@@ -218,4 +234,10 @@ Abre `index.html` para revisar exactamente la vista que publica GitHub Pages. `d
 - OTP vence en 10 minutos, permite 5 intentos y aplica límites temporales.
 - RBAC se decide en backend; ocultar un botón nunca reemplaza la autorización.
 - Las fechas se guardan en UTC y se muestran en `America/Lima`.
-- Mercado Pago sigue fuera de alcance hasta aprobar identidad, permisos e idempotencia.
+- Mercado Pago sigue fuera del código de esta fase. Se habilitará en la Fase 4 después de probar identidad, permisos e idempotencia en el ambiente de desarrollo.
+
+## Progreso de fases
+
+- Completadas: Fases 0, 1, 2 y 3.
+- Siguiente: Fase 4 — Mercado Pago, órdenes, confirmación independiente y cupones.
+- Restantes después de esta entrega: 6 fases, de la 4 a la 9.

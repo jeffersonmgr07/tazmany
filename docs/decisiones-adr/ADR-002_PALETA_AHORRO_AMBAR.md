@@ -28,7 +28,7 @@ La revisión 0.1.2 establece que el amarillo no será solo un acento: dominará 
 
 ## Identidad oficial
 
-El logotipo no se recolorea. “Tazma” conserva `#0A264E`, “ny” conserva `#FD653A` y la mascota mantiene sus colores originales. Los tokens del wordmark están separados de los tokens funcionales de la interfaz.
+El logotipo oficial incorporado en 0.3.0 no se recolorea. “Tazma” usa navy, “ny” usa ámbar y la mascota mantiene sus colores originales. El fallback textual usa `#0A264E` y `#F2A000`; sus tokens permanecen separados de los tokens funcionales de la interfaz.
 
 ## Consecuencias
 
