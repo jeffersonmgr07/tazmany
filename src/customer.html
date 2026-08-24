@@ -1,0 +1,18 @@
+<template id="customerDashboardTemplate">
+  <div class="dashboard-shell customer-dashboard">
+    <aside class="dashboard-sidebar">
+      <div class="dashboard-identity"><span class="avatar avatar-lg avatar-savings" data-customer-initials>VT</span><div><small>Cuenta personal</small><strong data-customer-name>Valeria Torres</strong></div></div>
+      <nav class="dashboard-nav"><button class="active" type="button"><span class="icon" data-icon="grid"></span>Resumen</button><button type="button"><span class="icon" data-icon="coupon"></span>Mis cupones <em data-available-count>0</em></button><button type="button"><span class="icon" data-icon="receipt"></span>Mis compras</button><button type="button"><span class="icon" data-icon="wallet"></span>Cashback</button><button type="button"><span class="icon" data-icon="heart"></span>Favoritos</button><button type="button"><span class="icon" data-icon="calendar"></span>Reservas</button><button type="button"><span class="icon" data-icon="support"></span>Ayuda y soporte</button></nav>
+      <div class="sidebar-help"><span class="icon" data-icon="support"></span><strong>¿Necesitas ayuda?</strong><p>Estamos para acompañarte.</p><button type="button">Contactar soporte</button></div>
+    </aside>
+    <div class="dashboard-main">
+      <div class="dashboard-topline"><div><span class="dashboard-eyebrow">MI TAZMANY</span><h1>¡Hola, <span data-customer-first-name>Valeria</span>! <span aria-hidden="true">👋</span></h1><p>Aquí tienes todo listo para tu próxima experiencia.</p></div><button class="button button-primary" type="button" data-route="home">Descubrir ofertas</button></div>
+      <div class="stat-grid customer-stats"><article><span class="stat-icon savings"><span class="icon" data-icon="coupon"></span></span><div><small>Cupones disponibles</small><strong data-stat="availableCoupons">0</strong><p>Listos para disfrutar</p></div></article><article><span class="stat-icon amber"><span class="icon" data-icon="wallet"></span></span><div><small>Cashback disponible</small><strong data-stat-money="cashbackCents">S/ 0.00</strong><p>Úsalo en tu próxima compra</p></div></article><article><span class="stat-icon navy"><span class="icon" data-icon="receipt"></span></span><div><small>Compras realizadas</small><strong data-stat="totalOrders">0</strong><p>Historial protegido</p></div></article><article><span class="stat-icon cream"><span class="icon" data-icon="heart"></span></span><div><small>Ofertas favoritas</small><strong data-stat="favorites">0</strong><p>Guardadas para después</p></div></article></div>
+      <div class="dashboard-grid-two">
+        <section class="dashboard-panel"><div class="panel-heading"><div><span class="panel-kicker">LISTOS PARA USAR</span><h2>Mis cupones</h2></div><button type="button">Ver todos</button></div><div class="coupon-list" data-coupon-list></div></section>
+        <section class="dashboard-panel"><div class="panel-heading"><div><span class="panel-kicker">ÚLTIMOS MOVIMIENTOS</span><h2>Actividad reciente</h2></div></div><div class="activity-list" data-activity-list></div><div class="cashback-callout"><span class="icon" data-icon="sparkle"></span><div><strong>Miércoles de 3% cashback</strong><p>El porcentaje total promocional será visible antes de pagar.</p></div></div></section>
+      </div>
+      <section class="recommendation-banner"><div><span>RECOMENDADO PARA TI</span><h2>Convierte un día normal<br>en un plan especial.</h2><button class="button button-light" type="button" data-route="home">Ver ofertas cerca de mí</button></div><div class="recommendation-art"><span>✦</span><b>T</b><i>✦</i></div></section>
+    </div>
+  </div>
+</template>

@@ -1,0 +1,42 @@
+<template id="offerCardTemplate">
+  <article class="offer-card">
+    <button class="offer-image-button" type="button" data-offer-action aria-label="Ver oferta">
+      <img class="offer-image" alt="" loading="lazy">
+      <span class="discount-badge"></span>
+      <span class="stock-badge" hidden></span>
+      <span class="image-fallback">T</span>
+    </button>
+    <button class="favorite-button" type="button" aria-label="Guardar en favoritos"><span class="icon" data-icon="heart"></span></button>
+    <div class="offer-body">
+      <div class="offer-meta"><span class="offer-category"></span><span class="rating">★ <b></b> <small></small></span></div>
+      <button class="offer-title" type="button" data-offer-action></button>
+      <p class="offer-merchant"></p>
+      <p class="offer-location"><span class="icon icon-xs" data-icon="pin"></span><span></span></p>
+      <div class="offer-tags"></div>
+      <div class="offer-price-row"><div><small class="normal-price"></small><strong class="offer-price"></strong></div><span class="cashback-pill"></span></div>
+    </div>
+  </article>
+</template>
+
+<dialog class="offer-dialog" id="offerDialog" aria-labelledby="offerDialogTitle">
+  <button class="dialog-close icon-button" type="button" aria-label="Cerrar"><span class="icon" data-icon="close"></span></button>
+  <div class="dialog-layout">
+    <div class="dialog-media"><img id="dialogImage" alt=""><span class="image-fallback">T</span><span class="dialog-discount" id="dialogDiscount"></span></div>
+    <div class="dialog-content">
+      <span class="section-kicker" id="dialogCategory"></span>
+      <h2 id="offerDialogTitle"></h2>
+      <p class="dialog-merchant" id="dialogMerchant"></p>
+      <div class="dialog-rating" id="dialogRating"></div>
+      <p id="dialogDescription" class="dialog-description"></p>
+      <div class="dialog-pricing"><div><small>Precio regular</small><del id="dialogNormalPrice"></del></div><div><small>Precio Tazmany</small><strong id="dialogOfferPrice"></strong></div><div><small>Cashback</small><b id="dialogCashback"></b></div></div>
+      <div class="dialog-detail-columns"><div><h3>Incluye</h3><ul id="dialogIncludes"></ul></div><div><h3>Condiciones clave</h3><ul id="dialogRestrictions"></ul></div></div>
+      <div class="branch-list" id="dialogBranches"></div>
+      <div class="dialog-actions"><button class="button button-primary button-block" id="demoBuyButton" type="button">Comprar esta oferta</button><small>El pago con Mercado Pago se implementará en la Fase 4.</small></div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="simple-dialog" id="howDialog" aria-labelledby="howDialogTitle">
+  <button class="dialog-close icon-button" type="button" aria-label="Cerrar"><span class="icon" data-icon="close"></span></button>
+  <span class="dialog-icon"><span class="icon" data-icon="celebrate"></span></span><h2 id="howDialogTitle">Comprar en Tazmany será muy simple</h2><ol><li><b>Elige</b> una oferta y revisa sus condiciones.</li><li><b>Paga</b> mediante Checkout Pro cuando habilitemos la Fase 4.</li><li><b>Recibe</b> tu cupón digital y preséntalo al comercio.</li></ol><button class="button button-primary button-block" type="button" data-close-dialog>Entendido</button>
+</dialog>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es" data-theme="savings-yellow">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#182635">
+    <meta name="color-scheme" content="light">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <?!= include('styles'); ?>
+  </head>
+  <body>
+    <script>
+      window.TAZMANY_CONFIG = <?!= appConfig ?>;
+      window.TAZMANY_INITIAL_VIEW = '<?= initialView ?>';
+    </script>
+    <?!= include('app'); ?>
+    <?!= include('components'); ?>
+    <?!= include('customer'); ?>
+    <?!= include('merchant'); ?>
+    <?!= include('admin'); ?>
+    <?!= include('scripts'); ?>
+  </body>
+</html>
