@@ -4,15 +4,17 @@ function doGet(e) {
   template.appConfig = JSON.stringify(getAppConfig_());
   return template.evaluate()
     .setTitle('Tazmany | Ofertas que sí valen la pena')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
-    .addMetaTag('description', 'Ofertas y cupones digitales de comercios locales del Perú.');
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
 }
 
 function doPost(e) {
-  // Fase 3 no procesa webhooks ni efectos financieros.
-  return ContentService
-    .createTextOutput(JSON.stringify({ ok: false, code: 'NOT_IMPLEMENTED_PHASE_3' }))
-    .setMimeType(ContentService.MimeType.JSON);
+  var path = String(e && e.pathInfo || '').replace(/^\/+|\/+$/g, '');
+  if (path === 'api') return handleFrontendApiPost_(e);
+  // Mercado Pago y otros webhooks permanecen fuera de alcance hasta la Fase 4.
+  return createJsonOutput_({
+    ok: false,
+    error: { code: 'ENDPOINT_NOT_FOUND', message: 'La ruta solicitada no está disponible.' }
+  });
 }
 
 function include(filename) {

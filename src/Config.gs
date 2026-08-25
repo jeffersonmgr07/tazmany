@@ -1,6 +1,6 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.0',
+  VERSION: '0.3.5',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
@@ -16,6 +16,8 @@ var TAZMANY_CONFIG = Object.freeze({
     GOOGLE_VERIFY_MODE: 'TAZMANY_GOOGLE_VERIFY_MODE',
     GOOGLE_VERIFY_URL: 'TAZMANY_GOOGLE_VERIFY_URL',
     GOOGLE_VERIFY_RELAY_SECRET: 'TAZMANY_GOOGLE_VERIFY_RELAY_SECRET',
+    API_RELAY_SECRET: 'TAZMANY_API_RELAY_SECRET',
+    ALLOWED_FRONTEND_ORIGINS: 'TAZMANY_ALLOWED_FRONTEND_ORIGINS',
     SESSION_TTL_HOURS: 'TAZMANY_SESSION_TTL_HOURS',
     OTP_TTL_MINUTES: 'TAZMANY_OTP_TTL_MINUTES',
     OTP_MAX_ATTEMPTS: 'TAZMANY_OTP_MAX_ATTEMPTS',
@@ -24,7 +26,7 @@ var TAZMANY_CONFIG = Object.freeze({
   }),
   PUBLIC_VIEWS: Object.freeze(['home', 'customer', 'merchant', 'admin']),
   CAMPAIGN_PUBLIC_STATES: Object.freeze(['ACTIVA', 'PROGRAMADA', 'AGOTADA']),
-  DEMO_NOTICE: 'Fase 3: comercios, contratos, campañas y moderación. Pagos y canjes permanecen desactivados.'
+  DEMO_NOTICE: 'Fase 3.5: publicación segura desde GitHub Pages. Pagos y canjes permanecen desactivados.'
 });
 
 function getAppConfig_() {

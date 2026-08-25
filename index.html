@@ -133,7 +133,7 @@
   </head>
   <body>
     <script>
-      window.TAZMANY_CONFIG = {"appName":"Tazmany","version":"0.3.0","environment":"github-pages-preview","logoUrl":"assets/brand/tazmany-logo.png","isStaticPreview":true,"demoNotice":"Vista visual: identidad real disponible en Apps Script","auth":{"googleClientId":"","googleEnabled":false,"otpEnabled":false,"termsVersion":"2026-08-24","privacyVersion":"2026-08-24"}};
+      window.TAZMANY_CONFIG = {"appName":"Tazmany","version":"0.3.5","environment":"github-pages-preview","logoUrl":"assets/brand/tazmany-logo.png","apiBaseUrl":"","isStaticPreview":true,"demoNotice":"Vista visual: falta configurar el puente seguro con Apps Script","auth":{"googleClientId":"","googleEnabled":false,"otpEnabled":false,"termsVersion":"2026-08-24","privacyVersion":"2026-08-24"}};
       window.TAZMANY_INITIAL_VIEW = 'home';
     </script>
     <svg class="tazmany-icon-sprite" aria-hidden="true" focusable="false">
@@ -504,7 +504,7 @@
 
   document.addEventListener('DOMContentLoaded', init);
   async function init(){
-    applyLogo(); hydrateIcons(document); bindGlobalEvents(); loadPublicData(); await restoreSession(); initGoogleIdentity(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);
+    applyLogo(); hydrateIcons(document); bindGlobalEvents(); await loadPublicData(); await restoreSession(); initGoogleIdentity(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);
   }
   function applyLogo(){
     const url=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.logoUrl;
@@ -551,12 +551,25 @@
   function closeProfileMenu(){const menu=document.getElementById('profileMenu');menu.hidden=true;document.getElementById('profileSwitcher').setAttribute('aria-expanded','false')}
   function syncSearchInputs(value){document.getElementById('topSearchInput').value=value;document.getElementById('mobileSearchInput').value=value}
   function callServer(name,args,fallbackValue){
+    if(hasRemoteApi())return callRemoteApi(name,args).then(response=>response&&response.ok?response.data:fallbackValue).catch(()=>fallbackValue);
     return new Promise(resolve=>{if(!(window.google&&google.script&&google.script.run)){resolve(fallbackValue);return}const runner=google.script.run.withSuccessHandler(response=>resolve(response&&response.ok?response.data:fallbackValue)).withFailureHandler(()=>resolve(fallbackValue));runner[name](...(args||[]))});
   }
   function callServerStrict(name,args){
-    return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run)){reject({code:'STATIC_PREVIEW',message:'Esta acción funciona en la Web App de Apps Script.'});return}const runner=google.script.run.withSuccessHandler(response=>response&&response.ok?resolve(response.data):reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'})).withFailureHandler(error=>reject({code:'SERVER_ERROR',message:error&&error.message||'No pudimos conectar con el servidor.'}));runner[name](...(args||[]))});
+    if(hasRemoteApi())return callRemoteApi(name,args).then(response=>response&&response.ok?response.data:Promise.reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'}));
+    return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run)){reject({code:'STATIC_PREVIEW',message:'Esta acción necesita configurar el puente seguro del sitio.'});return}const runner=google.script.run.withSuccessHandler(response=>response&&response.ok?resolve(response.data):reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'})).withFailureHandler(error=>reject({code:'SERVER_ERROR',message:error&&error.message||'No pudimos conectar con el servidor.'}));runner[name](...(args||[]))});
   }
-  async function loadPublicData(){state.publicData=await callServer('apiGetPublicBootstrap',[],fallback);renderCategories();renderOffers();renderMerchants()}
+  function hasRemoteApi(){return Boolean(window.TAZMANY_CONFIG&&/^https:\/\//.test(String(window.TAZMANY_CONFIG.apiBaseUrl||'')))}
+  async function callRemoteApi(name,args){
+    const endpoint=`${String(window.TAZMANY_CONFIG.apiBaseUrl).replace(/\/+$/,'')}/api`;let response;
+    try{response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:name,args:args||[]}),cache:'no-store',credentials:'omit'})}catch(error){throw{code:'NETWORK_ERROR',message:'No pudimos conectar con Tazmany. Revisa tu conexión.'}}
+    let payload;try{payload=await response.json()}catch(error){throw{code:'INVALID_SERVER_RESPONSE',message:'El servidor devolvió una respuesta inválida.'}}
+    if(!response.ok)throw payload&&payload.error||{code:'SERVER_ERROR',message:'No pudimos completar la solicitud.'};return payload;
+  }
+  async function loadPublicData(){
+    state.publicData=await callServer('apiGetPublicBootstrap',[],fallback);const remoteUrl=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.apiBaseUrl||'';
+    if(state.publicData&&state.publicData.config)window.TAZMANY_CONFIG=Object.assign({},window.TAZMANY_CONFIG,state.publicData.config,{apiBaseUrl:remoteUrl,isStaticPreview:!remoteUrl});
+    renderCategories();renderOffers();renderMerchants();
+  }
   function navigate(view,push=true){
     if(!['home','customer','merchant','admin'].includes(view))view='home';state.view=view;
     if(view!=='home'&&!state.auth&&!isStaticPreview()){openAuthDialog();view='home';state.view='home'}
@@ -679,7 +692,7 @@
     else{label.textContent=isStaticPreview()?'Vista previa':'Ingresar';note.textContent=isStaticPreview()?'GitHub Pages':'Tu cuenta';avatar.textContent='T';document.getElementById('loginMenuButton').hidden=false;document.getElementById('logoutMenuButton').hidden=true;document.getElementById('sessionsMenuButton').hidden=true}
     document.getElementById('adminMenuButton').hidden=!(isStaticPreview()||hasClientPermission('admin.dashboard.read')||hasClientPermission('*'));
   }
-  function openAuthDialog(){closeProfileMenu();resetOtpForm();const message=document.getElementById('googleAuthMessage');if(isStaticPreview()){message.hidden=false;message.textContent='La vista de GitHub Pages es visual. El acceso real funciona en la Web App de Apps Script.'}document.getElementById('authDialog').showModal();initGoogleIdentity()}
+  function openAuthDialog(){closeProfileMenu();resetOtpForm();const message=document.getElementById('googleAuthMessage');if(isStaticPreview()){message.hidden=false;message.textContent='La conexión segura del sitio todavía no está configurada.'}document.getElementById('authDialog').showModal();initGoogleIdentity()}
   function resetOtpForm(){state.otpChallenge=null;document.getElementById('otpRequestForm').hidden=false;document.getElementById('otpVerifyForm').hidden=true;setStatus('authStatus','',false)}
   function setStatus(id,message,isError){const box=document.getElementById(id);box.textContent=message||'';box.hidden=!message;box.classList.toggle('error',Boolean(isError))}
   function setFormBusy(form,busy){form.querySelectorAll('button,input,select,textarea').forEach(control=>control.disabled=busy)}

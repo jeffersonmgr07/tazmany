@@ -1,11 +1,12 @@
 {
   "name": "tazmany-webapp",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "private": true,
   "description": "Marketplace peruano de ofertas y cupones digitales sobre Google Apps Script.",
   "type": "module",
   "scripts": {
     "build:preview": "node tools/build-preview.mjs",
+    "build:github": "node tools/build-preview.mjs",
     "lint": "node tools/validate-project.mjs",
     "test": "node --test tests/unit/*.test.mjs",
     "verify": "npm run lint && npm test && npm run build:preview"

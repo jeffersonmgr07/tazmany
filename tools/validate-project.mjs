@@ -3,7 +3,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 const root = process.cwd();
-const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','src/appsscript.json','README.md'];
+const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
 for (const file of required) if (!fs.existsSync(path.join(root,file))) throw new Error(`Missing required file: ${file}`);
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root,'src/appsscript.json'),'utf8'));
@@ -11,6 +11,7 @@ if (manifest.runtimeVersion !== 'V8') throw new Error('Apps Script runtime must 
 if (manifest.timeZone !== 'America/Lima') throw new Error('Apps Script timezone must be America/Lima');
 if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/script.send_mail')) throw new Error('Mail scope is required for OTP delivery');
 if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/documents')) throw new Error('Documents scope is required for versioned contract generation');
+if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/script.scriptapp')) throw new Error('ScriptApp scope is required to install and inspect project triggers');
 
 const setup = fs.readFileSync(path.join(root,'src/Setup.gs'),'utf8');
 const expectedSheets = ['USERS','AUTH_IDENTITIES','OTP_CHALLENGES','USER_SESSIONS','CUSTOMER_PROFILES','CUSTOMER_PRIVATE_DATA','TERMS_ACCEPTANCES','IDEMPOTENCY_KEYS','MERCHANTS','MERCHANT_PRIVATE_DATA','MERCHANT_DOCUMENTS','MERCHANT_BANK_ACCOUNTS','CAMPAIGNS','CAMPAIGN_VERSIONS','CAMPAIGN_OPTIONS','CONTRACTS','CONTRACT_ACCEPTANCES','ORDERS','PAYMENTS','COUPONS','SETTLEMENTS','AUDIT_LOG','ERROR_LOG'];
@@ -44,6 +45,11 @@ const phase3Source = ['MerchantOnboardingService.gs','CampaignWorkflowService.gs
 for (const requiredControl of ['runIdempotent_', 'merchant.campaigns.manage', 'admin.merchants.review', 'admin.campaigns.review', 'document_hash', 'CAMPAIGN_VERSIONS']) {
   if (!phase3Source.includes(requiredControl)) throw new Error(`Missing Phase 3 control: ${requiredControl}`);
 }
+const bridgeSource = fs.readFileSync(path.join(root, 'src', 'FrontendApiGateway.gs'), 'utf8');
+for (const requiredControl of ['constantTimeEquals_', 'API_ACTION_NOT_ALLOWED', 'ALLOWED_FRONTEND_ORIGINS', 'TAZMANY_FRONTEND_API_ACTIONS_']) {
+  if (!bridgeSource.includes(requiredControl)) throw new Error(`Missing frontend bridge control: ${requiredControl}`);
+}
+if (/eval\s*\(|this\s*\[/.test(bridgeSource)) throw new Error('Frontend API gateway must use an explicit action allowlist.');
 const categoryIcons = fs.readFileSync(path.join(root, 'src', 'category-icons.html'), 'utf8');
 for (const icon of ['restaurant','sparkles','fitness','car','ticket']) if (!categoryIcons.includes(`id="taz-cat-${icon}"`)) throw new Error(`Missing custom category icon: ${icon}`);
 if (/🍽|✨|🏋|🚗|🎟/.test(frontendSource)) throw new Error('Category emojis must not be used in the frontend.');

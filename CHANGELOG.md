@@ -1,7 +1,17 @@
 # Changelog
 
+## 0.3.5 — 2026-08-24
+
+- Se añadió un gateway explícito para comunicar GitHub Pages con Apps Script sin exponer Sheets.
+- Se incorporó un relay Cloudflare Worker con CORS de origen exacto, allowlist de acciones y secreto compartido almacenado fuera del repositorio.
+- El cliente web ahora selecciona `google.script.run` o el transporte HTTPS remoto según el ambiente.
+- Se añadieron diagnóstico del puente, configuración de orígenes y pruebas automatizadas del relay.
+- Se documentó que los nueve usuarios seed son registros ficticios y no credenciales OTP utilizables.
+- Mercado Pago continúa bloqueado hasta aprobar identidad, RBAC e idempotencia desde GitHub Pages.
+
 ## 0.3.0 — 2026-08-24
 
+- Se añadió el scope `script.scriptapp` requerido para instalar y consultar triggers desde `installTazmanyAuthTriggers()`.
 - Se incorporó el logotipo oficial transparente y se aumentó su presencia en el encabezado y footer.
 - Se sustituyeron los emojis de categorías por un sistema SVG original y reutilizable.
 - Se implementó onboarding de comercios con estados, validación, sucursales, documentos y cuenta enmascarada.

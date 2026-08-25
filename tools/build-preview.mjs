@@ -8,13 +8,18 @@ let template = fs.readFileSync(path.join(src, 'index.html'), 'utf8');
 template = template.replace(/<\?!= include\('([^']+)'\); \?>/g, (_, name) => fs.readFileSync(path.join(src, `${name}.html`), 'utf8'));
 
 function renderStaticPreview(logoUrl) {
+  const apiBaseUrl = String(process.env.TAZMANY_API_BASE_URL || '').trim().replace(/\/+$/, '');
+  const connected = /^https:\/\//.test(apiBaseUrl);
   const appConfig = {
     appName: 'Tazmany',
     version: packageJson.version,
-    environment: 'github-pages-preview',
+    environment: connected ? 'github-pages-connected' : 'github-pages-preview',
     logoUrl,
-    isStaticPreview: true,
-    demoNotice: 'Vista visual: identidad real disponible en Apps Script',
+    apiBaseUrl,
+    isStaticPreview: !connected,
+    demoNotice: connected
+      ? 'Entorno de desarrollo conectado. Pagos y canjes permanecen desactivados.'
+      : 'Vista visual: falta configurar el puente seguro con Apps Script',
     auth: {
       googleClientId: '',
       googleEnabled: false,
