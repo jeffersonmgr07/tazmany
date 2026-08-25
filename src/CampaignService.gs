@@ -1,22 +1,31 @@
-function getPublicBootstrap_() {
+function getPublicBootstrap_(cityId) {
   var repository = getDataRepository_();
   var cache = CacheService.getScriptCache();
-  var cached = cache.get('public-bootstrap-v1');
+  var selectedCityId = String(cityId || '');
+  var cacheKey = 'public-bootstrap-v2-' + (selectedCityId || 'all');
+  var cached = cache.get(cacheKey);
   if (cached) return JSON.parse(cached);
 
   var campaigns = repository.list('CAMPAIGNS');
   var merchants = repository.list('MERCHANTS');
   var categories = repository.list('CATEGORIES');
+  var countries = repository.list('COUNTRIES');
   var cities = repository.list('CITIES');
   var merchantById = indexById_(merchants);
   var categoryById = indexById_(categories);
   var offers = campaigns
-    .filter(function (campaign) { return TAZMANY_CONFIG.CAMPAIGN_PUBLIC_STATES.indexOf(String(campaign.status)) >= 0; })
+    .filter(function (campaign) {
+      return TAZMANY_CONFIG.CAMPAIGN_PUBLIC_STATES.indexOf(String(campaign.status)) >= 0 &&
+        (!selectedCityId || String(campaign.city_id) === selectedCityId);
+    })
     .map(function (campaign) { return mapCampaignForPublic_(campaign, merchantById[campaign.merchant_id], categoryById[campaign.category_id]); })
     .sort(function (a, b) { return b.soldCount - a.soldCount; });
   var result = {
     config: getAppConfig_(),
-    cities: cities.filter(function (city) { return city.status === 'ACTIVE'; }).map(function (city) { return { id: city.id, name: city.name }; }),
+    countries: countries.filter(function (country) { return country.status === 'ACTIVE'; }).sort(function (a, b) { return Number(a.sort_order) - Number(b.sort_order); }).map(function (country) { return { id: country.id, code: country.iso_code, name: country.name, currency: country.currency }; }),
+    cities: cities.filter(function (city) { return city.status === 'ACTIVE'; }).sort(function (a, b) { return Number(a.sort_order) - Number(b.sort_order); }).map(function (city) { return { id: city.id, name: city.name, countryCode: city.country_code, department: city.department, latitude: Number(city.latitude), longitude: Number(city.longitude) }; }),
+    selectedCityId: selectedCityId,
+    clubPlan: getPublicClubPlan_(),
     categories: categories.filter(function (category) { return category.status === 'ACTIVE'; }).sort(function (a, b) { return Number(a.sort_order) - Number(b.sort_order); }).map(function (category) { return { id: category.id, name: category.name, slug: category.slug, icon: category.icon }; }),
     offers: offers,
     featuredMerchants: merchants.filter(function (merchant) { return merchant.status === 'ACTIVE'; }).slice(0, 5).map(function (merchant) {
@@ -24,7 +33,7 @@ function getPublicBootstrap_() {
     })
   };
   var serialized = JSON.stringify(result);
-  if (serialized.length < 95000) cache.put('public-bootstrap-v1', serialized, TAZMANY_CONFIG.CACHE_SECONDS);
+  if (serialized.length < 95000) cache.put(cacheKey, serialized, TAZMANY_CONFIG.CACHE_SECONDS);
   return result;
 }
 
@@ -54,6 +63,8 @@ function getOfferDetails_(campaignId) {
 function mapCampaignForPublic_(campaign, merchant, category) {
   var normal = Number(campaign.normal_price_cents || 0);
   var offer = Number(campaign.offer_price_cents || 0);
+  var club = Number(campaign.club_price_cents || 0);
+  if (club <= 0 || club > offer) club = offer;
   var remaining = Math.max(0, Number(campaign.inventory_total || 0) - Number(campaign.inventory_sold || 0));
   return {
     id: String(campaign.id),
@@ -66,6 +77,9 @@ function mapCampaignForPublic_(campaign, merchant, category) {
     imageUrl: String(campaign.image_url || ''),
     normalPriceCents: normal,
     offerPriceCents: offer,
+    publicPriceCents: offer,
+    clubPriceCents: club,
+    clubSavingsCents: Math.max(0, offer - club),
     discountPercent: calculateDiscountPercent_(normal, offer),
     cashbackPercent: Number(campaign.cashback_basis_points || 0) / 100,
     districtLabel: String(campaign.district_label || 'Lima'),

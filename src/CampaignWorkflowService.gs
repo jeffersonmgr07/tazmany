@@ -19,7 +19,7 @@ function apiGetCampaignEditor(sessionToken, campaignId) {
     return {
       id: campaign.id, title: campaign.title, summary: campaign.summary, description: campaign.description,
       categoryId: campaign.category_id, imageUrl: campaign.image_url,
-      normalPriceCents: Number(campaign.normal_price_cents || 0), offerPriceCents: Number(campaign.offer_price_cents || 0),
+      normalPriceCents: Number(campaign.normal_price_cents || 0), offerPriceCents: Number(campaign.offer_price_cents || 0), clubPriceCents: Number(campaign.club_price_cents || campaign.offer_price_cents || 0),
       inventoryTotal: Number(campaign.inventory_total || 0), lowStockThreshold: Number(campaign.low_stock_threshold || 0),
       maxPerCustomer: Number(campaign.max_per_customer || 1), salesStartAt: toIsoString_(campaign.sales_start_at),
       salesEndAt: toIsoString_(campaign.sales_end_at), redemptionStartAt: toIsoString_(campaign.redemption_start_at),
@@ -28,7 +28,7 @@ function apiGetCampaignEditor(sessionToken, campaignId) {
       requiresBooking: Boolean(campaign.requires_booking),
       branchIds: repository.list('CAMPAIGN_BRANCHES').filter(function (item) { return item.campaign_id === campaign.id && item.status === 'ACTIVE'; }).map(function (item) { return item.branch_id; }),
       options: repository.list('CAMPAIGN_OPTIONS').filter(function (item) { return item.campaign_id === campaign.id && item.status === 'ACTIVE'; }).map(function (item) {
-        return { id: item.id, name: item.name, inventoryTotal: Number(item.inventory_total || 0), inventorySold: Number(item.inventory_sold || 0), normalPriceCents: Number(item.normal_price_cents || 0), offerPriceCents: Number(item.offer_price_cents || 0) };
+        return { id: item.id, name: item.name, inventoryTotal: Number(item.inventory_total || 0), inventorySold: Number(item.inventory_sold || 0), normalPriceCents: Number(item.normal_price_cents || 0), offerPriceCents: Number(item.offer_price_cents || 0), clubPriceCents: Number(item.club_price_cents || item.offer_price_cents || 0) };
       })
     };
   });
@@ -67,7 +67,7 @@ function saveCampaignDraft_(context, payload) {
     id: campaignId, merchant_id: membership.merchant_id, category_id: normalized.categoryId,
     title: normalized.title, slug: normalized.slug, summary: normalized.summary, description: normalized.description,
     image_url: normalized.imageUrl, gallery_json: JSON.stringify(normalized.galleryUrls),
-    normal_price_cents: normalized.normalPriceCents, offer_price_cents: normalized.offerPriceCents,
+    normal_price_cents: normalized.normalPriceCents, offer_price_cents: normalized.offerPriceCents, club_price_cents: normalized.clubPriceCents,
     cashback_basis_points: 0, inventory_total: inventoryTotal, inventory_sold: Number(existing && existing.inventory_sold || 0),
     low_stock_threshold: normalized.lowStockThreshold, max_per_customer: normalized.maxPerCustomer,
     sales_start_at: normalized.salesStartAt, sales_end_at: normalized.salesEndAt,
@@ -127,6 +127,8 @@ function normalizeCampaignPayload_(payload, strict) {
   var normalPrice = validateIntegerCents_(payload.normalPriceCents, 'precio regular', false);
   var offerPrice = validateIntegerCents_(payload.offerPriceCents, 'precio Tazmany', false);
   if (offerPrice >= normalPrice) throw createPublicError_('INVALID_DISCOUNT', 'El precio Tazmany debe ser menor al precio regular.');
+  var clubPrice = validateIntegerCents_(payload.clubPriceCents || offerPrice, 'precio Club', false);
+  if (clubPrice > offerPrice) throw createPublicError_('INVALID_CLUB_PRICE', 'El precio Club no puede superar el precio público Tazmany.');
   var salesStart = validateIsoDate_(payload.salesStartAt, 'inicio de venta');
   var salesEnd = validateIsoDate_(payload.salesEndAt, 'fin de venta');
   var redemptionStart = validateIsoDate_(payload.redemptionStartAt, 'inicio de canje');
@@ -139,7 +141,7 @@ function normalizeCampaignPayload_(payload, strict) {
   var normalized = {
     title: title, slug: slugifyCampaign_(payload.slug || title), summary: summary, description: description,
     categoryId: assertSafeId_(payload.categoryId, 'categoryId'), cityId: assertSafeId_(payload.cityId || TAZMANY_CONFIG.DEFAULT_CITY_ID, 'cityId'),
-    imageUrl: imageUrl, galleryUrls: gallery, normalPriceCents: normalPrice, offerPriceCents: offerPrice,
+    imageUrl: imageUrl, galleryUrls: gallery, normalPriceCents: normalPrice, offerPriceCents: offerPrice, clubPriceCents: clubPrice,
     lowStockThreshold: clampInteger_(payload.lowStockThreshold, 0, 100000, 5), maxPerCustomer: clampInteger_(payload.maxPerCustomer, 1, 100, 1),
     salesStartAt: salesStart, salesEndAt: salesEnd, redemptionStartAt: redemptionStart, redemptionEndAt: redemptionEnd,
     districtLabel: sanitizePlainText_(payload.districtLabel, 160) || 'Lima',
@@ -157,7 +159,7 @@ function normalizeCampaignPayload_(payload, strict) {
 
 function normalizeCampaignOptions_(options, campaign, existingCampaign, now) {
   var list = Array.isArray(options) && options.length ? options : [{
-    name: 'Opción principal', normalPriceCents: campaign.normalPriceCents, offerPriceCents: campaign.offerPriceCents,
+    name: 'Opción principal', normalPriceCents: campaign.normalPriceCents, offerPriceCents: campaign.offerPriceCents, clubPriceCents: campaign.clubPriceCents,
     inventoryTotal: 1, lowStockThreshold: campaign.lowStockThreshold, maxPerCustomer: campaign.maxPerCustomer
   }];
   if (list.length > 20) throw createPublicError_('TOO_MANY_OPTIONS', 'Una campaña admite hasta 20 opciones.');
@@ -165,10 +167,12 @@ function normalizeCampaignOptions_(options, campaign, existingCampaign, now) {
     var normalPrice = validateIntegerCents_(option.normalPriceCents, 'precio regular de opción', false);
     var offerPrice = validateIntegerCents_(option.offerPriceCents, 'precio de opción', false);
     if (offerPrice >= normalPrice) throw createPublicError_('INVALID_OPTION_DISCOUNT', 'Cada opción debe tener un descuento real.');
+    var clubPrice = validateIntegerCents_(option.clubPriceCents || offerPrice, 'precio Club de opción', false);
+    if (clubPrice > offerPrice) throw createPublicError_('INVALID_OPTION_CLUB_PRICE', 'El precio Club de cada opción no puede superar su precio público.');
     return {
       id: option.id ? assertSafeId_(option.id, 'optionId') : Utilities.getUuid(),
       name: sanitizePlainText_(option.name, 120) || 'Opción ' + (index + 1), description: sanitizePlainText_(option.description, 500),
-      normal_price_cents: normalPrice, offer_price_cents: offerPrice,
+      normal_price_cents: normalPrice, offer_price_cents: offerPrice, club_price_cents: clubPrice,
       inventory_total: clampInteger_(option.inventoryTotal, 1, 1000000, 1),
       inventory_sold: Number(option.inventorySold || 0), low_stock_threshold: clampInteger_(option.lowStockThreshold, 0, 100000, campaign.lowStockThreshold),
       max_per_customer: clampInteger_(option.maxPerCustomer, 1, 100, campaign.maxPerCustomer), sort_order: index + 1,
@@ -250,7 +254,7 @@ function validateCampaignForSubmission_(campaign, options, branchIds) {
     title: campaign.title, slug: campaign.slug, summary: campaign.summary, description: campaign.description,
     categoryId: campaign.category_id, cityId: campaign.city_id, imageUrl: campaign.image_url,
     galleryUrls: parseJsonSafe_(campaign.gallery_json, []), normalPriceCents: campaign.normal_price_cents,
-    offerPriceCents: campaign.offer_price_cents, lowStockThreshold: campaign.low_stock_threshold,
+    offerPriceCents: campaign.offer_price_cents, clubPriceCents: campaign.club_price_cents || campaign.offer_price_cents, lowStockThreshold: campaign.low_stock_threshold,
     maxPerCustomer: campaign.max_per_customer, salesStartAt: toIsoString_(campaign.sales_start_at), salesEndAt: toIsoString_(campaign.sales_end_at),
     redemptionStartAt: toIsoString_(campaign.redemption_start_at), redemptionEndAt: toIsoString_(campaign.redemption_end_at),
     districtLabel: campaign.district_label, tags: parseJsonSafe_(campaign.tags_json, []), includes: parseJsonSafe_(campaign.includes_json, []),

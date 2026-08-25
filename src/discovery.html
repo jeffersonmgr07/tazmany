@@ -1,0 +1,40 @@
+<dialog class="discovery-dialog location-dialog" id="locationDialog" aria-labelledby="locationDialogTitle">
+  <button class="dialog-close icon-button" type="button" data-dismiss-location aria-label="Cerrar"><span class="icon" data-icon="close"></span></button>
+  <div class="dialog-brand-mark"><span class="icon" data-icon="pin"></span></div>
+  <span class="section-kicker">OFERTAS CERCA DE TI</span>
+  <h2 id="locationDialogTitle">¿Dónde quieres explorar?</h2>
+  <p>Elige tu ciudad sin registrarte. No cambiaremos esta selección sin preguntarte.</p>
+  <form id="locationForm" class="discovery-form">
+    <label>País<select id="locationCountry" name="countryCode" required></select></label>
+    <label>Ciudad<select id="locationCity" name="cityId" required></select></label>
+    <button class="button button-ghost button-block location-suggest" id="suggestLocationButton" type="button"><span class="icon" data-icon="compass"></span> Sugerir con mi ubicación</button>
+    <small id="locationStatus" class="form-status" aria-live="polite"></small>
+    <button class="button button-primary button-block" type="submit">Ver ofertas en esta ciudad</button>
+  </form>
+</dialog>
+
+<dialog class="discovery-dialog subscriber-dialog" id="subscriberDialog" aria-labelledby="subscriberDialogTitle">
+  <button class="dialog-close icon-button" type="button" data-dismiss-subscriber aria-label="Cerrar"><span class="icon" data-icon="close"></span></button>
+  <div class="dialog-brand-mark"><span class="icon" data-icon="mail"></span></div>
+  <span class="section-kicker">SUSCRIPCIÓN GRATUITA</span>
+  <h2 id="subscriberDialogTitle">Lo mejor de <span data-selected-city>Lima</span>, directo a tu correo.</h2>
+  <p>No necesitas una cuenta. Te enviaremos ofertas seleccionadas y podrás darte de baja cuando quieras.</p>
+  <form id="subscriberForm" class="discovery-form">
+    <label>Correo electrónico<input name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required></label>
+    <label class="consent-check"><input name="marketingConsent" type="checkbox" required><span>Acepto recibir comunicaciones comerciales de Tazmany. Este consentimiento es opcional y separado de crear una cuenta.</span></label>
+    <small id="subscriberStatus" class="form-status" aria-live="polite"></small>
+    <button class="button button-primary button-block" type="submit">Quiero recibir ofertas</button>
+  </form>
+</dialog>
+
+<dialog class="discovery-dialog club-dialog" id="clubDialog" aria-labelledby="clubDialogTitle">
+  <button class="dialog-close icon-button" type="button" data-close-dialog aria-label="Cerrar"><span class="icon" data-icon="close"></span></button>
+  <div class="dialog-brand-mark club"><span class="icon" data-icon="crown"></span></div>
+  <span class="section-kicker">PRÓXIMAMENTE</span>
+  <h2 id="clubDialogTitle">Club Tazmany</h2>
+  <p>El catálogo ya distingue el precio público del precio para miembros.</p>
+  <div class="club-plan-price"><strong>S/ 9.90</strong><span>primer mes</span><small>Luego S/ 19.90 al mes</small></div>
+  <ul class="club-benefits"><li>Precios Club en ofertas seleccionadas</li><li>Acceso anticipado a campañas</li><li>Beneficios configurables por ciudad</li></ul>
+  <div class="club-pending-note"><span class="icon" data-icon="shield"></span><span>No se realizará ningún cobro hasta implementar y aprobar Mercado Pago en la Fase 4.</span></div>
+  <button class="button button-primary button-block" type="button" data-close-dialog>Entendido</button>
+</dialog>

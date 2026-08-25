@@ -4,7 +4,18 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.5` — Fase 3.5: publicación del frontend desde GitHub Pages mediante un relay seguro hacia Apps Script. Mercado Pago continúa bloqueado.
+Versión `0.3.6` — Fase 3.6: selector anónimo de país/ciudad, suscriptores gratuitos, base de Club Tazmany y doble precio público/Club. Mercado Pago continúa bloqueado.
+
+### Qué incorpora la Fase 3.6
+
+- El visitante elige Perú y su ciudad sin registrarse; la preferencia se guarda en `localStorage`.
+- La geolocalización solo se solicita al pulsar “Sugerir con mi ubicación” y requiere confirmación.
+- Un correo suscrito se guarda en `MARKETING_SUBSCRIBERS`, nunca se convierte automáticamente en `USERS`.
+- `CAMPAIGNS` y `CAMPAIGN_OPTIONS` distinguen `offer_price_cents` y `club_price_cents`.
+- Club Tazmany queda configurado a S/ 9.90 el primer mes y S/ 19.90 después, con estado `COMING_SOON` y sin cobros.
+- La UI conserva la paleta Tazmany y usa iconos SVG originales; no contiene recursos ni interfaz copiada de Groupon.
+
+Después de `clasp push`, ejecuta una vez `setupTazmanyPhase36()` y luego `getTazmanyPhase36Diagnostics()`.
 
 ### Real en la Web App de Apps Script
 
@@ -211,9 +222,9 @@ Actualizaciones posteriores:
 
 ```bash
 clasp push
-clasp version "Tazmany Fase 3.5 v0.3.5"
+clasp version "Tazmany Fase 3.6 v0.3.6"
 clasp deployments
-clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 3.5 v0.3.5"
+clasp redeploy DEPLOYMENT_ID VERSION_NUMBER "Tazmany Fase 3.6 v0.3.6"
 ```
 
 La guía ampliada está en [`docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md`](docs/despliegue/GUIA_MACOS_CLASP_APPS_SCRIPT.md).

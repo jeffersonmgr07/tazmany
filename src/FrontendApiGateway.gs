@@ -1,6 +1,7 @@
 var TAZMANY_FRONTEND_API_ACTIONS_ = Object.freeze({
-  apiGetPublicBootstrap: routeFrontendApi_(0, 0, function (args) { return apiGetPublicBootstrap(); }),
+  apiGetPublicBootstrap: routeFrontendApi_(0, 1, function (args) { return apiGetPublicBootstrap(args[0] || ''); }),
   apiGetOfferDetails: routeFrontendApi_(1, 1, function (args) { return apiGetOfferDetails(args[0]); }),
+  apiSubscribeToOffers: routeFrontendApi_(2, 2, function (args) { return apiSubscribeToOffers(args[0], args[1]); }),
   apiGetAuthConfig: routeFrontendApi_(0, 0, function () { return apiGetAuthConfig(); }),
   apiAuthenticateGoogle: routeFrontendApi_(4, 4, function (args) { return apiAuthenticateGoogle(args[0], args[1], args[2], args[3]); }),
   apiRequestEmailOtp: routeFrontendApi_(3, 3, function (args) { return apiRequestEmailOtp(args[0], args[1], args[2]); }),

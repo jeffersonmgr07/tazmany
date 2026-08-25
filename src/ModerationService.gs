@@ -130,7 +130,8 @@ function reviewCampaign_(context, campaignId, decision, reason) {
   campaign.updated_at = now;
   campaign.version = Number(campaign.version || 0) + 1;
   repository.upsert('CAMPAIGNS', [campaign]);
-  CacheService.getScriptCache().remove('public-bootstrap-v1');
+  CacheService.getScriptCache().remove('public-bootstrap-v2-all');
+  CacheService.getScriptCache().remove('public-bootstrap-v2-' + String(campaign.city_id || 'city-lima'));
   appendAuditEvent_({ actor_user_id: context.user.id, action: 'CAMPAIGN_REVIEW_' + normalizedDecision, entity_type: 'CAMPAIGN', entity_id: campaign.id, metadata_json: JSON.stringify({ previousStatus: previousStatus, newStatus: campaign.status, reason: notes, publishedVersionId: campaign.published_version_id || '' }) });
   return { id: campaign.id, status: campaign.status, reviewedAt: now, publishedVersionId: campaign.published_version_id || '' };
 }

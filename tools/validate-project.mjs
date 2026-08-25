@@ -3,7 +3,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 const root = process.cwd();
-const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
+const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
 for (const file of required) if (!fs.existsSync(path.join(root,file))) throw new Error(`Missing required file: ${file}`);
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root,'src/appsscript.json'),'utf8'));
@@ -14,7 +14,7 @@ if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/documents'))
 if (!manifest.oauthScopes.includes('https://www.googleapis.com/auth/script.scriptapp')) throw new Error('ScriptApp scope is required to install and inspect project triggers');
 
 const setup = fs.readFileSync(path.join(root,'src/Setup.gs'),'utf8');
-const expectedSheets = ['USERS','AUTH_IDENTITIES','OTP_CHALLENGES','USER_SESSIONS','CUSTOMER_PROFILES','CUSTOMER_PRIVATE_DATA','TERMS_ACCEPTANCES','IDEMPOTENCY_KEYS','MERCHANTS','MERCHANT_PRIVATE_DATA','MERCHANT_DOCUMENTS','MERCHANT_BANK_ACCOUNTS','CAMPAIGNS','CAMPAIGN_VERSIONS','CAMPAIGN_OPTIONS','CONTRACTS','CONTRACT_ACCEPTANCES','ORDERS','PAYMENTS','COUPONS','SETTLEMENTS','AUDIT_LOG','ERROR_LOG'];
+const expectedSheets = ['USERS','AUTH_IDENTITIES','OTP_CHALLENGES','USER_SESSIONS','CUSTOMER_PROFILES','CUSTOMER_PRIVATE_DATA','TERMS_ACCEPTANCES','IDEMPOTENCY_KEYS','COUNTRIES','CITIES','MARKETING_SUBSCRIBERS','MARKETING_EVENTS','CLUB_PLANS','CLUB_MEMBERSHIPS','MERCHANTS','MERCHANT_PRIVATE_DATA','MERCHANT_DOCUMENTS','MERCHANT_BANK_ACCOUNTS','CAMPAIGNS','CAMPAIGN_VERSIONS','CAMPAIGN_OPTIONS','CONTRACTS','CONTRACT_ACCEPTANCES','ORDERS','PAYMENTS','COUPONS','SETTLEMENTS','AUDIT_LOG','ERROR_LOG'];
 for (const sheet of expectedSheets) if (!setup.includes(`${sheet}: [`)) throw new Error(`Missing schema: ${sheet}`);
 
 for (const file of fs.readdirSync(path.join(root,'src')).filter(name=>name.endsWith('.gs'))) {
@@ -53,4 +53,8 @@ if (/eval\s*\(|this\s*\[/.test(bridgeSource)) throw new Error('Frontend API gate
 const categoryIcons = fs.readFileSync(path.join(root, 'src', 'category-icons.html'), 'utf8');
 for (const icon of ['restaurant','sparkles','fitness','car','ticket']) if (!categoryIcons.includes(`id="taz-cat-${icon}"`)) throw new Error(`Missing custom category icon: ${icon}`);
 if (/🍽|✨|🏋|🚗|🎟/.test(frontendSource)) throw new Error('Category emojis must not be used in the frontend.');
+const discoverySource = fs.readFileSync(path.join(root, 'src', 'DiscoveryService.gs'), 'utf8') + fs.readFileSync(path.join(root, 'src', 'discovery.html'), 'utf8');
+for (const control of ['runIdempotent_', 'marketingConsent', 'MARKETING_SUBSCRIBERS', 'CLUB_PLANS', 'locationDialog', 'subscriberDialog']) {
+  if (!discoverySource.includes(control)) throw new Error(`Missing discovery/Club control: ${control}`);
+}
 console.log(`Validated ${required.length} required files, manifest, schemas and Apps Script syntax.`);

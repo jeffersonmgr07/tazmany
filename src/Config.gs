@@ -1,6 +1,6 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.5',
+  VERSION: '0.3.6',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
@@ -26,7 +26,7 @@ var TAZMANY_CONFIG = Object.freeze({
   }),
   PUBLIC_VIEWS: Object.freeze(['home', 'customer', 'merchant', 'admin']),
   CAMPAIGN_PUBLIC_STATES: Object.freeze(['ACTIVA', 'PROGRAMADA', 'AGOTADA']),
-  DEMO_NOTICE: 'Fase 3.5: publicación segura desde GitHub Pages. Pagos y canjes permanecen desactivados.'
+  DEMO_NOTICE: 'Fase 3.6: ubicación, suscriptores y Club Tazmany. Pagos y canjes permanecen desactivados.'
 });
 
 function getAppConfig_() {
@@ -45,6 +45,7 @@ function getAppConfig_() {
       otpEnabled: true,
       termsVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-24',
       privacyVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-24'
-    }
+    },
+    club: { name: 'Club Tazmany', status: 'COMING_SOON' }
   };
 }

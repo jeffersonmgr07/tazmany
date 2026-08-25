@@ -3,7 +3,14 @@ function seedDemoData() {
   var common = { created_at: now, updated_at: now, status: 'ACTIVE', version: 1 };
   function row(data) { return Object.assign({}, common, data); }
 
-  upsertRowsById_('CITIES', [row({ id: 'city-lima', name: 'Lima', department: 'Lima', country_code: 'PE', time_zone: 'America/Lima', sort_order: 1 })]);
+  upsertRowsById_('COUNTRIES', [row({ id: 'country-pe', iso_code: 'PE', name: 'Perú', currency: 'PEN', time_zone: 'America/Lima', sort_order: 1 })]);
+  upsertRowsById_('CITIES', [
+    row({ id: 'city-lima', name: 'Lima', department: 'Lima', country_code: 'PE', time_zone: 'America/Lima', sort_order: 1, latitude: -12.0464, longitude: -77.0428 }),
+    row({ id: 'city-arequipa', name: 'Arequipa', department: 'Arequipa', country_code: 'PE', time_zone: 'America/Lima', sort_order: 2, latitude: -16.409, longitude: -71.5375 }),
+    row({ id: 'city-cusco', name: 'Cusco', department: 'Cusco', country_code: 'PE', time_zone: 'America/Lima', sort_order: 3, latitude: -13.5319, longitude: -71.9675 }),
+    row({ id: 'city-trujillo', name: 'Trujillo', department: 'La Libertad', country_code: 'PE', time_zone: 'America/Lima', sort_order: 4, latitude: -8.1116, longitude: -79.0287 }),
+    row({ id: 'city-piura', name: 'Piura', department: 'Piura', country_code: 'PE', time_zone: 'America/Lima', sort_order: 5, latitude: -5.1945, longitude: -80.6328 })
+  ]);
   upsertRowsById_('DISTRICTS', [
     row({ id: 'district-miraflores', city_id: 'city-lima', name: 'Miraflores', ubigeo: '150122' }),
     row({ id: 'district-san-borja', city_id: 'city-lima', name: 'San Borja', ubigeo: '150130' }),
@@ -53,17 +60,24 @@ function seedDemoData() {
   ]);
 
   var campaigns = getDemoCampaignSeed_(now);
+  upsertRowsById_('CLUB_PLANS', [row({
+    id: 'club-monthly-pe', country_code: 'PE', name: 'Club Tazmany', billing_period: 'MONTHLY',
+    regular_price_cents: 1990, intro_price_cents: 990, intro_cycles: 1,
+    benefits_json: '["Precios exclusivos en ofertas seleccionadas","Acceso anticipado a campañas","Beneficios configurables por ciudad"]',
+    status: 'COMING_SOON'
+  })]);
   upsertRowsById_('CAMPAIGNS', campaigns);
   upsertRowsById_('CAMPAIGN_VERSIONS', campaigns.map(function (campaign, index) {
     var submitted = campaign.status === 'ENVIADA_A_REVISION';
     return row({ id: 'version-demo-' + (index + 1), campaign_id: campaign.id, version_number: 1, snapshot_json: JSON.stringify({ title: campaign.title, offer_price_cents: campaign.offer_price_cents, restrictions_json: campaign.restrictions_json }), approved_by: submitted ? '' : 'user-moderator', approved_at: submitted ? '' : now, status: submitted ? 'SUBMITTED' : 'APPROVED' });
   }));
   upsertRowsById_('CAMPAIGN_OPTIONS', campaigns.map(function (campaign, index) {
-    return row({ id: 'option-' + (index + 1), campaign_id: campaign.id, name: 'Opción principal', normal_price_cents: campaign.normal_price_cents, offer_price_cents: campaign.offer_price_cents, inventory_total: campaign.inventory_total, inventory_sold: campaign.inventory_sold, sort_order: 1 });
+    return row({ id: 'option-' + (index + 1), campaign_id: campaign.id, name: 'Opción principal', normal_price_cents: campaign.normal_price_cents, offer_price_cents: campaign.offer_price_cents, club_price_cents: campaign.club_price_cents, inventory_total: campaign.inventory_total, inventory_sold: campaign.inventory_sold, sort_order: 1 });
   }));
   seedDemoOperations_(row);
   seedDemoPhase3Workflow_(row, now);
-  CacheService.getScriptCache().remove('public-bootstrap-v1');
+  ['public-bootstrap-v2-all','public-bootstrap-v2-city-lima','public-bootstrap-v2-city-arequipa','public-bootstrap-v2-city-cusco','public-bootstrap-v2-city-trujillo','public-bootstrap-v2-city-piura']
+    .forEach(function (key) { CacheService.getScriptCache().remove(key); });
   return { ok: true, campaigns: campaigns.length };
 }
 
@@ -80,7 +94,10 @@ function getDemoCampaignSeed_(now) {
     c({ id: 'campaign-yoga', merchant_id: 'merchant-pulso', category_id: 'cat-fitness', title: 'Pack de 4 clases de yoga', slug: 'pack-4-yoga', summary: 'Respira, fortalece y mejora tu movilidad.', description: 'Cuatro clases grupales de yoga para usar durante 30 días.', image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 12000, offer_price_cents: 6990, cashback_basis_points: 100, inventory_total: 50, inventory_sold: 12, low_stock_threshold: 6, district_label: 'Santiago de Surco', tags_json: '["Reserva requerida"]', includes_json: '["4 clases grupales"]', excludes_json: '["Mat personal"]', restrictions_json: '["Válido por 30 días desde el primer uso"]', rating: 4.9, review_count: 74, sold_count: 12, status: 'PROGRAMADA' }),
     c({ id: 'campaign-limpieza-auto', merchant_id: 'merchant-motor', category_id: 'cat-auto', title: 'Lavado ecológico completo', slug: 'lavado-ecologico', summary: 'Tu auto impecable usando menos agua.', description: 'Lavado exterior e interior con productos biodegradables.', image_url: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 8000, offer_price_cents: 4490, cashback_basis_points: 100, inventory_total: 40, inventory_sold: 40, low_stock_threshold: 5, district_label: 'La Molina', tags_json: '["Agotada"]', includes_json: '["Lavado exterior","Aspirado interior"]', excludes_json: '["Pulido"]', restrictions_json: '["Con cita previa"]', rating: 4.6, review_count: 52, sold_count: 40, status: 'AGOTADA' }),
     c({ id: 'campaign-cena-review', merchant_id: 'merchant-sabores', category_id: 'cat-food', title: 'Cena peruana para dos', slug: 'cena-peruana-para-dos', summary: 'Menú para compartir con ingredientes locales.', description: 'Entrada, dos fondos y bebidas sin alcohol en sedes seleccionadas.', image_url: 'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1200&q=80', normal_price_cents: 14000, offer_price_cents: 7990, cashback_basis_points: 0, inventory_total: 80, inventory_sold: 0, low_stock_threshold: 8, district_label: 'Miraflores y Barranco', tags_json: '["Reserva requerida"]', includes_json: '["1 entrada","2 fondos","2 bebidas"]', excludes_json: '["Bebidas alcohólicas"]', restrictions_json: '["Reserva con 24 horas"]', rating: 0, review_count: 0, sold_count: 0, submitted_at: now, status: 'ENVIADA_A_REVISION' })
-  ];
+  ].map(function (campaign) {
+    campaign.club_price_cents = Math.max(1, Math.round(Number(campaign.offer_price_cents) * 0.9));
+    return campaign;
+  });
 }
 
 function seedDemoPhase3Workflow_(row, now) {

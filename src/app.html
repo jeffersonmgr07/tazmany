@@ -12,7 +12,7 @@
           <span class="brand-name"><span>Tazma</span><strong>ny</strong></span>
         </span>
       </button>
-      <button class="location-control desktop-location" type="button" aria-label="Cambiar ciudad">
+      <button class="location-control desktop-location" type="button" data-open-location aria-label="Cambiar ciudad">
         <span class="icon" data-icon="pin"></span>
         <span><small>Explorando</small><strong id="selectedCityLabel">Lima</strong></span>
         <span class="icon icon-sm" data-icon="chevron"></span>
@@ -47,7 +47,7 @@
   <main id="mainContent" tabindex="-1">
     <section id="homeView" class="view" data-view="home">
       <div class="mobile-tools container">
-        <button class="location-control" type="button"><span class="icon" data-icon="pin"></span><span><small>Ciudad</small><strong>Lima</strong></span><span class="icon icon-sm" data-icon="chevron"></span></button>
+        <button class="location-control" type="button" data-open-location><span class="icon" data-icon="pin"></span><span><small>Explorar</small><strong data-selected-city>Lima</strong></span><span class="icon icon-sm" data-icon="chevron"></span></button>
         <form class="mobile-search" id="mobileSearchForm"><span class="icon" data-icon="search"></span><input id="mobileSearchInput" type="search" placeholder="Buscar ofertas"></form>
       </div>
       <section class="hero-section">
@@ -76,6 +76,7 @@
       </section>
 
       <section class="section container" id="offersSection">
+        <div class="location-pill"><span class="icon" data-icon="pin"></span><strong>Ofertas en <span data-selected-city>Lima</span></strong><button type="button" data-open-location>Cambiar ciudad</button></div>
         <div class="section-heading">
           <div><span class="section-kicker">Favoritas de la comunidad</span><h2>Ofertas que están volando</h2><p>Precios especiales en experiencias locales seleccionadas.</p></div>
           <button class="text-button" type="button" data-clear-filter>Ver todas <span class="icon icon-sm" data-icon="arrow"></span></button>
@@ -85,6 +86,12 @@
           <article class="offer-card skeleton-card"></article><article class="offer-card skeleton-card"></article><article class="offer-card skeleton-card"></article><article class="offer-card skeleton-card"></article>
         </div>
         <div class="empty-state" id="offersEmpty" hidden><span class="empty-mark">T</span><h3>No encontramos ese plan</h3><p>Prueba con otro término o categoría.</p><button class="button button-primary" type="button" data-clear-filter>Ver todas las ofertas</button></div>
+      </section>
+
+      <section class="container club-banner" aria-labelledby="clubBannerTitle">
+        <div class="club-emblem"><span class="icon" data-icon="crown"></span></div>
+        <div><span class="section-kicker">PRECIOS PARA MIEMBROS</span><h2 id="clubBannerTitle">Club Tazmany</h2><p>Accede a precios exclusivos en ofertas seleccionadas. Primer mes configurado a S/ 9.90; luego S/ 19.90 al mes.</p></div>
+        <button class="button button-light" type="button" data-open-club>Conocer el Club</button>
       </section>
 
       <section class="benefit-band">
@@ -113,7 +120,7 @@
       </section>
 
       <section class="newsletter">
-        <div class="container newsletter-inner"><div><span class="mail-mark">✉</span><h2>Las mejores ofertas, sin ruido.</h2><p>Recibe una selección semanal. Puedes cancelar cuando quieras.</p></div><form id="newsletterForm"><label class="sr-only" for="newsletterEmail">Correo</label><input id="newsletterEmail" type="email" placeholder="tu@correo.com" required><button class="button button-primary" type="submit">Quiero recibirlas</button></form></div>
+        <div class="container newsletter-inner"><div><span class="mail-mark"><span class="icon" data-icon="mail"></span></span><h2>Ofertas de tu ciudad, sin crear una cuenta.</h2><p>Suscríbete gratis y recibe una selección útil. Puedes cancelar cuando quieras.</p></div><form id="newsletterForm"><label class="sr-only" for="newsletterEmail">Correo</label><input id="newsletterEmail" type="email" placeholder="tu@correo.com" autocomplete="email" required><label class="consent-inline"><input name="marketingConsent" type="checkbox" required> Acepto recibir ofertas y la Política de Privacidad.</label><button class="button button-primary" type="submit">Suscribirme gratis</button><small class="form-status" id="newsletterStatus" aria-live="polite"></small></form></div>
       </section>
     </section>
 

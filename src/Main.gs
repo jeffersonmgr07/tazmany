@@ -21,9 +21,10 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-function apiGetPublicBootstrap() {
+function apiGetPublicBootstrap(cityId) {
   return executeApi_(function () {
-    return getPublicBootstrap_();
+    if (cityId) assertSafeId_(cityId, 'cityId');
+    return getPublicBootstrap_(cityId || '');
   });
 }
 

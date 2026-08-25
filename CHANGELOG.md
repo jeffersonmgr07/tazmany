@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.6 — 2026-08-25
+
+- Selector accesible de país y ciudad para visitantes sin cuenta.
+- Sugerencia geográfica voluntaria y confirmada; no se cambia la ciudad silenciosamente.
+- Suscripción gratuita por correo con consentimiento, idempotencia y auditoría.
+- Nuevas entidades `COUNTRIES`, `MARKETING_SUBSCRIBERS`, `MARKETING_EVENTS`, `CLUB_PLANS` y `CLUB_MEMBERSHIPS`.
+- Precios público y Club en campañas, opciones, catálogo, tarjetas y detalle.
+- Club Tazmany visible en modo `COMING_SOON`, sin cobros ni Mercado Pago.
+- Categorías móviles refinadas con iconos SVG propios y estilo Tazmany.
+- Nuevo setup incremental `setupTazmanyPhase36()` y diagnóstico asociado.
+
 ## 0.3.5 — 2026-08-24
 
 - Se añadió un gateway explícito para comunicar GitHub Pages con Apps Script sin exponer Sheets.
