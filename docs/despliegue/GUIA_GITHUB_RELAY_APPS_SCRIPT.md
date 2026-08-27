@@ -1,4 +1,4 @@
-# Guía — GitHub Pages conectado a Apps Script
+# Guía — Cierre 0.3.9: GitHub Pages conectado a Apps Script
 
 ## 1. Actualizar Apps Script
 
@@ -10,7 +10,22 @@ clasp push
 
 Actualiza la implementación existente como una **Nueva versión** y conserva la URL terminada en `/exec`.
 
-## 2. Crear el secreto compartido
+No ejecutes funciones `setup` de fases anteriores: esta actualización no modifica el esquema de Sheets.
+
+## 2. Configurar el ambiente de pruebas
+
+En Apps Script abre **Configuración del proyecto → Propiedades de la secuencia de comandos** y configura:
+
+```text
+TAZMANY_ENVIRONMENT = staging
+TAZMANY_GOOGLE_CLIENT_ID = TU_CLIENT_ID.apps.googleusercontent.com
+TAZMANY_GOOGLE_VERIFY_MODE = TOKENINFO
+TAZMANY_ALLOWED_FRONTEND_ORIGINS = https://jeffersonmgr07.github.io
+```
+
+`TOKENINFO` se usa únicamente durante desarrollo y sandbox. Antes del lanzamiento público con pagos debe sustituirse por la verificación de producción configurada en el backend.
+
+## 3. Crear el secreto compartido
 
 En Terminal:
 
@@ -34,22 +49,17 @@ Ejecuta:
 
 El diagnóstico debe devolver `ok: true` y nunca muestra el secreto.
 
-## 3. Desplegar el relay
+## 4. Desplegar el relay
 
-Edita `wrangler.toml` y reemplaza `APPS_SCRIPT_URL` por la URL `/exec` vigente.
-
-```bash
-npm install --global wrangler
-wrangler login
-wrangler deploy
-wrangler secret put APPS_SCRIPT_RELAY_SECRET
-```
-
-Cuando Wrangler solicite el valor, pega el mismo secreto generado. Ejecuta nuevamente:
+`wrangler.toml` ya contiene la URL `/exec` de la implementación vigente. Comprueba que siga abriendo Tazmany antes de desplegar.
 
 ```bash
-wrangler deploy
+npx wrangler login
+npx wrangler secret put APPS_SCRIPT_RELAY_SECRET
+npx wrangler deploy
 ```
+
+Cuando Wrangler solicite el valor, pega el mismo secreto generado para Apps Script. Nunca lo escribas en `wrangler.toml`, GitHub ni el código.
 
 Copia la dirección del Worker, por ejemplo:
 
@@ -63,7 +73,7 @@ Comprueba:
 https://tazmany-api-relay.TU_SUBDOMINIO.workers.dev/health
 ```
 
-## 4. Generar el index conectado
+## 5. Generar el index conectado
 
 ```bash
 cd ~/Downloads/tazmany
@@ -72,17 +82,17 @@ TAZMANY_API_BASE_URL="https://tazmany-api-relay.TU_SUBDOMINIO.workers.dev" npm r
 
 Esto actualiza `index.html`. La URL del Worker es pública y puede estar en HTML; el secreto no.
 
-## 5. Publicar GitHub Pages
+## 6. Publicar GitHub Pages
 
 ```bash
 git add .
-git commit -m "Conectar GitHub Pages con backend Tazmany 0.3.5"
+git commit -m "Cerrar interfaz publica y prepagos Tazmany 0.3.9"
 git push origin main
 ```
 
 Abre `https://jeffersonmgr07.github.io/tazmany/` y fuerza recarga con `Command + Shift + R`.
 
-## 6. Google Identity
+## 7. Google Identity
 
 En la credencial OAuth Web agrega como origen autorizado:
 
@@ -92,7 +102,25 @@ https://jeffersonmgr07.github.io
 
 No agregues `/tazmany/` porque un origen no contiene rutas.
 
-## 7. Criterios de aceptación
+Copia el Client ID del tipo **Aplicación web** y guárdalo en la propiedad `TAZMANY_GOOGLE_CLIENT_ID`. El secreto OAuth no se utiliza en el navegador ni debe subirse al repositorio.
+
+## 8. Diagnóstico final
+
+En Apps Script ejecuta:
+
+```javascript
+getTazmanyPhase39Diagnostics()
+```
+
+La Fase 3 queda cerrada cuando devuelve:
+
+```text
+phase3ClosureOk: true
+readyForPhase4: true
+paymentsEnabled: false
+```
+
+## 9. Criterios de aceptación
 
 - El catálogo llega desde Sheets.
 - OTP llega a un correo real y crea/restaura sesión.

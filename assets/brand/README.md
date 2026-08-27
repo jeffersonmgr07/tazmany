@@ -6,7 +6,7 @@
 4998f9e9cfc4611fe821c13541fdd1943db1876636049203c0e2c1f4437cd1f3
 ```
 
-La vista previa local lo carga desde esta carpeta. Apps Script no sirve automáticamente archivos binarios del repositorio; en el ambiente desplegado usa la URL pública controlada mediante `TAZMANY_LOGO_URL`. La versión `0.3.8` añade un parámetro de versión a la URL para evitar que el navegador conserve el logo anterior en caché.
+La vista previa local lo carga desde esta carpeta. Apps Script no sirve automáticamente archivos binarios del repositorio; en el ambiente desplegado usa la URL pública controlada mediante `TAZMANY_LOGO_URL`. La URL incorpora la versión vigente como parámetro para evitar que el navegador conserve un logo anterior en caché.
 
 La interfaz mantiene un wordmark de respaldo para que nunca aparezca una imagen rota. No se ha recortado, recoloreado, deformado ni redibujado la mascota.
 

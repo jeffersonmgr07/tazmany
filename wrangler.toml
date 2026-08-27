@@ -3,5 +3,5 @@ main = "worker/tazmany-api-relay.js"
 compatibility_date = "2026-08-24"
 
 [vars]
-APPS_SCRIPT_URL = "REEMPLAZAR_CON_URL_APPS_SCRIPT_TERMINADA_EN_EXEC"
+APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxmaikk1sJd_xzy2WxJ9x7SJ8Tx4j-EwK5TIZeT0nvaPVtnaLjPPi2cogZ3EJqJM1E/exec"
 ALLOWED_ORIGINS = "https://jeffersonmgr07.github.io"

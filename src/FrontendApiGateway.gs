@@ -79,7 +79,7 @@ function assertTrustedFrontendRelay_(request) {
   var configuredOrigins = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.ALLOWED_FRONTEND_ORIGINS) || '';
   var allowedOrigins = configuredOrigins.split(',').map(normalizeFrontendOrigin_).filter(Boolean);
   if (!origin || allowedOrigins.indexOf(origin) < 0) {
-    throw createPublicError_('FRONTEND_ORIGIN_NOT_ALLOWED', 'Este origen no tiene autorización para usar el backend.');
+    throw createPublicError_('FRONTEND_ORIGIN_NOT_ALLOWED', 'Este sitio no tiene autorización para usar el servicio.');
   }
 }
 

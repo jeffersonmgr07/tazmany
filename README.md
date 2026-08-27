@@ -4,7 +4,16 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.8` — cierre visual y técnico de Fase 3: incorpora sin modificaciones el último logo oficial, conserva la corrección de suscriptores y mantiene la puerta de seguridad previa a pagos. Mercado Pago continúa bloqueado.
+Versión `0.3.9` — cierre previo a pagos: limpia la interfaz pública, retira temporalmente la captación pública de comercios y añade una compuerta única para autorizar el inicio de la Fase 4. Mercado Pago continúa bloqueado.
+
+### Cierre prepagos 0.3.9
+
+- Se retiraron del portal los avisos de demo, desarrollo, fases y arquitectura interna.
+- Se eliminó temporalmente el bloque público “Haz que más personas descubran tu negocio”.
+- El acceso directo a Comercio dejó de mostrarse en la navegación móvil pública; el módulo permanece disponible para cuentas autorizadas.
+- Una web sin conexión al servicio ya no simula una suscripción ni guarda una confirmación falsa en el navegador.
+- `getTazmanyPhase39Diagnostics()` verifica limpieza pública, bloqueos de cobro y preparación técnica antes de la Fase 4.
+- Las nuevas pruebas impiden reintroducir accidentalmente esos mensajes internos.
 
 ### Actualización visual 0.3.8
 

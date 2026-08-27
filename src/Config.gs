@@ -1,10 +1,10 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.8',
+  VERSION: '0.3.9',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
-  DEFAULT_PUBLIC_LOGO_URL: 'https://jeffersonmgr07.github.io/tazmany/assets/brand/tazmany-logo.png?v=0.3.8',
+  DEFAULT_PUBLIC_LOGO_URL: 'https://jeffersonmgr07.github.io/tazmany/assets/brand/tazmany-logo.png?v=0.3.9',
   CACHE_SECONDS: 300,
   SCRIPT_PROPERTIES: Object.freeze({
     SPREADSHEET_ID: 'TAZMANY_SPREADSHEET_ID',
@@ -26,7 +26,12 @@ var TAZMANY_CONFIG = Object.freeze({
   }),
   PUBLIC_VIEWS: Object.freeze(['home', 'customer', 'merchant', 'admin']),
   CAMPAIGN_PUBLIC_STATES: Object.freeze(['ACTIVA', 'PROGRAMADA', 'AGOTADA']),
-  DEMO_NOTICE: 'Fase 3 cerrada, identidad oficial actualizada. Pagos y canjes permanecen desactivados hasta aprobar el diagnóstico previo a pagos.'
+  FEATURES: Object.freeze({
+    MERCHANT_ACQUISITION_PUBLIC: false,
+    CHECKOUT_ENABLED: false,
+    CLUB_BILLING_ENABLED: false,
+    INTERNAL_NOTICES_VISIBLE: false
+  })
 });
 
 function getAppConfig_() {
@@ -38,7 +43,12 @@ function getAppConfig_() {
     logoUrl: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.LOGO_URL) || TAZMANY_CONFIG.DEFAULT_PUBLIC_LOGO_URL,
     currency: TAZMANY_CONFIG.CURRENCY,
     timeZone: TAZMANY_CONFIG.TIME_ZONE,
-    demoNotice: TAZMANY_CONFIG.DEMO_NOTICE,
+    features: {
+      merchantAcquisitionPublic: TAZMANY_CONFIG.FEATURES.MERCHANT_ACQUISITION_PUBLIC,
+      checkoutEnabled: TAZMANY_CONFIG.FEATURES.CHECKOUT_ENABLED,
+      clubBillingEnabled: TAZMANY_CONFIG.FEATURES.CLUB_BILLING_ENABLED,
+      internalNoticesVisible: TAZMANY_CONFIG.FEATURES.INTERNAL_NOTICES_VISIBLE
+    },
     auth: {
       googleClientId: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.GOOGLE_CLIENT_ID) || '',
       googleEnabled: Boolean(properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.GOOGLE_CLIENT_ID)),

@@ -33,7 +33,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/health' && request.method === 'GET') {
-      return jsonResponse({ ok: true, service: 'tazmany-api-relay', version: '0.3.6' }, 200, '');
+      return jsonResponse({ ok: true, service: 'tazmany-api-relay', version: '0.3.9' }, 200, '');
     }
     if (url.pathname !== '/api') return jsonResponse({ ok: false, error: { code: 'NOT_FOUND', message: 'Ruta no disponible.' } }, 404, '');
 

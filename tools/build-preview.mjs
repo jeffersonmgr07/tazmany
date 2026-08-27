@@ -13,13 +13,16 @@ function renderStaticPreview(logoUrl) {
   const appConfig = {
     appName: 'Tazmany',
     version: packageJson.version,
-    environment: connected ? 'github-pages-connected' : 'github-pages-preview',
+    environment: connected ? 'public-web-connected' : 'public-web',
     logoUrl,
     apiBaseUrl,
     isStaticPreview: !connected,
-    demoNotice: connected
-      ? 'Entorno de desarrollo conectado. Pagos y canjes permanecen desactivados.'
-      : 'Vista visual: falta configurar el puente seguro con Apps Script',
+    features: {
+      merchantAcquisitionPublic: false,
+      checkoutEnabled: false,
+      clubBillingEnabled: false,
+      internalNoticesVisible: false
+    },
     auth: {
       googleClientId: '',
       googleEnabled: false,

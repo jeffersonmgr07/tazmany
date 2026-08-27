@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.9 — 2026-08-27
+
+- Se retiraron de la interfaz pública los avisos de demo, desarrollo, fases, Sheets, backend, GitHub Pages y relay.
+- Se eliminó temporalmente el bloque público de captación de comercios y el acceso directo a Comercio de la navegación móvil.
+- Los dashboards conservan sus funciones, pero ahora muestran textos orientados a usuarios en lugar de notas del desarrollo.
+- La vista pública desconectada dejó de simular una suscripción exitosa.
+- Se incorporó `getTazmanyPhase39Diagnostics()` como compuerta final antes de iniciar la Fase 4.
+- Se añadieron pruebas automáticas para bloquear textos internos y mantener pagos y facturación del Club desactivados.
+- El relay y la configuración de despliegue se actualizaron a la versión 0.3.9.
+
 ## 0.3.8 — 2026-08-27
 
 - Se incorporó sin modificaciones el último logotipo oficial transparente de Tazmany, con isotipo circular a la izquierda y logotipo a la derecha, sin eslogan.
