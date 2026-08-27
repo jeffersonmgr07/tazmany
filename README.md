@@ -4,7 +4,21 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.9` — cierre previo a pagos: limpia la interfaz pública, retira temporalmente la captación pública de comercios y añade una compuerta única para autorizar el inicio de la Fase 4. Mercado Pago continúa bloqueado.
+Versión `0.3.11` — dominio oficial y Google Identity en staging: publica Tazmany en `tazmany.com`, conserva Privacidad y Términos bajo el mismo dominio y mantiene la compuerta previa a la Fase 4. Mercado Pago continúa bloqueado.
+
+### Dominio oficial 0.3.11
+
+- `tazmany.com` es el dominio canónico del portal, las páginas legales y los activos públicos.
+- El archivo `CNAME` preserva la configuración de GitHub Pages al actualizar el repositorio.
+- Apps Script y el relay aceptan `tazmany.com`, `www.tazmany.com` y temporalmente la URL técnica de GitHub.
+- Google Identity continúa en staging y usa solamente `openid`, `email` y `profile`.
+
+### Cierre legal 0.3.10
+
+- `privacidad.html` informa el uso de datos de cuenta, Google Identity, proveedores tecnológicos y derechos ARCO.
+- `terminos.html` establece las reglas generales de cuentas, ofertas, cupones, cancelaciones y reclamos.
+- El portal enlaza ambos documentos y utiliza `tazmani.store@gmail.com` como contacto público provisional.
+- Las versiones de aceptación vigentes son `2026-08-27`.
 
 ### Cierre prepagos 0.3.9
 
@@ -213,13 +227,13 @@ En **Configuración del proyecto → Propiedades de la secuencia de comandos**:
 | `TAZMANY_GOOGLE_VERIFY_URL` | URL HTTPS del relay para producción | No |
 | `TAZMANY_GOOGLE_VERIFY_RELAY_SECRET` | secreto compartido del relay | Sí |
 | `TAZMANY_API_RELAY_SECRET` | secreto aleatorio de 64 caracteres compartido exclusivamente con el Worker | Sí |
-| `TAZMANY_ALLOWED_FRONTEND_ORIGINS` | `https://jeffersonmgr07.github.io` durante desarrollo | No |
+| `TAZMANY_ALLOWED_FRONTEND_ORIGINS` | `https://tazmany.com,https://www.tazmany.com,https://jeffersonmgr07.github.io` durante la transición | No |
 | `TAZMANY_AUTH_PEPPER` | generado por setup | Sí |
 | `TAZMANY_SESSION_TTL_HOURS` | `168` | No |
 | `TAZMANY_OTP_TTL_MINUTES` | `10` | No |
 | `TAZMANY_OTP_MAX_ATTEMPTS` | `5` | No |
-| `TAZMANY_TERMS_VERSION` | `2026-08-24` | No |
-| `TAZMANY_PRIVACY_VERSION` | `2026-08-24` | No |
+| `TAZMANY_TERMS_VERSION` | `2026-08-27` | No |
+| `TAZMANY_PRIVACY_VERSION` | `2026-08-27` | No |
 
 Los IDs de Spreadsheet y Drive son creados automáticamente. Nunca copies el pepper ni el secreto del relay al repositorio.
 
@@ -227,7 +241,7 @@ Los IDs de Spreadsheet y Drive son creados automáticamente. Nunca copies el pep
 
 1. En Google Cloud crea/configura la pantalla de consentimiento OAuth.
 2. Crea una credencial **OAuth client ID → Web application**.
-3. Añade los orígenes HTTPS que realmente sirven la interfaz. Para GitHub Pages agrega `https://jeffersonmgr07.github.io`, sin `/tazmany/`. Conserva los orígenes de Apps Script únicamente mientras pruebes también la Web App `/exec`.
+3. Añade `https://tazmany.com` y `https://www.tazmany.com` como orígenes HTTPS. Conserva `https://jeffersonmgr07.github.io` únicamente como respaldo técnico durante la transición.
 4. Copia el Client ID en `TAZMANY_GOOGLE_CLIENT_ID`.
 5. Mantén `TAZMANY_GOOGLE_VERIFY_MODE=TOKENINFO` únicamente en development/staging.
 

@@ -81,8 +81,8 @@ function buildAuthResponse_(user, session, provider, sessionToken) {
   var profile = repository.list('CUSTOMER_PROFILES').find(function (item) { return item.user_id === user.id && item.status === 'ACTIVE'; });
   var privateData = repository.list('CUSTOMER_PRIVATE_DATA').find(function (item) { return item.user_id === user.id && item.status === 'ACTIVE'; });
   var properties = PropertiesService.getScriptProperties();
-  var termsVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-24';
-  var privacyVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-24';
+  var termsVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-27';
+  var privacyVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-27';
   var acceptance = repository.list('TERMS_ACCEPTANCES').find(function (item) {
     return item.user_id === user.id && item.terms_version === termsVersion && item.privacy_version === privacyVersion && item.status === 'ACCEPTED';
   });

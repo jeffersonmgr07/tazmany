@@ -2,12 +2,20 @@ function setupTazmanyFrontendBridge() {
   var properties = PropertiesService.getScriptProperties();
   var originKey = TAZMANY_CONFIG.SCRIPT_PROPERTIES.ALLOWED_FRONTEND_ORIGINS;
   if (!properties.getProperty(originKey)) {
-    properties.setProperty(originKey, 'https://jeffersonmgr07.github.io');
+    properties.setProperty(originKey, 'https://tazmany.com,https://www.tazmany.com,https://jeffersonmgr07.github.io');
   }
-  return getTazmanyFrontendBridgeDiagnostics();
+  var result = getTazmanyFrontendBridgeDiagnostics_();
+  console.log(JSON.stringify(result, null, 2));
+  return result;
 }
 
 function getTazmanyFrontendBridgeDiagnostics() {
+  var result = getTazmanyFrontendBridgeDiagnostics_();
+  console.log(JSON.stringify(result, null, 2));
+  return result;
+}
+
+function getTazmanyFrontendBridgeDiagnostics_() {
   var properties = PropertiesService.getScriptProperties();
   var secret = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.API_RELAY_SECRET) || '';
   var origins = (properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.ALLOWED_FRONTEND_ORIGINS) || '')

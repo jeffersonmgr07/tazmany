@@ -27,8 +27,8 @@ function renderStaticPreview(logoUrl) {
       googleClientId: '',
       googleEnabled: false,
       otpEnabled: false,
-      termsVersion: '2026-08-24',
-      privacyVersion: '2026-08-24'
+      termsVersion: '2026-08-27',
+      privacyVersion: '2026-08-27'
     }
   };
 
@@ -42,11 +42,17 @@ const distHtml = renderStaticPreview(`assets/tazmany-logo.png?v=${packageJson.ve
 
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 fs.mkdirSync(path.join(root, 'dist', 'assets'), { recursive: true });
+fs.mkdirSync(path.join(root, 'dist', 'assets', 'brand'), { recursive: true });
 fs.writeFileSync(path.join(root, 'index.html'), rootHtml);
 fs.writeFileSync(path.join(root, 'dist', 'preview.html'), distHtml);
 fs.writeFileSync(path.join(root, 'dist', 'index.html'), distHtml);
 fs.writeFileSync(path.join(root, 'dist', '.nojekyll'), '');
 fs.copyFileSync(path.join(root, 'assets', 'brand', 'tazmany-logo.png'), path.join(root, 'dist', 'assets', 'tazmany-logo.png'));
+fs.copyFileSync(path.join(root, 'assets', 'brand', 'tazmany-logo.png'), path.join(root, 'dist', 'assets', 'brand', 'tazmany-logo.png'));
+fs.copyFileSync(path.join(root, 'assets', 'legal.css'), path.join(root, 'dist', 'assets', 'legal.css'));
+fs.copyFileSync(path.join(root, 'privacidad.html'), path.join(root, 'dist', 'privacidad.html'));
+fs.copyFileSync(path.join(root, 'terminos.html'), path.join(root, 'dist', 'terminos.html'));
+fs.copyFileSync(path.join(root, 'CNAME'), path.join(root, 'dist', 'CNAME'));
 const versionedPreview = `tazmany-preview-amarillo-v${packageJson.version}.html`;
 fs.writeFileSync(path.join(root, 'dist', versionedPreview), distHtml);
 console.log(`Preview generated: index.html, dist/index.html, dist/preview.html and dist/${versionedPreview}`);

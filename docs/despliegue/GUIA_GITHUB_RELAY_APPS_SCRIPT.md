@@ -1,4 +1,4 @@
-# Guía — Cierre 0.3.9: GitHub Pages conectado a Apps Script
+# Guía — Cierre 0.3.11: tazmany.com conectado a Apps Script
 
 ## 1. Actualizar Apps Script
 
@@ -20,7 +20,7 @@ En Apps Script abre **Configuración del proyecto → Propiedades de la secuenci
 TAZMANY_ENVIRONMENT = staging
 TAZMANY_GOOGLE_CLIENT_ID = TU_CLIENT_ID.apps.googleusercontent.com
 TAZMANY_GOOGLE_VERIFY_MODE = TOKENINFO
-TAZMANY_ALLOWED_FRONTEND_ORIGINS = https://jeffersonmgr07.github.io
+TAZMANY_ALLOWED_FRONTEND_ORIGINS = https://tazmany.com,https://www.tazmany.com,https://jeffersonmgr07.github.io
 ```
 
 `TOKENINFO` se usa únicamente durante desarrollo y sandbox. Antes del lanzamiento público con pagos debe sustituirse por la verificación de producción configurada en el backend.
@@ -39,7 +39,7 @@ En Apps Script abre **Configuración del proyecto → Propiedades de la secuenci
 
 ```text
 TAZMANY_API_RELAY_SECRET = resultado generado
-TAZMANY_ALLOWED_FRONTEND_ORIGINS = https://jeffersonmgr07.github.io
+TAZMANY_ALLOWED_FRONTEND_ORIGINS = https://tazmany.com,https://www.tazmany.com,https://jeffersonmgr07.github.io
 ```
 
 Ejecuta:
@@ -90,17 +90,18 @@ git commit -m "Cerrar interfaz publica y prepagos Tazmany 0.3.9"
 git push origin main
 ```
 
-Abre `https://jeffersonmgr07.github.io/tazmany/` y fuerza recarga con `Command + Shift + R`.
+Abre `https://tazmany.com/` y fuerza recarga con `Command + Shift + R`.
 
 ## 7. Google Identity
 
 En la credencial OAuth Web agrega como origen autorizado:
 
 ```text
-https://jeffersonmgr07.github.io
+https://tazmany.com
+https://www.tazmany.com
 ```
 
-No agregues `/tazmany/` porque un origen no contiene rutas.
+Conserva temporalmente `https://jeffersonmgr07.github.io` como origen de respaldo. Los orígenes no contienen rutas ni `/` final.
 
 Copia el Client ID del tipo **Aplicación web** y guárdalo en la propiedad `TAZMANY_GOOGLE_CLIENT_ID`. El secreto OAuth no se utiliza en el navegador ni debe subirse al repositorio.
 

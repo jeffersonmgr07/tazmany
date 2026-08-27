@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import crypto from 'node:crypto';
 
 const root = process.cwd();
-const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/Phase37Setup.gs','src/Phase39Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
+const required = ['CNAME','index.html','privacidad.html','terminos.html','assets/legal.css','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/Phase37Setup.gs','src/Phase39Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
 for (const file of required) if (!fs.existsSync(path.join(root,file))) throw new Error(`Missing required file: ${file}`);
 
 const officialLogo = fs.readFileSync(path.join(root, 'assets', 'brand', 'tazmany-logo.png'));
@@ -44,7 +44,8 @@ const rootIndex = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 if (/<\?(!?=|=)/.test(rootIndex)) throw new Error('Root index.html contains unresolved Apps Script template tags.');
 if (!rootIndex.includes('"environment":"public-web"')) throw new Error('Root index.html must be the public static web build.');
 if (!rootIndex.includes('assets/brand/tazmany-logo.png')) throw new Error('Root index.html must reference the existing repository logo.');
-if (!rootIndex.includes('assets/brand/tazmany-logo.png?v=0.3.9')) throw new Error('Root index.html must cache-bust the approved logo for version 0.3.9.');
+if (!rootIndex.includes('assets/brand/tazmany-logo.png?v=0.3.11')) throw new Error('Root index.html must cache-bust the approved logo for version 0.3.11.');
+if (fs.readFileSync(path.join(root, 'CNAME'), 'utf8').trim() !== 'tazmany.com') throw new Error('GitHub Pages CNAME must use tazmany.com.');
 for (const blockedText of ['Demo de desarrollo','Pagos y canjes aún desactivados','Haz que más personas','Checkout reservado','Conecta el relay','GitHub Pages','se registran en Sheets']) {
   if (rootIndex.includes(blockedText)) throw new Error(`Public index exposes internal copy: ${blockedText}`);
 }

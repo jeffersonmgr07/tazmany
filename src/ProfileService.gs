@@ -29,8 +29,8 @@ function validateCustomerProfilePayload_(payload) {
   cityIds = cityIds.filter(function (cityId, index, list) { return list.indexOf(cityId) === index; }).slice(0, 8);
   if (payload.acceptTerms !== true || payload.acceptPrivacy !== true) throw createPublicError_('LEGAL_ACCEPTANCE_REQUIRED', 'Debes aceptar los términos y la política de privacidad.');
   var properties = PropertiesService.getScriptProperties();
-  var termsVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-24';
-  var privacyVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-24';
+  var termsVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-27';
+  var privacyVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-27';
   return {
     firstName: firstName, lastName: lastName, documentType: document.type, documentNumber: document.number,
     phoneE164: phoneE164, primaryCityId: primaryCityId, cityIds: cityIds,

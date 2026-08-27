@@ -1,10 +1,10 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.9',
+  VERSION: '0.3.11',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
-  DEFAULT_PUBLIC_LOGO_URL: 'https://jeffersonmgr07.github.io/tazmany/assets/brand/tazmany-logo.png?v=0.3.9',
+  DEFAULT_PUBLIC_LOGO_URL: 'https://tazmany.com/assets/brand/tazmany-logo.png?v=0.3.11',
   CACHE_SECONDS: 300,
   SCRIPT_PROPERTIES: Object.freeze({
     SPREADSHEET_ID: 'TAZMANY_SPREADSHEET_ID',
@@ -53,8 +53,8 @@ function getAppConfig_() {
       googleClientId: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.GOOGLE_CLIENT_ID) || '',
       googleEnabled: Boolean(properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.GOOGLE_CLIENT_ID)),
       otpEnabled: true,
-      termsVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-24',
-      privacyVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-24'
+      termsVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-27',
+      privacyVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-27'
     },
     club: { name: 'Club Tazmany', status: 'COMING_SOON' }
   };

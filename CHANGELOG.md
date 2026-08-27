@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.11 — 2026-08-27
+
+- Se estableció `https://tazmany.com` como dominio canónico del portal, la política de privacidad, los términos y el logo oficial.
+- Se añadió el archivo `CNAME` para conservar el dominio personalizado en GitHub Pages.
+- Apps Script y Cloudflare permiten el dominio principal, `www` y temporalmente el origen técnico de GitHub.
+- Las pruebas bloquean la reaparición de enlaces legales visibles con el dominio anterior.
+- Se mantuvieron `staging`, `TOKENINFO` y todos los cobros desactivados.
+
+## 0.3.10 — 2026-08-27
+
+- Se publicaron páginas independientes de Política de Privacidad y Términos y condiciones para el cierre de Google Identity en staging.
+- La política describe los datos básicos recibidos de Google, finalidades, proveedores tecnológicos, comunicaciones y derechos ARCO.
+- El correo público provisional de soporte y privacidad es `tazmani.store@gmail.com`.
+- Los enlaces legales, de devoluciones, ayuda y derechos ARCO del portal dejaron de ser marcadores vacíos.
+- Se mantuvieron bloqueados los pagos y la facturación del Club; no se modificó el esquema de Google Sheets.
+
 ## 0.3.9 — 2026-08-27
 
 - Se retiraron de la interfaz pública los avisos de demo, desarrollo, fases, Sheets, backend, GitHub Pages y relay.
