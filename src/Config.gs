@@ -1,10 +1,10 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.6',
+  VERSION: '0.3.8',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
-  DEFAULT_PUBLIC_LOGO_URL: 'https://jeffersonmgr07.github.io/tazmany/assets/brand/tazmany-logo.png',
+  DEFAULT_PUBLIC_LOGO_URL: 'https://jeffersonmgr07.github.io/tazmany/assets/brand/tazmany-logo.png?v=0.3.8',
   CACHE_SECONDS: 300,
   SCRIPT_PROPERTIES: Object.freeze({
     SPREADSHEET_ID: 'TAZMANY_SPREADSHEET_ID',
@@ -26,7 +26,7 @@ var TAZMANY_CONFIG = Object.freeze({
   }),
   PUBLIC_VIEWS: Object.freeze(['home', 'customer', 'merchant', 'admin']),
   CAMPAIGN_PUBLIC_STATES: Object.freeze(['ACTIVA', 'PROGRAMADA', 'AGOTADA']),
-  DEMO_NOTICE: 'Fase 3.6: ubicación, suscriptores y Club Tazmany. Pagos y canjes permanecen desactivados.'
+  DEMO_NOTICE: 'Fase 3 cerrada, identidad oficial actualizada. Pagos y canjes permanecen desactivados hasta aprobar el diagnóstico previo a pagos.'
 });
 
 function getAppConfig_() {

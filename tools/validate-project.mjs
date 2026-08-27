@@ -1,10 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import crypto from 'node:crypto';
 
 const root = process.cwd();
-const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
+const required = ['index.html','assets/brand/tazmany-logo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/Phase37Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
 for (const file of required) if (!fs.existsSync(path.join(root,file))) throw new Error(`Missing required file: ${file}`);
+
+const officialLogo = fs.readFileSync(path.join(root, 'assets', 'brand', 'tazmany-logo.png'));
+const officialLogoHash = crypto.createHash('sha256').update(officialLogo).digest('hex');
+if (officialLogoHash !== '4998f9e9cfc4611fe821c13541fdd1943db1876636049203c0e2c1f4437cd1f3') {
+  throw new Error('Official Tazmany logo does not match the approved master file.');
+}
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root,'src/appsscript.json'),'utf8'));
 if (manifest.runtimeVersion !== 'V8') throw new Error('Apps Script runtime must be V8');
@@ -37,6 +44,7 @@ const rootIndex = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 if (/<\?(!?=|=)/.test(rootIndex)) throw new Error('Root index.html contains unresolved Apps Script template tags.');
 if (!rootIndex.includes('"environment":"github-pages-preview"')) throw new Error('Root index.html must be the static GitHub Pages preview.');
 if (!rootIndex.includes('assets/brand/tazmany-logo.png')) throw new Error('Root index.html must reference the existing repository logo.');
+if (!rootIndex.includes('assets/brand/tazmany-logo.png?v=0.3.8')) throw new Error('Root index.html must cache-bust the approved 0.3.8 logo.');
 const authSource = fs.readdirSync(path.join(root, 'src')).filter(file => file.endsWith('.gs')).map(file => fs.readFileSync(path.join(root, 'src', file), 'utf8')).join('\n');
 for (const requiredControl of ['LockService.getScriptLock()', 'token_hash', 'code_hash', 'IDEMPOTENCY_KEYS', 'requirePermission_', 'TAZMANY_AUTH_PEPPER']) {
   if (!authSource.includes(requiredControl)) throw new Error(`Missing Phase 2 security control: ${requiredControl}`);

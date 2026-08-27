@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.8 — 2026-08-27
+
+- Se incorporó sin modificaciones el último logotipo oficial transparente de Tazmany, con isotipo circular a la izquierda y logotipo a la derecha, sin eslogan.
+- Se actualizó el hash de integridad del activo oficial.
+- Se añadió versionado de caché a la URL del logo para que GitHub Pages y Apps Script muestren inmediatamente la nueva identidad.
+- Se mantuvo intacto el alcance funcional de la Fase 3.7: esta actualización no habilita pagos, cupones ni canjes.
+
+## 0.3.7 — 2026-08-25
+
+- Se corrigió la detección de entorno: una Web App servida por Apps Script ya no se marca como vista previa estática.
+- El formulario de suscripción vuelve a ejecutar `apiSubscribeToOffers` mediante `google.script.run` y persiste en `MARKETING_SUBSCRIBERS`.
+- Se reintrodujo `FrontendBridgeSetup.gs` en la entrega incremental para evitar instalaciones incompletas entre 0.3.5 y 0.3.6.
+- Los diagnósticos de Fase 3.6 y del puente ahora escriben el resultado completo en el registro de ejecución.
+- Se añadió `getTazmanyPrePaymentReadinessDiagnostics()` como puerta de seguridad previa a Mercado Pago.
+
 ## 0.3.6 — 2026-08-25
 
 - Selector accesible de país y ciudad para visitantes sin cuenta.

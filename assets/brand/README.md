@@ -1,12 +1,12 @@
 # Activos de marca Tazmany
 
-`tazmany-logo.png` es una copia sin modificar del logotipo oficial proporcionado. Su hash SHA-256 es:
+`tazmany-logo.png` es una copia sin modificar del logotipo oficial vigente proporcionado el 27 de agosto de 2026. Su hash SHA-256 es:
 
 ```text
-d2c00d2c43a30d58d1a02088181179d074d2ac0fb2b05257b11d4d32185b82ab
+4998f9e9cfc4611fe821c13541fdd1943db1876636049203c0e2c1f4437cd1f3
 ```
 
-La vista previa local lo carga desde esta carpeta. Apps Script no sirve automáticamente archivos binarios del repositorio; en el ambiente desplegado configura una URL pública controlada mediante `TAZMANY_LOGO_URL`.
+La vista previa local lo carga desde esta carpeta. Apps Script no sirve automáticamente archivos binarios del repositorio; en el ambiente desplegado usa la URL pública controlada mediante `TAZMANY_LOGO_URL`. La versión `0.3.8` añade un parámetro de versión a la URL para evitar que el navegador conserve el logo anterior en caché.
 
 La interfaz mantiene un wordmark de respaldo para que nunca aparezca una imagen rota. No se ha recortado, recoloreado, deformado ni redibujado la mascota.
 

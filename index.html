@@ -142,7 +142,7 @@
   </head>
   <body>
     <script>
-      window.TAZMANY_CONFIG = {"appName":"Tazmany","version":"0.3.6","environment":"github-pages-preview","logoUrl":"assets/brand/tazmany-logo.png","apiBaseUrl":"","isStaticPreview":true,"demoNotice":"Vista visual: falta configurar el puente seguro con Apps Script","auth":{"googleClientId":"","googleEnabled":false,"otpEnabled":false,"termsVersion":"2026-08-24","privacyVersion":"2026-08-24"}};
+      window.TAZMANY_CONFIG = {"appName":"Tazmany","version":"0.3.8","environment":"github-pages-preview","logoUrl":"assets/brand/tazmany-logo.png?v=0.3.8","apiBaseUrl":"","isStaticPreview":true,"demoNotice":"Vista visual: falta configurar el puente seguro con Apps Script","auth":{"googleClientId":"","googleEnabled":false,"otpEnabled":false,"termsVersion":"2026-08-24","privacyVersion":"2026-08-24"}};
       window.TAZMANY_INITIAL_VIEW = 'home';
     </script>
     <svg class="tazmany-icon-sprite" aria-hidden="true" focusable="false">
@@ -625,6 +625,7 @@
     if(hasRemoteApi())return callRemoteApi(name,args).then(response=>response&&response.ok?response.data:Promise.reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'}));
     return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run)){reject({code:'STATIC_PREVIEW',message:'Esta acción necesita configurar el puente seguro del sitio.'});return}const runner=google.script.run.withSuccessHandler(response=>response&&response.ok?resolve(response.data):reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'})).withFailureHandler(error=>reject({code:'SERVER_ERROR',message:error&&error.message||'No pudimos conectar con el servidor.'}));runner[name](...(args||[]))});
   }
+  function hasAppsScriptBridge(){return Boolean(window.google&&google.script&&google.script.run)}
   function hasRemoteApi(){return Boolean(window.TAZMANY_CONFIG&&/^https:\/\//.test(String(window.TAZMANY_CONFIG.apiBaseUrl||'')))}
   async function callRemoteApi(name,args){
     const endpoint=`${String(window.TAZMANY_CONFIG.apiBaseUrl).replace(/\/+$/,'')}/api`;let response;
@@ -634,7 +635,7 @@
   }
   async function loadPublicData(){
     const cityId=state.location&&state.location.cityId||'';state.publicData=await callServer('apiGetPublicBootstrap',cityId?[cityId]:[],filterFallbackByCity(fallback,cityId));const remoteUrl=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.apiBaseUrl||'';
-    if(state.publicData&&state.publicData.config)window.TAZMANY_CONFIG=Object.assign({},window.TAZMANY_CONFIG,state.publicData.config,{apiBaseUrl:remoteUrl,isStaticPreview:!remoteUrl});
+    if(state.publicData&&state.publicData.config)window.TAZMANY_CONFIG=Object.assign({},window.TAZMANY_CONFIG,state.publicData.config,{apiBaseUrl:remoteUrl,isStaticPreview:!remoteUrl&&!hasAppsScriptBridge()});
     syncLocationLabels();renderCategories();renderOffers();renderMerchants();
   }
   function readStoredLocation(){try{return JSON.parse(localStorage.getItem('tazmany_location')||'null')}catch(error){return null}}
@@ -756,7 +757,7 @@
   }
   function reviewCard(type,item,detail){return `<article class="review-card"><div><span class="status-pill">${escapeHtml(item.status)}</span><h3>${escapeHtml(item.tradeName||item.title)}</h3><p>${escapeHtml(detail)}</p>${item.reviewNotes?`<small>${escapeHtml(item.reviewNotes)}</small>`:''}</div><div class="review-card-actions"><button class="button button-small button-primary" type="button" data-review="APPROVE" data-review-type="${type}" data-review-id="${escapeHtml(item.id)}">Aprobar</button><button class="button button-small button-outline" type="button" data-review="${type==='merchant'?'OBSERVE':'REQUEST_CHANGES'}" data-review-type="${type}" data-review-id="${escapeHtml(item.id)}">Observar</button></div></article>`}
   async function performReview(button){const type=button.dataset.reviewType,decision=button.dataset.review;let reason='';if(decision!=='APPROVE'){reason=window.prompt('Escribe un motivo verificable (mínimo 10 caracteres):')||'';if(reason.length<10)return showToast('Motivo requerido','Escribe al menos 10 caracteres.')}button.disabled=true;try{if(isStaticPreview()){const list=type==='merchant'?fallback.admin.merchants:fallback.admin.campaigns;const index=list.findIndex(item=>item.id===button.dataset.reviewId);if(index>=0)list.splice(index,1);state.adminLoaded=false;showToast('Decisión demostrativa','En Apps Script quedaría registrada en la auditoría.');return loadAdmin()}const api=type==='merchant'?'apiReviewMerchant':'apiReviewCampaign';await callServerStrict(api,[sessionToken(),button.dataset.reviewId,decision,reason,newIdempotencyKey(`${type}-review`)]);state.adminLoaded=false;showToast('Decisión registrada','Se actualizó el estado y la auditoría.');await loadAdmin()}catch(error){showToast('No pudimos revisar',error.message||'Inténtalo nuevamente.')}finally{button.disabled=false}}
-  function isStaticPreview(){return Boolean(window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.isStaticPreview)}
+  function isStaticPreview(){return !hasRemoteApi()&&!hasAppsScriptBridge()}
   function sessionToken(){return localStorage.getItem('tazmany_session_token')||''}
   function newIdempotencyKey(scope){const id=window.crypto&&crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`;return `web:${scope}:${id}`}
   function deviceLabel(){const mobile=/Mobi|Android/i.test(navigator.userAgent);return `${mobile?'Móvil':'Computadora'} · ${navigator.platform||'Navegador'}`.slice(0,80)}

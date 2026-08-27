@@ -4,7 +4,21 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.6` — Fase 3.6: selector anónimo de país/ciudad, suscriptores gratuitos, base de Club Tazmany y doble precio público/Club. Mercado Pago continúa bloqueado.
+Versión `0.3.8` — cierre visual y técnico de Fase 3: incorpora sin modificaciones el último logo oficial, conserva la corrección de suscriptores y mantiene la puerta de seguridad previa a pagos. Mercado Pago continúa bloqueado.
+
+### Actualización visual 0.3.8
+
+- Se reemplazó el activo oficial `assets/brand/tazmany-logo.png` por el último logo aprobado, sin recortarlo, recolorearlo, deformarlo ni redibujarlo.
+- El encabezado y el pie usan el mismo archivo oficial tanto en GitHub Pages como en la Web App de Apps Script.
+- La URL del logo incorpora `?v=0.3.8` para evitar que el navegador muestre la imagen anterior desde caché.
+- No hay migraciones de Google Sheets ni nuevas funciones de setup para esta actualización visual.
+
+### Corrección 0.3.7
+
+- La Web App directa reconoce `google.script.run` y ya no se confunde con GitHub Pages sin relay.
+- El formulario de suscripción solo confirma el alta después de persistir el correo en `MARKETING_SUBSCRIBERS`.
+- `FrontendBridgeSetup.gs` vuelve a incluirse en la entrega incremental para proyectos que omitieron el paquete 0.3.5.
+- `getTazmanyPrePaymentReadinessDiagnostics()` concentra identidad, RBAC, comercios, suscriptores y puente antes de habilitar pagos.
 
 ### Qué incorpora la Fase 3.6
 
@@ -15,7 +29,7 @@ Versión `0.3.6` — Fase 3.6: selector anónimo de país/ciudad, suscriptores g
 - Club Tazmany queda configurado a S/ 9.90 el primer mes y S/ 19.90 después, con estado `COMING_SOON` y sin cobros.
 - La UI conserva la paleta Tazmany y usa iconos SVG originales; no contiene recursos ni interfaz copiada de Groupon.
 
-Después de `clasp push`, ejecuta una vez `setupTazmanyPhase36()` y luego `getTazmanyPhase36Diagnostics()`.
+Después de `clasp push`, ejecuta `getTazmanyPhase36Diagnostics()`, `getTazmanyFrontendBridgeDiagnostics()` y `getTazmanyPrePaymentReadinessDiagnostics()`.
 
 ### Real en la Web App de Apps Script
 
@@ -173,6 +187,7 @@ En el editor de Apps Script, ejecuta en este orden y acepta los permisos solicit
 6. `getTazmanyPhase3Diagnostics()` — resume comercios, campañas, contratos y problemas pendientes.
 7. `setupTazmanyFrontendBridge()` — registra el origen inicial de GitHub Pages y verifica la configuración del puente.
 8. `getTazmanyFrontendBridgeDiagnostics()` — comprueba que el secreto y los orígenes estén configurados sin revelar el secreto.
+9. `getTazmanyPrePaymentReadinessDiagnostics()` — bloquea el paso a pagos mientras Google Identity o el puente seguro tengan problemas.
 
 `seedDemoData()` ya es llamado por `setupTazmany()`. Solo ejecútalo aparte si deseas reponer datos ficticios determinísticos.
 

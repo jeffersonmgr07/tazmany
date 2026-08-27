@@ -34,8 +34,8 @@ function renderStaticPreview(logoUrl) {
     .replace("'<?= initialView ?>'", "'home'");
 }
 
-const rootHtml = renderStaticPreview('assets/brand/tazmany-logo.png');
-const distHtml = renderStaticPreview('assets/tazmany-logo.png');
+const rootHtml = renderStaticPreview(`assets/brand/tazmany-logo.png?v=${packageJson.version}`);
+const distHtml = renderStaticPreview(`assets/tazmany-logo.png?v=${packageJson.version}`);
 
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 fs.mkdirSync(path.join(root, 'dist', 'assets'), { recursive: true });

@@ -1,6 +1,6 @@
 {
   "name": "tazmany-webapp",
-  "version": "0.3.6",
+  "version": "0.3.8",
   "private": true,
   "description": "Marketplace peruano de ofertas y cupones digitales sobre Google Apps Script.",
   "type": "module",
