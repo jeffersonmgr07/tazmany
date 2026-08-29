@@ -1,15 +1,23 @@
-function doGet(e) {
-  var template = HtmlService.createTemplateFromFile('index');
-  template.initialView = getRequestedView_(e);
-  template.appConfig = JSON.stringify(getAppConfig_());
-  return template.evaluate()
-    .setTitle('Tazmany | Ofertas que sí valen la pena')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
+function doGet() {
+  var publicUrl = 'https://tazmany.com/';
+  return HtmlService.createHtmlOutput(
+    '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+    '<meta name="robots" content="noindex,nofollow">' +
+    '<meta http-equiv="refresh" content="0;url=' + publicUrl + '">' +
+    '<base target="_top"><title>Abriendo Tazmany</title></head>' +
+    '<body style="font-family:Arial,sans-serif;padding:32px;color:#182635">' +
+    '<p>Abriendo el portal oficial de Tazmany…</p>' +
+    '<p><a href="' + publicUrl + '">Continuar a tazmany.com</a></p>' +
+    '<script>window.top.location.replace(' + JSON.stringify(publicUrl) + ');<\/script>' +
+    '</body></html>'
+  ).setTitle('Tazmany');
 }
 
 function doPost(e) {
   var path = String(e && e.pathInfo || '').replace(/^\/+|\/+$/g, '');
-  if (path === 'api') return handleFrontendApiPost_(e);
+  // The relay posts to the web-app root. Google can reserve /exec/api and
+  // reject it before Apps Script invokes this function.
+  if (!path || path === 'api') return handleFrontendApiPost_(e);
   // Mercado Pago y otros webhooks permanecen fuera de alcance hasta la Fase 4.
   return createJsonOutput_({
     ok: false,
@@ -41,6 +49,9 @@ function apiGetCustomerDashboard(sessionToken) {
     return getCustomerDashboardForUser_(context.user.id);
   });
 }
+
+// Las órdenes y reservas de stock comienzan en Fase 4. Los cobros continúan
+// deshabilitados hasta que Mercado Pago sandbox supere sus diagnósticos.
 
 function apiGetMerchantDashboard(sessionToken) {
   return executeApi_(function () {

@@ -99,6 +99,7 @@ function saveCustomerProfile_(user, payload) {
     before_hash: beforeHash, after_hash: sha256Base64Url_(JSON.stringify(profile)),
     metadata_json: JSON.stringify({ termsVersion: payload.termsVersion, privacyVersion: payload.privacyVersion, phoneVerified: Boolean(privateData.phone_verified_at) })
   });
+  invalidateCustomerDashboardCache_(user.id);
   return getCustomerProfileDto_(user);
 }
 

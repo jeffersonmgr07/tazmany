@@ -1,10 +1,10 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.15',
+  VERSION: '0.4.0',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
-  DEFAULT_PUBLIC_LOGO_URL: 'https://tazmany.com/assets/brand/tazmany-logo.png?v=0.3.15',
+  DEFAULT_PUBLIC_LOGO_URL: 'https://tazmany.com/assets/brand/tazmany-logo.png?v=0.4.0',
   CACHE_SECONDS: 300,
   SCRIPT_PROPERTIES: Object.freeze({
     SPREADSHEET_ID: 'TAZMANY_SPREADSHEET_ID',
@@ -31,7 +31,10 @@ var TAZMANY_CONFIG = Object.freeze({
     CHECKOUT_ENABLED: false,
     CLUB_BILLING_ENABLED: false,
     INTERNAL_NOTICES_VISIBLE: false
-  })
+  }),
+  ORDER_RESERVATION_MINUTES: 10,
+  PUBLIC_CASHBACK_BASIS_POINTS: 100,
+  CLUB_CASHBACK_BASIS_POINTS: 300
 });
 
 function getAppConfig_() {
@@ -56,6 +59,11 @@ function getAppConfig_() {
       termsVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.TERMS_VERSION) || '2026-08-27',
       privacyVersion: properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-27'
     },
-    club: { name: 'Club Tazmany', status: 'COMING_SOON' }
+    club: { name: 'Club Tazmany', status: 'COMING_SOON' },
+    commerce: {
+      orderReservationsEnabled: true,
+      paymentsEnabled: false,
+      reservationMinutes: TAZMANY_CONFIG.ORDER_RESERVATION_MINUTES
+    }
   };
 }

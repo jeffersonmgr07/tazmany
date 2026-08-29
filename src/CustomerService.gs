@@ -1,4 +1,8 @@
 function getCustomerDashboardForUser_(customerId) {
+  var cache = CacheService.getScriptCache();
+  var cacheKey = customerDashboardCacheKey_(customerId);
+  var cached = cache.get(cacheKey);
+  if (cached) return JSON.parse(cached);
   var repository = getDataRepository_();
   var user = repository.findById('USERS', customerId) || {};
   var profile = repository.list('CUSTOMER_PROFILES').find(function (item) { return item.user_id === customerId && item.status === 'ACTIVE'; }) || {};
@@ -7,7 +11,7 @@ function getCustomerDashboardForUser_(customerId) {
   var campaigns = indexById_(repository.list('CAMPAIGNS'));
   var merchants = indexById_(repository.list('MERCHANTS'));
   var cashback = repository.list('CASHBACK_LEDGER').filter(function (item) { return item.customer_user_id === customerId && item.status === 'AVAILABLE'; });
-  return {
+  var result = {
     demo: false,
     profile: {
       name: user.display_name || 'Cliente Tazmany',
@@ -33,6 +37,17 @@ function getCustomerDashboardForUser_(customerId) {
       return { label: 'Cashback ' + String(item.status).toLowerCase(), detail: 'Movimiento ' + String(item.id).slice(0, 8), amountCents: Number(item.amount_cents || 0), dateLabel: toIsoString_(item.created_at).slice(0, 10) };
     })
   };
+  var serialized = JSON.stringify(result);
+  if (serialized.length < 90000) cache.put(cacheKey, serialized, 60);
+  return result;
+}
+
+function customerDashboardCacheKey_(customerId) {
+  return 'customer-dashboard-v1-' + sha256Base64Url_(String(customerId || '')).slice(0, 36);
+}
+
+function invalidateCustomerDashboardCache_(customerId) {
+  CacheService.getScriptCache().remove(customerDashboardCacheKey_(customerId));
 }
 
 function getCustomerDashboardDemo_() {

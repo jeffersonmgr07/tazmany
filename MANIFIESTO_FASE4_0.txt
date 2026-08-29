@@ -1,0 +1,58 @@
+TAZMANY FASE 4.0 — VERSION 0.4.0
+
+ARCHIVOS NUEVOS DE APPS SCRIPT
+src/OrderService.gs
+src/Phase4Setup.gs
+
+ARCHIVOS MODIFICADOS DE APPS SCRIPT
+src/Config.gs
+src/Setup.gs
+src/RbacService.gs
+src/CampaignService.gs
+src/CampaignWorkflowService.gs
+src/CustomerService.gs
+src/ProfileService.gs
+src/FrontendApiGateway.gs
+src/Main.gs
+src/Seed.gs
+src/index.html
+src/app.html
+src/auth.html
+src/components.html
+src/scripts.html
+src/styles.html
+
+CLOUDFLARE
+worker/tazmany-api-relay.js
+wrangler.toml
+
+GITHUB PAGES
+index.html
+CNAME
+assets/brand/tazmany-logo.png
+assets/brand/tazmany-isotipo.png
+dist/index.html
+dist/tazmany-preview-amarillo-v0.4.0.html
+
+VALIDACION Y DOCUMENTACION
+tools/build-preview.mjs
+tools/validate-project.mjs
+tests/unit/phase4-foundation.test.mjs
+tests/unit/public-copy.test.mjs
+package.json
+package-lock.json
+README.md
+CHANGELOG.md
+ENTREGA_FASE_4_0.md
+
+FUNCION DE INSTALACION
+setupTazmanyPhase4()
+
+FUNCION DE DIAGNOSTICO
+getTazmanyPhase4Diagnostics()
+
+ESTADO FINANCIERO
+Ordenes y reservas: habilitadas en backend.
+Mercado Pago: deshabilitado.
+Cupones posteriores al pago: deshabilitados.
+Facturacion de Club: deshabilitada.

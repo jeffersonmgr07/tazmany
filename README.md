@@ -4,7 +4,19 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.15` — ajuste visual final con la Fase 3 cerrada. `tazmany.com` es la única interfaz conectada; Cloudflare comunica GitHub Pages con Apps Script y Apps Script queda exclusivamente como backend. Mercado Pago continúa bloqueado hasta iniciar la Fase 4.
+Versión `0.4.0` — inicio controlado de la Fase 4. `tazmany.com` continúa como única interfaz pública; Cloudflare comunica GitHub Pages con Apps Script y Apps Script conserva los datos en Sheets. Las órdenes y reservas temporales de inventario ya tienen backend, mientras Mercado Pago permanece bloqueado hasta el siguiente incremento en sandbox.
+
+### Fase 4.0 — órdenes y reservas sin cobro
+
+- Todos los importes se almacenan como céntimos enteros y se presentan correctamente: `8990` equivale a `S/ 89.90`.
+- Las tarjetas priorizan el precio Club con 3 % de cashback; el precio público muestra 1 %.
+- El banner de Club Tazmany comunica S/ 4.90 el primer mes y S/ 9.90 desde el segundo.
+- Se añadió favicon con el isotipo oficial y viewport responsive para móviles, tablets y escritorio.
+- El catálogo público se conserva temporalmente en caché del navegador y el panel del cliente se precarga y cachea durante 60 segundos.
+- El backend crea órdenes idempotentes, congela precio y condiciones, y reserva inventario durante 10 minutos.
+- La cancelación o expiración libera la reserva. El servidor decide si corresponde precio público o Club.
+- `setupTazmanyPhase4()` aplica las columnas incrementales y `getTazmanyPhase4Diagnostics()` verifica el inicio de la fase.
+- Mercado Pago, confirmación de pagos, cupones y cobro del Club siguen desactivados.
 
 ### Ajuste visual final — 0.3.15
 
@@ -94,16 +106,16 @@ Después de `clasp push`, ejecuta `getTazmanyPhase36Diagnostics()`, `getTazmanyF
 - Gateway de acciones con lista permitida, validación de origen y secreto compartido entre relay y Apps Script.
 - Cliente web capaz de usar `google.script.run` dentro de Apps Script o la API remota cuando GitHub Pages tiene configurado el relay.
 
-### Visual o simulado
+### Visual o pendiente
 
-- GitHub Pages permanece como vista visual mientras `TAZMANY_API_BASE_URL` esté vacío. Después de desplegar y configurar el relay, se convierte en la interfaz conectada sin alojar secretos.
-- Datos de órdenes, cupones, cashback y liquidaciones siguen siendo ficticios.
+- El build de GitHub exige `TAZMANY_API_BASE_URL`; `tazmany.com` no debe publicarse como una vista desconectada.
+- Órdenes y reservas temporales de inventario son reales en backend desde 0.4.0; los pagos, cupones, cashback acreditado y liquidaciones siguen pendientes.
 
 ### Pendiente o bloqueado
 
 - La verificación de Google mediante `tokeninfo` está permitida solo en desarrollo/staging. Producción exige configurar un relay que valide criptográficamente el ID token con una biblioteca oficial de Google.
 - El celular se registra, pero queda `phoneVerified: false` hasta integrar un proveedor SMS.
-- Mercado Pago, compras, QR, canjes y operaciones financieras permanecen desactivados.
+- Mercado Pago, confirmación de compras, QR, canjes y operaciones financieras permanecen desactivados. Las reservas creadas en 0.4.0 no procesan dinero.
 - El relay debe desplegarse y superar las pruebas de OTP, sesiones, RBAC e idempotencia antes de iniciar la Fase 4.
 
 ## Arquitectura

@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 
 const root = process.cwd();
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-const required = ['CNAME','index.html','privacidad.html','terminos.html','assets/legal.css','assets/brand/tazmany-logo.png','assets/brand/tazmany-isotipo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/phone-countries.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/Phase37Setup.gs','src/Phase39Setup.gs','src/Phase312Setup.gs','src/Phase314Setup.gs','src/Phase315Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
+const required = ['CNAME','index.html','privacidad.html','terminos.html','assets/legal.css','assets/brand/tazmany-logo.png','assets/brand/tazmany-isotipo.png','src/index.html','src/styles.html','src/scripts.html','src/auth.html','src/phone-countries.html','src/category-icons.html','src/phase3.html','src/discovery.html','src/Main.gs','src/Setup.gs','src/Seed.gs','src/SheetRepository.gs','src/AuthService.gs','src/OtpService.gs','src/SessionService.gs','src/RbacService.gs','src/IdempotencyService.gs','src/ProfileService.gs','src/GoogleIdentityService.gs','src/OrderService.gs','src/Phase2Setup.gs','src/Phase3Setup.gs','src/Phase36Setup.gs','src/Phase37Setup.gs','src/Phase39Setup.gs','src/Phase312Setup.gs','src/Phase314Setup.gs','src/Phase315Setup.gs','src/Phase4Setup.gs','src/DiscoveryService.gs','src/FrontendApiGateway.gs','src/FrontendBridgeSetup.gs','src/MerchantOnboardingService.gs','src/CampaignWorkflowService.gs','src/ContractService.gs','src/ModerationService.gs','worker/tazmany-api-relay.js','wrangler.toml','src/appsscript.json','README.md'];
 for (const file of required) if (!fs.existsSync(path.join(root,file))) throw new Error(`Missing required file: ${file}`);
 
 const officialLogo = fs.readFileSync(path.join(root, 'assets', 'brand', 'tazmany-logo.png'));
@@ -49,6 +49,8 @@ if (!rootIndex.includes('"isStaticPreview":false')) throw new Error('Root index.
 if (!rootIndex.includes('assets/brand/tazmany-logo.png')) throw new Error('Root index.html must reference the existing repository logo.');
 if (!rootIndex.includes(`assets/brand/tazmany-logo.png?v=${packageJson.version}`)) throw new Error('Root index.html must cache-bust the approved logo with the current version.');
 if (!rootIndex.includes(`assets/brand/tazmany-isotipo.png?v=${packageJson.version}`)) throw new Error('Root index.html must use the mascot isotipo with the current cache-busting version.');
+if (!rootIndex.includes('name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"')) throw new Error('Root index.html must declare the responsive viewport.');
+if (!rootIndex.includes('rel="icon"') || !rootIndex.includes('tazmany-isotipo.png')) throw new Error('Root index.html must use the Tazmany isotipo as favicon.');
 if (fs.readFileSync(path.join(root, 'CNAME'), 'utf8').trim() !== 'tazmany.com') throw new Error('GitHub Pages CNAME must use tazmany.com.');
 for (const blockedText of ['Demo de desarrollo','Pagos y canjes aún desactivados','Haz que más personas','Checkout reservado','Conecta el relay','GitHub Pages','se registran en Sheets']) {
   if (rootIndex.includes(blockedText)) throw new Error(`Public index exposes internal copy: ${blockedText}`);
@@ -60,6 +62,10 @@ for (const requiredControl of ['LockService.getScriptLock()', 'token_hash', 'cod
 const phase3Source = ['MerchantOnboardingService.gs','CampaignWorkflowService.gs','ContractService.gs','ModerationService.gs'].map(file => fs.readFileSync(path.join(root,'src',file),'utf8')).join('\n');
 for (const requiredControl of ['runIdempotent_', 'merchant.campaigns.manage', 'admin.merchants.review', 'admin.campaigns.review', 'document_hash', 'CAMPAIGN_VERSIONS']) {
   if (!phase3Source.includes(requiredControl)) throw new Error(`Missing Phase 3 control: ${requiredControl}`);
+}
+const phase4Source = ['OrderService.gs','Phase4Setup.gs'].map(file => fs.readFileSync(path.join(root,'src',file),'utf8')).join('\n');
+for (const requiredControl of ['runIdempotent_', 'INVENTORY_RESERVATIONS', 'PENDING_PAYMENT', 'reservation_expires_at', 'customer.orders.create', 'paymentsRemainDisabled']) {
+  if (!phase4Source.includes(requiredControl) && !authSource.includes(requiredControl)) throw new Error(`Missing Phase 4 control: ${requiredControl}`);
 }
 const bridgeSource = fs.readFileSync(path.join(root, 'src', 'FrontendApiGateway.gs'), 'utf8');
 for (const requiredControl of ['constantTimeEquals_', 'API_ACTION_NOT_ALLOWED', 'ALLOWED_FRONTEND_ORIGINS', 'TAZMANY_FRONTEND_API_ACTIONS_']) {

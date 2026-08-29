@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0 — 2026-08-29
+
+- Se inició la Fase 4 con órdenes idempotentes y reservas de inventario de 10 minutos, sin habilitar cobros.
+- Se corrigió el formateo monetario: los valores almacenados en céntimos se dividen entre 100 antes de presentarse en soles.
+- Las tarjetas muestran primero el precio Club con 3 % de cashback y luego el precio público con 1 %.
+- Se incorporó una pieza promocional para Club Tazmany: S/ 4.90 el primer mes y S/ 9.90 desde el segundo.
+- Se añadió favicon del isotipo, viewport responsive y ajustes específicos para móvil, tablet y escritorio.
+- El acceso con Google bloquea solicitudes repetidas y mantiene visible el modal de actividad mientras termina la autenticación.
+- El catálogo público usa caché segura en el navegador y el panel del cliente añade precarga y caché breve para reducir esperas.
+- Se añadieron `OrderService.gs`, `Phase4Setup.gs`, rutas explícitas del gateway y acciones permitidas en el relay.
+- Mercado Pago, cupones, cobro del Club y acreditación de cashback permanecen desactivados.
+
 ## 0.3.15 — 2026-08-29
 
 - Se añadió un modal de carga con indicador circular para Google, OTP, carga y guardado del perfil.

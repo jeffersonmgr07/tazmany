@@ -1,5 +1,5 @@
 var TAZMANY_ROLE_PERMISSIONS = Object.freeze({
-  CUSTOMER: ['customer.dashboard.read', 'customer.profile.read', 'customer.profile.write', 'customer.sessions.manage'],
+  CUSTOMER: ['customer.dashboard.read', 'customer.profile.read', 'customer.profile.write', 'customer.sessions.manage', 'customer.orders.create', 'customer.orders.read', 'customer.orders.cancel'],
   MERCHANT_OWNER: ['merchant.dashboard.read', 'merchant.profile.write', 'merchant.campaigns.manage', 'merchant.users.manage', 'merchant.coupons.redeem', 'merchant.finances.read'],
   MERCHANT_ADMIN: ['merchant.dashboard.read', 'merchant.profile.write', 'merchant.campaigns.manage', 'merchant.users.manage', 'merchant.coupons.redeem'],
   CAMPAIGN_MANAGER: ['merchant.dashboard.read', 'merchant.campaigns.manage'],

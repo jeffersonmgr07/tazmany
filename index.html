@@ -3,8 +3,11 @@
   <head>
     <base target="_top">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#182635">
     <meta name="color-scheme" content="light">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/brand/tazmany-isotipo.png?v=0.4.0">
+    <link rel="apple-touch-icon" href="assets/brand/tazmany-isotipo.png?v=0.4.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -93,6 +96,37 @@
   @media(max-width:800px){.mobile-nav button.active{color:var(--amber-text)}}
 </style>
 <style>
+  /* Fase 4.0: precios Club prioritarios, promoción y responsive estable. */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}body{width:100%;max-width:100%;overflow-x:hidden}.app-shell{width:100%;max-width:100%;overflow-x:clip}
+  .offer-price-row{display:grid;grid-template-columns:1fr;gap:8px;align-items:stretch}
+  .club-card-price{display:grid!important;gap:4px;padding:9px 10px;border:1px solid #E2AE00;border-radius:12px;background:linear-gradient(120deg,#FFF4B7,var(--yellow));color:var(--navy-deep)}
+  .club-card-label{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:900;letter-spacing:.035em;text-transform:uppercase}.club-card-label .icon{color:var(--navy-deep)}
+  .club-price-line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0}.club-price{font:800 20px Poppins,sans-serif;color:var(--navy-deep)}
+  .club-cashback-pill,.public-cashback-pill{display:inline-flex;align-items:center;white-space:nowrap;border-radius:999px;padding:4px 7px;background:#E7F7ED;color:#147742;font-size:8px;font-weight:900}
+  .public-card-price{display:grid!important;gap:3px;padding:0 3px}.public-card-price>span{display:flex;align-items:center;gap:7px;min-width:0}.public-price-label{margin:0;white-space:nowrap}.public-card-price .offer-price{font-size:15px}.public-cashback-pill{margin-left:auto;padding:3px 6px;background:#EEF2F6;color:var(--navy);font-size:7px}.normal-price{font-size:9px}
+  .dialog-pricing{grid-template-columns:repeat(3,minmax(0,1fr))}.dialog-club-price{order:-1;box-shadow:inset 0 0 0 1px #D9A500}
+  .club-banner{grid-template-columns:108px minmax(0,1fr) auto;position:relative;overflow:hidden;padding:34px 38px;background:radial-gradient(circle at 8% 10%,rgba(242,183,5,.24),transparent 28%),linear-gradient(120deg,var(--navy-deep),#173B61)}
+  .club-banner::after{content:"";position:absolute;right:-65px;bottom:-105px;width:240px;height:240px;border:42px solid rgba(242,183,5,.1);border-radius:50%;pointer-events:none}.club-promo-mascot{width:104px;height:104px;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(0,0,0,.25));position:relative;z-index:1}.club-promo-copy{position:relative;z-index:1;min-width:0}.club-launch-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:var(--yellow);color:var(--navy-deep);font-size:9px;font-weight:900;letter-spacing:.07em}.club-banner h2{margin:8px 0 4px;font-size:clamp(24px,3vw,34px);line-height:1.18}.club-banner h2 strong{color:var(--yellow);white-space:nowrap}.club-banner p{font-size:14px}.club-banner small{display:block;margin-top:5px;color:#BFD0E1;font-size:10px}.club-benefit-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.club-benefit-row b{padding:5px 8px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);font-size:8px}.club-banner>.button{position:relative;z-index:1}
+  .google-auth-area.is-busy{opacity:.55;pointer-events:none}.google-auth-area.is-busy::after{content:"Conectando…";display:block;margin-top:8px;color:var(--navy);font-size:11px;font-weight:800}
+  .category-strip .skeleton-line{min-height:54px}.loading-panel{min-height:420px}
+  @media(max-width:900px){
+    .club-banner{grid-template-columns:84px minmax(0,1fr);margin-inline:14px;padding:28px}.club-promo-mascot{width:82px;height:82px}.club-banner>.button{grid-column:1/-1;width:100%}
+  }
+  @media(max-width:800px){
+    :root{--container:min(100% - 24px,720px)}
+    .header-main{width:100%;padding-inline:12px}.mobile-tools{width:100%;padding-inline:12px}.hero-grid,.section.container{width:100%;padding-inline:12px}
+    .offer-dialog{width:calc(100% - 20px);max-width:calc(100% - 20px)}.dialog-pricing{grid-template-columns:1fr 1fr}.dialog-club-price{grid-column:1/-1}
+  }
+  @media(max-width:540px){
+    .hero-copy{padding-top:34px}.hero-copy h1{font-size:clamp(34px,10.5vw,42px)}.hero-visual{height:315px}
+    .offer-card{grid-template-columns:42% minmax(0,58%);width:100%;max-width:100%;min-height:226px}.favorite-button{right:calc(58% + 8px)}.offer-body{min-width:0;padding:11px}.offer-title{font-size:12px}.offer-location{font-size:9px}.offer-price-row{gap:6px;padding-top:8px}.club-card-price{padding:7px 8px}.club-card-label{font-size:7px}.club-price{font-size:16px}.club-cashback-pill{font-size:6.5px;padding:3px 5px}.public-card-price .offer-price{font-size:13px}.public-price-label,.normal-price{font-size:7px}.public-cashback-pill{font-size:6px}.club-banner{grid-template-columns:1fr;text-align:center;margin-inline:12px;padding:26px 20px}.club-promo-mascot{width:88px;height:88px;margin:auto}.club-launch-badge{margin:auto}.club-benefit-row{justify-content:center}.club-banner h2{font-size:25px}.club-banner p{font-size:12px}.club-banner small{font-size:9px}
+    .category-strip .container{max-width:none}.category-chip{min-width:72px}.dashboard-main{width:100%;padding-inline:12px}.stat-grid{grid-template-columns:1fr 1fr}.profile-dialog{width:calc(100% - 16px);max-width:calc(100% - 16px);max-height:94dvh;overflow:auto}.activity-card{width:calc(100vw - 36px)}
+  }
+  @media(max-width:380px){
+    .brand-logo-image{width:140px;max-width:140px}.offer-card{grid-template-columns:39% minmax(0,61%)}.favorite-button{right:calc(61% + 7px)}.club-price-line{align-items:flex-start;flex-direction:column;gap:3px}.public-card-price>span{flex-wrap:wrap}.public-cashback-pill{margin-left:0}.mobile-tools{grid-template-columns:1fr}.mobile-tools .location-control{width:100%}.stat-grid{grid-template-columns:1fr}
+  }
+</style>
+<style>
   .location-pill{display:flex;align-items:center;justify-content:center;gap:7px;width:min(100%,720px);margin:0 auto 30px;padding:12px 18px;border-radius:999px;background:var(--navy-50);color:var(--navy);font-size:13px}.location-pill button{border:0;background:transparent;color:var(--amber-text);font-weight:800;text-decoration:underline}.location-pill .icon{width:17px}
   .public-price-label{display:block;margin-top:5px;color:var(--gray-600);font-size:8px;font-weight:700}.club-price-line{display:flex;align-items:center;gap:4px;margin-top:5px;color:var(--navy);font-size:10px;font-weight:800}.club-price-line .icon{color:var(--amber)}.club-price{color:var(--amber-text);font-size:14px}.dialog-club-price{background:var(--yellow)!important;color:var(--navy-deep)!important}.dialog-club-price small{color:var(--navy)!important}
   .club-banner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:25px;margin-top:10px;margin-bottom:74px;padding:32px 38px;border-radius:26px;background:linear-gradient(120deg,var(--navy-deep),#173b61);color:#fff;box-shadow:var(--shadow-md)}.club-banner h2{margin:3px 0;font-size:30px}.club-banner p{margin:0;color:#d7e2ee;max-width:650px}.club-emblem{width:70px;height:70px;border-radius:22px;display:grid;place-items:center;background:var(--yellow);color:var(--navy-deep)}.club-emblem .icon{width:34px;height:34px}
@@ -140,11 +174,21 @@
   @media(max-width:900px){.form-grid.three-columns,.form-grid.four-columns{grid-template-columns:repeat(2,minmax(0,1fr))}.moderation-grid{grid-template-columns:1fr}}
   @media(max-width:620px){.phase-banner{align-items:flex-start;flex-wrap:wrap}.phase-banner button{width:100%}.phase3-page{padding:34px 15px 80px}.phase3-form section,.workflow-dialog{padding:18px}.form-grid.three-columns,.form-grid.four-columns,.phase3-form .two-columns{grid-template-columns:1fr}.form-actions{flex-direction:column-reverse}.form-actions .button{width:100%}.workflow-dialog{border-radius:18px}.moderation-stats{grid-template-columns:1fr 1fr}}
 </style>
+<style>
+  /* Sobrescritura final para evitar saltos de layout por reglas heredadas. */
+  .offer-price-row{display:grid;grid-template-columns:1fr;gap:8px;align-items:stretch}
+  .club-card-price .club-price-line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0}.club-card-price .club-price{font:800 20px Poppins,sans-serif;color:var(--navy-deep)}
+  .club-banner{display:grid;grid-template-columns:108px minmax(0,1fr) auto;position:relative;overflow:hidden;align-items:center;gap:25px;margin-top:10px;margin-bottom:74px;padding:34px 38px;border-radius:26px;background:radial-gradient(circle at 8% 10%,rgba(242,183,5,.24),transparent 28%),linear-gradient(120deg,var(--navy-deep),#173B61);color:#fff;box-shadow:var(--shadow-md)}
+  .club-banner h2{margin:8px 0 4px;font-size:clamp(24px,3vw,34px);line-height:1.18}.club-banner p{margin:0;color:#D7E2EE;max-width:650px;font-size:14px}
+  @media(max-width:900px){.club-banner{grid-template-columns:84px minmax(0,1fr);margin-inline:14px;padding:28px}.club-banner>.button{grid-column:1/-1;width:100%}}
+  @media(max-width:540px){.offer-card{grid-template-columns:42% minmax(0,58%);width:100%;max-width:100%;min-height:226px}.favorite-button{right:calc(58% + 8px)}.offer-body{min-width:0;padding:11px}.club-card-price .club-price{font-size:16px}.club-banner{grid-template-columns:1fr;text-align:center;margin-inline:12px;padding:26px 20px}.club-promo-mascot{margin:auto}.club-banner h2{font-size:25px}.club-banner p{font-size:12px}}
+  @media(max-width:380px){.offer-card{grid-template-columns:39% minmax(0,61%)}.favorite-button{right:calc(61% + 7px)}.club-card-price .club-price-line{align-items:flex-start;flex-direction:column;gap:3px}}
+</style>
 
   </head>
   <body>
     <script>
-      window.TAZMANY_CONFIG = {"appName":"Tazmany","version":"0.3.15","environment":"public-web-connected","logoUrl":"assets/brand/tazmany-logo.png?v=0.3.15","apiBaseUrl":"https://tazmany-api-relay.tazmany-jefferson.workers.dev","isStaticPreview":false,"features":{"merchantAcquisitionPublic":false,"checkoutEnabled":false,"clubBillingEnabled":false,"internalNoticesVisible":false},"auth":{"googleClientId":"","googleEnabled":false,"otpEnabled":false,"termsVersion":"2026-08-27","privacyVersion":"2026-08-27"}};
+      window.TAZMANY_CONFIG = {"appName":"Tazmany","version":"0.4.0","environment":"public-web-connected","logoUrl":"assets/brand/tazmany-logo.png?v=0.4.0","apiBaseUrl":"https://tazmany-api-relay.tazmany-jefferson.workers.dev","isStaticPreview":false,"features":{"merchantAcquisitionPublic":false,"checkoutEnabled":false,"clubBillingEnabled":false,"internalNoticesVisible":false},"commerce":{"orderReservationsEnabled":true,"paymentsEnabled":false,"reservationMinutes":10},"auth":{"googleClientId":"","googleEnabled":false,"otpEnabled":false,"termsVersion":"2026-08-27","privacyVersion":"2026-08-27"}};
       window.TAZMANY_INITIAL_VIEW = 'home';
     </script>
     <svg class="tazmany-icon-sprite" aria-hidden="true" focusable="false">
@@ -253,8 +297,14 @@
       </section>
 
       <section class="container club-banner" aria-labelledby="clubBannerTitle">
-        <div class="club-emblem"><span class="icon" data-icon="crown"></span></div>
-        <div><span class="section-kicker">PRECIOS PARA MIEMBROS</span><h2 id="clubBannerTitle">Club Tazmany</h2><p id="clubBannerCopy">Prueba el primer mes por S/ 4.90 y continúa por S/ 9.90 al mes desde el segundo mes.</p></div>
+        <img class="club-promo-mascot" src="assets/brand/tazmany-isotipo.png?v=0.4.0" alt="" aria-hidden="true">
+        <div class="club-promo-copy">
+          <span class="club-launch-badge"><span class="icon icon-xs" data-icon="crown"></span> OFERTA DE LANZAMIENTO</span>
+          <h2 id="clubBannerTitle">Prueba Club Tazmany por <strong id="clubBannerIntroPrice">S/ 4.90</strong></h2>
+          <p id="clubBannerCopy">Tu primer mes con precios exclusivos y 3% de cashback.</p>
+          <small id="clubBannerRenewal">Desde el segundo mes pagarás S/ 9.90 al mes. Podrás cancelar cuando quieras.</small>
+          <span class="club-benefit-row"><b>Precios Club</b><b>3% cashback</b><b>Ofertas seleccionadas</b></span>
+        </div>
         <button class="button button-light" type="button" data-open-club>Conocer el Club</button>
       </section>
 
@@ -316,7 +366,10 @@
       <p class="offer-merchant"></p>
       <p class="offer-location"><span class="icon icon-xs" data-icon="pin"></span><span></span></p>
       <div class="offer-tags"></div>
-      <div class="offer-price-row"><div><small class="normal-price"></small><span class="public-price-label">Precio público</span><strong class="offer-price"></strong><span class="club-price-line"><span class="icon icon-xs" data-icon="crown"></span> Club <b class="club-price"></b></span></div><span class="cashback-pill"></span></div>
+      <div class="offer-price-row">
+        <div class="club-card-price"><span class="club-card-label"><span class="icon icon-xs" data-icon="crown"></span> Precio Club</span><span class="club-price-line"><strong class="club-price"></strong><b class="club-cashback-pill"></b></span></div>
+        <div class="public-card-price"><small class="normal-price"></small><span><span class="public-price-label">Precio público</span><strong class="offer-price"></strong><b class="public-cashback-pill"></b></span></div>
+      </div>
     </div>
   </article>
 </template>
@@ -331,7 +384,7 @@
       <p class="dialog-merchant" id="dialogMerchant"></p>
       <div class="dialog-rating" id="dialogRating"></div>
       <p id="dialogDescription" class="dialog-description"></p>
-      <div class="dialog-pricing"><div><small>Precio regular</small><del id="dialogNormalPrice"></del></div><div><small>Precio público</small><strong id="dialogOfferPrice"></strong></div><div class="dialog-club-price"><small>Club Tazmany</small><b id="dialogClubPrice"></b></div><div><small>Cashback</small><b id="dialogCashback"></b></div></div>
+      <div class="dialog-pricing"><div><small>Precio regular</small><del id="dialogNormalPrice"></del></div><div><small>Precio público · <span id="dialogPublicCashback"></span></small><strong id="dialogOfferPrice"></strong></div><div class="dialog-club-price"><small>Club Tazmany · <span id="dialogClubCashback"></span></small><b id="dialogClubPrice"></b></div></div>
       <div class="dialog-detail-columns"><div><h3>Incluye</h3><ul id="dialogIncludes"></ul></div><div><h3>Condiciones clave</h3><ul id="dialogRestrictions"></ul></div></div>
       <div class="branch-list" id="dialogBranches"></div>
       <div class="dialog-actions"><button class="button button-primary button-block" id="buyOfferButton" type="button">Comprar esta oferta</button><small>Las compras estarán disponibles próximamente.</small></div>
@@ -347,7 +400,7 @@
     <dialog class="auth-dialog" id="authDialog" aria-labelledby="authDialogTitle">
   <button class="dialog-close icon-button" type="button" aria-label="Cerrar" data-close-dialog><span class="icon" data-icon="close"></span></button>
   <div class="auth-brand">
-    <img class="auth-brand-isotipo" src="assets/brand/tazmany-isotipo.png?v=0.3.15" alt="" aria-hidden="true">
+    <img class="auth-brand-isotipo" src="assets/brand/tazmany-isotipo.png?v=0.4.0" alt="" aria-hidden="true">
     <div><small>Bienvenido a</small><strong class="auth-wordmark"><span>Tazma</span><em>ny</em></strong></div>
   </div>
   <h2 id="authDialogTitle">Ingresa para guardar y disfrutar tus ofertas</h2>
@@ -605,17 +658,19 @@
   ICONS.crown='<path d="m3 7 4 4 5-7 5 7 4-4-2 11H5L3 7Z"/><path d="M6 21h12"/>';
   ICONS.mail='<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>';
   const CATEGORY_ICON_IDS = new Set(['all','restaurant','sparkles','wellness','fitness','car','ticket','travel','services','products','home','education','pets','gifts','digital','seasonal']);
-  const money = cents => new Intl.NumberFormat('es-PE',{style:'currency',currency:'PEN',minimumFractionDigits:2}).format(Number(cents||0));
+  const money = cents => new Intl.NumberFormat('es-PE',{style:'currency',currency:'PEN',minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(cents||0)/100);
   const date = value => value ? new Intl.DateTimeFormat('es-PE',{day:'2-digit',month:'short',year:'numeric',timeZone:'America/Lima'}).format(new Date(value)) : '';
   const escapeHtml = value => String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
-  const state = { view:'home', publicData:null, backendAvailable:false, query:'', categoryId:'', favorites:new Set(), customerLoaded:false, merchantLoaded:false, adminLoaded:false, merchantWorkspace:null, auth:null, otpChallenge:null, googleNonce:'', location:readStoredLocation() };
+  const state = { view:'home', publicData:null, publicCacheRendered:false, backendAvailable:false, query:'', categoryId:'', favorites:new Set(), customerLoaded:false, customerData:null, customerPromise:null, merchantLoaded:false, adminLoaded:false, merchantWorkspace:null, auth:null, otpChallenge:null, googleNonce:'', googleLoginPending:false, location:readStoredLocation() };
   const fallback = createFallbackData();
+  const PUBLIC_CACHE_TTL_MS = 24*60*60*1000;
 
   document.addEventListener('DOMContentLoaded', init);
   async function init(){
-    applyLogo(); hydrateIcons(document); populatePhoneCountries('PE'); bindGlobalEvents(); await loadPublicData(); await restoreSession(); initGoogleIdentity(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);initDiscoveryExperience();
+    applyLogo();hydrateIcons(document);populatePhoneCountries('PE');bindGlobalEvents();const cached=hydrateCachedPublicData();if(!cached)renderInitialCategoryStrip();await Promise.all([loadPublicData({silent:cached}),restoreSession()]);initGoogleIdentity();if(state.auth&&!state.auth.needsProfile)prefetchCustomerDashboard().catch(()=>{});navigate(window.TAZMANY_INITIAL_VIEW||'home',false);initDiscoveryExperience();
   }
+  function renderInitialCategoryStrip(){const current=state.publicData;state.publicData={categories:fallback.categories};renderCategories();state.publicData=current;syncLocationLabels();renderClubPlan()}
   function applyLogo(){
     const url=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.logoUrl;
     if(!url)return;[['brandLogo','brandFallback'],['footerBrandLogo','footerBrandFallback']].forEach(([imageId,fallbackId])=>{const img=document.getElementById(imageId);if(!img)return;img.src=url;img.onload=()=>{img.hidden=false;document.getElementById(fallbackId).hidden=true};img.onerror=()=>{img.hidden=true}});
@@ -696,17 +751,20 @@
     let payload;try{payload=await response.json()}catch(error){throw{code:'INVALID_SERVER_RESPONSE',message:'El servidor devolvió una respuesta inválida.'}}
     if(!response.ok)throw payload&&payload.error||{code:'SERVER_ERROR',message:'No pudimos completar la solicitud.'};return payload;
   }
-  async function loadPublicData(){
+  function publicCacheKey(cityId){return `tazmany_public_catalog_v1:${cityId||'all'}`}
+  function hydrateCachedPublicData(){try{const cityId=state.location&&state.location.cityId||'';const stored=JSON.parse(localStorage.getItem(publicCacheKey(cityId))||'null');if(!stored||!stored.data||Date.now()-Number(stored.savedAt||0)>PUBLIC_CACHE_TTL_MS)return false;state.publicData=stored.data;state.publicCacheRendered=true;const remoteUrl=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.apiBaseUrl||'';if(state.publicData.config)window.TAZMANY_CONFIG=Object.assign({},window.TAZMANY_CONFIG,state.publicData.config,{apiBaseUrl:remoteUrl,isStaticPreview:!remoteUrl&&!hasAppsScriptBridge()});syncLocationLabels();renderClubPlan();renderCategories();renderOffers();renderMerchants();return true}catch(error){return false}}
+  function cachePublicData(cityId,data){try{localStorage.setItem(publicCacheKey(cityId),JSON.stringify({savedAt:Date.now(),data}))}catch(error){}}
+  async function loadPublicData(options={}){
     const cityId=state.location&&state.location.cityId||'';const remoteUrl=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.apiBaseUrl||'';
-    try{state.publicData=await callServer('apiGetPublicBootstrap',cityId?[cityId]:[],filterFallbackByCity(fallback,cityId));state.backendAvailable=true}
-    catch(error){state.backendAvailable=false;state.publicData={countries:fallback.countries,cities:fallback.cities,categories:[],offers:[],merchants:[],selectedCityId:cityId||'city-lima'};showToast('Servicio temporalmente no disponible','No pudimos cargar las ofertas. Inténtalo nuevamente en unos minutos.')}
+    try{state.publicData=await callServer('apiGetPublicBootstrap',cityId?[cityId]:[],filterFallbackByCity(fallback,cityId));state.backendAvailable=true;state.publicCacheRendered=false;cachePublicData(cityId,state.publicData)}
+    catch(error){state.backendAvailable=false;if(!state.publicData)state.publicData={countries:fallback.countries,cities:fallback.cities,categories:[],offers:[],featuredMerchants:[],selectedCityId:cityId||'city-lima'};if(!options.silent)showToast('Servicio temporalmente no disponible','No pudimos actualizar las ofertas. Inténtalo nuevamente en unos minutos.')}
     if(state.publicData&&state.publicData.config)window.TAZMANY_CONFIG=Object.assign({},window.TAZMANY_CONFIG,state.publicData.config,{apiBaseUrl:remoteUrl,isStaticPreview:!remoteUrl&&!hasAppsScriptBridge()});
     syncLocationLabels();renderClubPlan();renderCategories();renderOffers();renderMerchants();
   }
   function renderClubPlan(){
     const plan=state.publicData&&state.publicData.clubPlan||fallback.clubPlan;if(!plan)return;
     const intro=money(plan.introPriceCents||490);const regular=money(plan.regularPriceCents||990);
-    setText('clubIntroPrice',intro);setText('clubRenewalPrice',`Desde el segundo mes: ${regular} al mes`);setText('clubBannerCopy',`Prueba el primer mes por ${intro} y continúa por ${regular} al mes desde el segundo mes.`);
+    setText('clubIntroPrice',intro);setText('clubRenewalPrice',`Desde el segundo mes: ${regular} al mes`);setText('clubBannerIntroPrice',intro);setText('clubBannerCopy','Tu primer mes con precios exclusivos y 3% de cashback.');setText('clubBannerRenewal',`Desde el segundo mes pagarás ${regular} al mes. Podrás cancelar cuando quieras.`);
   }
   function readStoredLocation(){try{return JSON.parse(localStorage.getItem('tazmany_location')||'null')}catch(error){return null}}
   function filterFallbackByCity(data,cityId){if(!cityId)return data;return Object.assign({},data,{offers:data.offers.filter(offer=>(offer.cityId||'city-lima')===cityId),selectedCityId:cityId})}
@@ -741,7 +799,7 @@
     state.publicData.categories.forEach(category=>{const button=make('button','category-chip'+(state.categoryId===category.id?' active':''),`<span class="chip-glyph">${categoryIconMarkup(category.icon)}</span> ${escapeHtml(category.name)}`);button.type='button';button.onclick=()=>{state.categoryId=category.id;renderCategories();renderOffers();document.getElementById('offersSection').scrollIntoView({behavior:'smooth'})};box.append(button)});
   }
   function renderOffers(){
-    if(!state.publicData)return;const grid=document.getElementById('offerGrid');if(hasRemoteApi()&&!state.backendAvailable){grid.hidden=false;grid.innerHTML='<article class="service-unavailable"><span class="icon" data-icon="support"></span><h3>No pudimos cargar las ofertas</h3><p>El servicio está temporalmente no disponible. Inténtalo nuevamente en unos minutos.</p><button class="button button-primary" type="button" onclick="location.reload()">Volver a intentar</button></article>';document.getElementById('offersEmpty').hidden=true;hydrateIcons(grid);return}const query=normalize(state.query);const offers=state.publicData.offers.filter(offer=>(!state.categoryId||offer.categoryId===state.categoryId)&&(!query||normalize(`${offer.title} ${offer.merchantName} ${offer.categoryName} ${offer.districtLabel}`).includes(query)));grid.innerHTML='';
+    if(!state.publicData)return;const grid=document.getElementById('offerGrid');if(hasRemoteApi()&&!state.backendAvailable&&!(state.publicData.offers||[]).length){grid.hidden=false;grid.innerHTML='<article class="service-unavailable"><span class="icon" data-icon="support"></span><h3>No pudimos cargar las ofertas</h3><p>El servicio está temporalmente no disponible. Inténtalo nuevamente en unos minutos.</p><button class="button button-primary" type="button" onclick="location.reload()">Volver a intentar</button></article>';document.getElementById('offersEmpty').hidden=true;hydrateIcons(grid);return}const query=normalize(state.query);const offers=(state.publicData.offers||[]).filter(offer=>(!state.categoryId||offer.categoryId===state.categoryId)&&(!query||normalize(`${offer.title} ${offer.merchantName} ${offer.categoryName} ${offer.districtLabel}`).includes(query)));grid.innerHTML='';
     offers.forEach(offer=>grid.append(createOfferCard(offer)));document.getElementById('offersEmpty').hidden=offers.length>0;grid.hidden=offers.length===0;
     const summary=document.getElementById('filterSummary');summary.hidden=!state.query&&!state.categoryId;document.getElementById('filterSummaryText').textContent=`${offers.length} resultado${offers.length===1?'':'s'}${state.query?` para “${state.query}”`:''}`;
   }
@@ -749,18 +807,19 @@
     const card=document.getElementById('offerCardTemplate').content.firstElementChild.cloneNode(true);card.dataset.offerId=offer.id;const img=card.querySelector('.offer-image');img.src=offer.imageUrl;img.alt=offer.title;img.onerror=()=>img.hidden=true;card.querySelector('.discount-badge').textContent=`-${offer.discountPercent}%`;
     const stock=card.querySelector('.stock-badge');if(offer.lowStock){stock.hidden=false;stock.textContent=`Solo ${offer.remainingStock} disponibles`}
     const category=state.publicData.categories.find(item=>item.id===offer.categoryId)||{};card.querySelector('.offer-category-icon').innerHTML=categoryIconMarkup(category.icon);card.querySelector('.offer-category-label').textContent=offer.categoryName;card.querySelector('.rating b').textContent=offer.rating.toFixed(1);card.querySelector('.rating small').textContent=`(${offer.reviewCount})`;card.querySelector('.offer-title').textContent=offer.title;card.querySelector('.offer-merchant').textContent=offer.merchantName;card.querySelector('.offer-location span:last-child').textContent=offer.districtLabel;
-    card.querySelector('.offer-tags').innerHTML=offer.tags.slice(0,2).map(tag=>`<span class="offer-tag">${escapeHtml(tag)}</span>`).join('');card.querySelector('.normal-price').textContent=`Antes ${money(offer.normalPriceCents)}`;card.querySelector('.offer-price').textContent=money(offer.publicPriceCents||offer.offerPriceCents);card.querySelector('.club-price').textContent=money(offer.clubPriceCents||offer.offerPriceCents);card.querySelector('.cashback-pill').textContent=`+${offer.cashbackPercent}% cashback`;
+    const publicCashback=Number(offer.publicCashbackPercent??offer.cashbackPercent??1);const clubCashback=Number(offer.clubCashbackPercent??3);card.querySelector('.offer-tags').innerHTML=(offer.tags||[]).slice(0,2).map(tag=>`<span class="offer-tag">${escapeHtml(tag)}</span>`).join('');card.querySelector('.normal-price').textContent=`Antes ${money(offer.normalPriceCents)}`;card.querySelector('.offer-price').textContent=money(offer.publicPriceCents||offer.offerPriceCents);card.querySelector('.club-price').textContent=money(offer.clubPriceCents||offer.offerPriceCents);card.querySelector('.club-cashback-pill').textContent=`+${clubCashback}% cashback`;card.querySelector('.public-cashback-pill').textContent=`+${publicCashback}% cashback`;
     card.querySelectorAll('[data-offer-action]').forEach(button=>button.onclick=()=>openOffer(offer.id));const favorite=card.querySelector('.favorite-button');favorite.classList.toggle('active',state.favorites.has(offer.id));favorite.onclick=()=>{state.favorites.has(offer.id)?state.favorites.delete(offer.id):state.favorites.add(offer.id);favorite.classList.toggle('active');showToast(favorite.classList.contains('active')?'Guardada en favoritos':'Eliminada de favoritos',offer.title)};hydrateIcons(card);return card;
   }
   async function openOffer(id){
     const base=state.publicData.offers.find(item=>item.id===id);const local=Object.assign({},base,{description:base.summary,includes:['Experiencia indicada en la oferta'],restrictions:['Consulta disponibilidad antes de asistir'],branches:[{name:base.districtLabel,address:'Dirección visible tras confirmar'}]});const offer=await callServer('apiGetOfferDetails',[id],local);const dialog=document.getElementById('offerDialog');
-    setText('offerDialogTitle',offer.title);setText('dialogCategory',offer.categoryName);setText('dialogMerchant',`${offer.merchantName} · ${offer.districtLabel}`);setText('dialogRating',`★ ${Number(offer.rating).toFixed(1)} · ${offer.reviewCount} reseñas verificadas`);setText('dialogDescription',offer.description||offer.summary);setText('dialogNormalPrice',money(offer.normalPriceCents));setText('dialogOfferPrice',money(offer.publicPriceCents||offer.offerPriceCents));setText('dialogClubPrice',money(offer.clubPriceCents||offer.offerPriceCents));setText('dialogCashback',`+${offer.cashbackPercent}%`);setText('dialogDiscount',`Ahorras ${offer.discountPercent}%`);const img=document.getElementById('dialogImage');img.hidden=false;img.src=offer.imageUrl;img.alt=offer.title;img.onerror=()=>img.hidden=true;
+    setText('offerDialogTitle',offer.title);setText('dialogCategory',offer.categoryName);setText('dialogMerchant',`${offer.merchantName} · ${offer.districtLabel}`);setText('dialogRating',`★ ${Number(offer.rating).toFixed(1)} · ${offer.reviewCount} reseñas verificadas`);setText('dialogDescription',offer.description||offer.summary);setText('dialogNormalPrice',money(offer.normalPriceCents));setText('dialogOfferPrice',money(offer.publicPriceCents||offer.offerPriceCents));setText('dialogClubPrice',money(offer.clubPriceCents||offer.offerPriceCents));setText('dialogPublicCashback',`+${Number(offer.publicCashbackPercent??offer.cashbackPercent??1)}% cashback`);setText('dialogClubCashback',`+${Number(offer.clubCashbackPercent??3)}% cashback`);setText('dialogDiscount',`Ahorras ${offer.discountPercent}%`);const img=document.getElementById('dialogImage');img.hidden=false;img.src=offer.imageUrl;img.alt=offer.title;img.onerror=()=>img.hidden=true;
     document.getElementById('dialogIncludes').innerHTML=(offer.includes||[]).map(item=>`<li>${escapeHtml(item)}</li>`).join('');document.getElementById('dialogRestrictions').innerHTML=(offer.restrictions||[]).map(item=>`<li>${escapeHtml(item)}</li>`).join('');document.getElementById('dialogBranches').innerHTML=(offer.branches||[]).map(branch=>`<span class="branch-pill"><span class="icon icon-xs" data-icon="pin"></span>${escapeHtml(branch.name)} · ${escapeHtml(branch.address||'')}</span>`).join('');hydrateIcons(document.getElementById('dialogBranches'));dialog.showModal();
   }
   function renderMerchants(){const box=document.getElementById('featuredMerchants');box.innerHTML='';state.publicData.featuredMerchants.forEach(merchant=>{const initials=merchant.name.split(' ').map(x=>x[0]).slice(0,2).join('');box.insertAdjacentHTML('beforeend',`<article class="merchant-card"><span>${escapeHtml(initials)}</span><h3>${escapeHtml(merchant.name)}</h3><p>${escapeHtml(merchant.description)}</p><b>★ ${Number(merchant.rating).toFixed(1)}</b></article>`)})}
   async function loadCustomer(){
-    const target=document.getElementById('customerView');if(!state.customerLoaded){target.innerHTML='<div class="loading-panel"><div><div class="loading-spinner"></div>Cargando tu espacio…</div></div>';try{const data=isStaticPreview()?fallback.customer:await callServerStrict('apiGetCustomerDashboard',[sessionToken()]);renderCustomer(data);state.customerLoaded=true}catch(error){handleProtectedError(error,target)}}
+    const target=document.getElementById('customerView');if(state.customerLoaded)return;if(state.customerData){renderCustomer(state.customerData);state.customerLoaded=true;return}target.innerHTML='<div class="loading-panel"><div><div class="loading-spinner"></div>Cargando tu espacio…</div></div>';try{const data=isStaticPreview()?fallback.customer:await prefetchCustomerDashboard();renderCustomer(data);state.customerLoaded=true}catch(error){handleProtectedError(error,target)}
   }
+  function prefetchCustomerDashboard(){if(!state.auth)return Promise.reject({code:'AUTH_REQUIRED',message:'Inicia sesión para continuar.'});if(isStaticPreview()){state.customerData=fallback.customer;return Promise.resolve(state.customerData)}if(state.customerData)return Promise.resolve(state.customerData);if(!state.customerPromise)state.customerPromise=callServerStrict('apiGetCustomerDashboard',[sessionToken()]).then(data=>{state.customerData=data;return data}).catch(error=>{state.customerPromise=null;throw error});return state.customerPromise}
   function renderCustomer(data){
     const target=document.getElementById('customerView');target.innerHTML='';target.append(document.getElementById('customerDashboardTemplate').content.cloneNode(true));target.querySelector('[data-customer-name]').textContent=data.profile.name;target.querySelector('[data-customer-first-name]').textContent=data.profile.name.split(' ')[0];target.querySelector('[data-customer-initials]').textContent=data.profile.initials;
     Object.entries(data.summary).forEach(([key,value])=>{const plain=target.querySelector(`[data-stat="${key}"]`);const cash=target.querySelector(`[data-stat-money="${key}"]`);if(plain)plain.textContent=value;if(cash)cash.textContent=money(value)});target.querySelector('[data-available-count]').textContent=data.summary.availableCoupons;
@@ -834,9 +893,9 @@
   function hasClientPermission(permission){const permissions=state.auth&&state.auth.user&&state.auth.user.permissions||[];return permissions.some(item=>item==='*'||item===permission||(item.endsWith('.*')&&permission.startsWith(item.slice(0,-1))))}
   async function restoreSession(){
     const token=sessionToken();if(!token||isStaticPreview()){updateAuthUi();return}
-    try{state.auth=await callServerStrict('apiGetSession',[token])}catch(error){localStorage.removeItem('tazmany_session_token');state.auth=null}updateAuthUi();
+    try{state.auth=await callServerStrict('apiGetSession',[token])}catch(error){localStorage.removeItem('tazmany_session_token');state.auth=null}updateAuthUi();if(state.auth&&!state.auth.needsProfile)prefetchCustomerDashboard().catch(()=>{});
   }
-  function acceptAuth(auth){state.auth=auth;localStorage.setItem('tazmany_session_token',auth.sessionToken);state.customerLoaded=false;state.merchantLoaded=false;state.adminLoaded=false;state.merchantWorkspace=null;updateAuthUi();document.getElementById('authDialog').close();showToast('Sesión iniciada',`Hola, ${auth.user.displayName||'bienvenido a Tazmany'}.`);if(auth.needsProfile)setTimeout(openProfileDialog,180)}
+  function acceptAuth(auth){state.auth=auth;localStorage.setItem('tazmany_session_token',auth.sessionToken);state.customerLoaded=false;state.customerData=null;state.customerPromise=null;state.merchantLoaded=false;state.adminLoaded=false;state.merchantWorkspace=null;updateAuthUi();document.getElementById('authDialog').close();showToast('Sesión iniciada',`Hola, ${auth.user.displayName||'bienvenido a Tazmany'}.`);if(auth.needsProfile)setTimeout(openProfileDialog,180);else prefetchCustomerDashboard().catch(()=>{})}
   function updateAuthUi(){
     const user=state.auth&&state.auth.user;const label=document.getElementById('profileLabel');const note=document.getElementById('authStateLabel');const avatar=document.getElementById('headerAvatar');
     if(user){label.textContent=(user.displayName||user.email).split(' ')[0];note.textContent='Sesión protegida';avatar.textContent=(user.displayName||user.email).split(/\s|@/).map(x=>x[0]).slice(0,2).join('').toUpperCase();document.getElementById('loginMenuButton').hidden=true;document.getElementById('logoutMenuButton').hidden=false;document.getElementById('sessionsMenuButton').hidden=false}
@@ -865,11 +924,11 @@
     if(document.getElementById('googleButton').dataset.ready)return;state.googleNonce=newIdempotencyKey('google-nonce');google.accounts.id.initialize({client_id:config.googleClientId,callback:handleGoogleCredential,nonce:state.googleNonce,ux_mode:'popup'});google.accounts.id.renderButton(document.getElementById('googleButton'),{theme:'outline',size:'large',shape:'pill',text:'continue_with',width:360});document.getElementById('googleButton').dataset.ready='1';
   }
   async function handleGoogleCredential(response){
-    setStatus('authStatus','',false);showActivity('Conectando con Google','Un momento mientras verificamos tu cuenta de forma segura.');
-    try{const auth=await callServerStrict('apiAuthenticateGoogle',[response.credential,state.googleNonce,deviceLabel(),newIdempotencyKey('google-login')]);acceptAuth(auth)}catch(error){setStatus('authStatus',error.message||'No pudimos confirmar tu cuenta de Google.',true)}finally{hideActivity()}
+    if(state.googleLoginPending)return;state.googleLoginPending=true;const area=document.getElementById('googleAuthArea');area.classList.add('is-busy');setStatus('authStatus','',false);showActivity('Conectando con Google','Un momento mientras verificamos tu cuenta de forma segura.');
+    try{const auth=await callServerStrict('apiAuthenticateGoogle',[response.credential,state.googleNonce,deviceLabel(),newIdempotencyKey('google-login')]);acceptAuth(auth)}catch(error){setStatus('authStatus',error.message||'No pudimos confirmar tu cuenta de Google.',true)}finally{state.googleLoginPending=false;area.classList.remove('is-busy');hideActivity()}
   }
   async function logout(){
-    const token=sessionToken();try{if(token)await callServerStrict('apiLogout',[token])}catch(error){}localStorage.removeItem('tazmany_session_token');state.auth=null;state.customerLoaded=false;state.merchantLoaded=false;state.adminLoaded=false;state.merchantWorkspace=null;closeProfileMenu();updateAuthUi();navigate('home');showToast('Sesión cerrada','Tu acceso en este dispositivo terminó.');
+    const token=sessionToken();try{if(token)await callServerStrict('apiLogout',[token])}catch(error){}localStorage.removeItem('tazmany_session_token');state.auth=null;state.customerLoaded=false;state.customerData=null;state.customerPromise=null;state.merchantLoaded=false;state.adminLoaded=false;state.merchantWorkspace=null;closeProfileMenu();updateAuthUi();navigate('home');showToast('Sesión cerrada','Tu acceso en este dispositivo terminó.');
   }
   async function openProfileDialog(){
     if(!state.auth)return openAuthDialog();const form=document.getElementById('profileForm');const cities=state.publicData&&state.publicData.cities||fallback.cities;const select=document.getElementById('profileCity');select.innerHTML=cities.map(city=>`<option value="${escapeHtml(city.id)}">${escapeHtml(city.name)}</option>`).join('');showActivity('Cargando tu información','Estamos preparando tu perfil de forma segura.');
@@ -877,7 +936,7 @@
   }
   async function saveProfile(event){
     event.preventDefault();const form=event.currentTarget;const data=new FormData(form);const phoneCountryIso=data.get('phoneCountryIso');const payload={firstName:data.get('firstName'),lastName:data.get('lastName'),documentType:data.get('documentType'),documentNumber:data.get('documentNumber'),phoneCountryIso,phoneE164:buildWhatsAppE164(phoneCountryIso,data.get('phoneNationalNumber')),primaryCityId:data.get('primaryCityId'),cityIds:[data.get('primaryCityId')],acceptTerms:data.get('acceptTerms')==='on',acceptPrivacy:data.get('acceptPrivacy')==='on',marketingConsent:data.get('marketingConsent')==='on'};setFormBusy(form,true);setStatus('profileStatus','',false);showActivity('Guardando tu perfil','Un momento mientras registramos y protegemos tu información.');
-    try{await callServerStrict('apiSaveCustomerProfile',[sessionToken(),payload,newIdempotencyKey('profile-save')]);state.auth.needsProfile=false;state.auth.user.displayName=`${payload.firstName} ${payload.lastName}`;updateAuthUi();document.getElementById('profileDialog').close();showToast('Perfil actualizado','Tu información y aceptaciones quedaron registradas.')}catch(error){setStatus('profileStatus',error.message||'No pudimos guardar tu perfil.',true)}finally{hideActivity();setFormBusy(form,false)}
+    try{await callServerStrict('apiSaveCustomerProfile',[sessionToken(),payload,newIdempotencyKey('profile-save')]);state.auth.needsProfile=false;state.auth.user.displayName=`${payload.firstName} ${payload.lastName}`;state.customerData=null;state.customerPromise=null;updateAuthUi();document.getElementById('profileDialog').close();prefetchCustomerDashboard().catch(()=>{});showToast('Perfil actualizado','Tu información y aceptaciones quedaron registradas.')}catch(error){setStatus('profileStatus',error.message||'No pudimos guardar tu perfil.',true)}finally{hideActivity();setFormBusy(form,false)}
   }
   async function openSessionsDialog(){
     closeProfileMenu();const list=document.getElementById('sessionsList');list.innerHTML='<div class="loading-spinner"></div>';document.getElementById('sessionsDialog').showModal();try{const sessions=await callServerStrict('apiListSessions',[sessionToken()]);list.innerHTML=sessions.map(item=>`<article class="session-row"><span><i class="icon" data-icon="shield"></i></span><div><strong>${escapeHtml(item.deviceLabel)}</strong><small>Vence ${date(item.expiresAt)}</small></div>${item.current?'<b class="session-current">Actual</b>':`<button type="button" data-revoke-session="${escapeHtml(item.id)}">Cerrar</button>`}</article>`).join('');hydrateIcons(list);list.querySelectorAll('[data-revoke-session]').forEach(button=>button.onclick=async()=>{await callServerStrict('apiRevokeSession',[sessionToken(),button.dataset.revokeSession]);button.closest('.session-row').remove();showToast('Sesión cerrada','El otro dispositivo perdió el acceso.')})}catch(error){list.innerHTML=`<div class="auth-status error">${escapeHtml(error.message||'No pudimos cargar tus sesiones.')}</div>`}
@@ -888,12 +947,12 @@
   function createFallbackData(){
     const offers=[
       ['campaign-ceviche','Ceviche clásico + bebida para 2','Sabores de Lima','cat-food','Gastronomía','Miraflores y Barranco',11800,6990,4.8,342,93,27,'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?auto=format&fit=crop&w=900&q=80',['Varias sedes','Regalable'],1],
-      ['campaign-spa','Masaje relajante de 60 minutos','Kantu Spa','cat-beauty','Belleza y spa','San Borja',16000,8990,4.7,186,71,9,'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=900&q=80',['Reserva requerida','Cashback 3%'],3],
+      ['campaign-spa','Masaje relajante de 60 minutos','Kantu Spa','cat-beauty','Belleza y spa','San Borja',16000,8990,4.7,186,71,9,'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=900&q=80',['Reserva requerida','Beneficio Club'],1],
       ['campaign-fitness','1 mes de entrenamiento funcional','Pulso Fitness','cat-fitness','Fitness','Santiago de Surco',22000,11990,4.9,221,46,54,'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80',['Clientes nuevos','Regalable'],1],
       ['campaign-detailing','Detailing interior premium','MotorLab','cat-auto','Automotriz','La Molina',28000,15990,4.6,98,18,42,'https://images.unsplash.com/photo-1552930294-6b595f4c2974?auto=format&fit=crop&w=900&q=80',['Reserva requerida'],1],
       ['campaign-bowling','1 hora de bowling para 4','Zona Aventura','cat-fun','Entretenimiento','San Miguel',14000,7990,4.8,154,53,37,'https://images.unsplash.com/photo-1573509078860-0197f7e4b5b3?auto=format&fit=crop&w=900&q=80',['Regalable','Reserva requerida'],1],
       ['campaign-brunch','Brunch criollo para 2','Sabores de Lima','cat-food','Gastronomía','Barranco',9600,5790,4.8,128,67,8,'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=900&q=80',['Últimas unidades'],1]
-    ].map(x=>({id:x[0],title:x[1],merchantName:x[2],categoryId:x[3],categoryName:x[4],districtLabel:x[5],cityId:'city-lima',normalPriceCents:x[6],offerPriceCents:x[7],publicPriceCents:x[7],clubPriceCents:Math.round(x[7]*.9),clubSavingsCents:x[7]-Math.round(x[7]*.9),discountPercent:Math.round((x[6]-x[7])/x[6]*100),rating:x[8],reviewCount:x[9],soldCount:x[10],remainingStock:x[11],lowStock:x[11]<=10,imageUrl:x[12],tags:x[13],cashbackPercent:x[14],summary:'Experiencia local seleccionada por Tazmany.',availability:'ACTIVA'}));
+    ].map(x=>({id:x[0],title:x[1],merchantName:x[2],categoryId:x[3],categoryName:x[4],districtLabel:x[5],cityId:'city-lima',normalPriceCents:x[6],offerPriceCents:x[7],publicPriceCents:x[7],clubPriceCents:Math.round(x[7]*.9),clubSavingsCents:x[7]-Math.round(x[7]*.9),discountPercent:Math.round((x[6]-x[7])/x[6]*100),rating:x[8],reviewCount:x[9],soldCount:x[10],remainingStock:x[11],lowStock:x[11]<=10,imageUrl:x[12],tags:x[13],publicCashbackPercent:1,clubCashbackPercent:3,cashbackPercent:1,summary:'Experiencia local seleccionada por Tazmany.',availability:'ACTIVA'}));
     const customer={profile:{name:'Valeria Torres',initials:'VT',city:'Lima'},summary:{availableCoupons:1,totalOrders:2,cashbackCents:699,favorites:4},coupons:[{id:'c1',code:'TAZ-DEMO-7K2P',title:offers[0].title,merchantName:offers[0].merchantName,imageUrl:offers[0].imageUrl,expiresAt:'2026-12-20T04:59:59.000Z',status:'AVAILABLE'},{id:'c2',code:'TAZ-DEMO-4N8M',title:offers[1].title,merchantName:offers[1].merchantName,imageUrl:offers[1].imageUrl,expiresAt:'2026-11-30T04:59:59.000Z',status:'REDEEMED'}],activity:[{label:'Cashback disponible',detail:'Compra TAZ-000101',amountCents:699,dateLabel:'Hoy'},{label:'Cupón utilizado',detail:'Masaje relajante · Kantu Spa',amountCents:0,dateLabel:'Hace 6 días'}]};
     const merchant={merchant:{name:'Sabores de Lima',initials:'SL'},summary:{salesTodayCents:195720,redemptionsToday:18,activeCoupons:158,nextPayoutCents:202129},weeklySales:[42,58,51,76,88,104,92],campaigns:offers.filter(o=>o.merchantName==='Sabores de Lima').map((o,i)=>({id:o.id,title:o.title,imageUrl:o.imageUrl,status:'ACTIVA',sold:o.soldCount,inventory:i?75:120,revenueCents:o.soldCount*o.offerPriceCents})),recentRedemptions:[{code:'TAZ-•••-7K2P',offer:offers[0].title,branch:'Miraflores',time:'12:42'},{code:'TAZ-•••-2R5A',offer:offers[5].title,branch:'Barranco',time:'11:18'},{code:'TAZ-•••-9F1C',offer:offers[0].title,branch:'Barranco',time:'10:56'}]};
     const categories=[{id:'cat-food',name:'Gastronomía',icon:'restaurant'},{id:'cat-beauty',name:'Belleza y spa',icon:'sparkles'},{id:'cat-fitness',name:'Fitness',icon:'fitness'},{id:'cat-auto',name:'Automotriz',icon:'car'},{id:'cat-fun',name:'Entretenimiento',icon:'ticket'}];

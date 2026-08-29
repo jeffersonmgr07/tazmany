@@ -13,7 +13,10 @@
       <p class="offer-merchant"></p>
       <p class="offer-location"><span class="icon icon-xs" data-icon="pin"></span><span></span></p>
       <div class="offer-tags"></div>
-      <div class="offer-price-row"><div><small class="normal-price"></small><span class="public-price-label">Precio público</span><strong class="offer-price"></strong><span class="club-price-line"><span class="icon icon-xs" data-icon="crown"></span> Club <b class="club-price"></b></span></div><span class="cashback-pill"></span></div>
+      <div class="offer-price-row">
+        <div class="club-card-price"><span class="club-card-label"><span class="icon icon-xs" data-icon="crown"></span> Precio Club</span><span class="club-price-line"><strong class="club-price"></strong><b class="club-cashback-pill"></b></span></div>
+        <div class="public-card-price"><small class="normal-price"></small><span><span class="public-price-label">Precio público</span><strong class="offer-price"></strong><b class="public-cashback-pill"></b></span></div>
+      </div>
     </div>
   </article>
 </template>
@@ -28,7 +31,7 @@
       <p class="dialog-merchant" id="dialogMerchant"></p>
       <div class="dialog-rating" id="dialogRating"></div>
       <p id="dialogDescription" class="dialog-description"></p>
-      <div class="dialog-pricing"><div><small>Precio regular</small><del id="dialogNormalPrice"></del></div><div><small>Precio público</small><strong id="dialogOfferPrice"></strong></div><div class="dialog-club-price"><small>Club Tazmany</small><b id="dialogClubPrice"></b></div><div><small>Cashback</small><b id="dialogCashback"></b></div></div>
+      <div class="dialog-pricing"><div><small>Precio regular</small><del id="dialogNormalPrice"></del></div><div><small>Precio público · <span id="dialogPublicCashback"></span></small><strong id="dialogOfferPrice"></strong></div><div class="dialog-club-price"><small>Club Tazmany · <span id="dialogClubCashback"></span></small><b id="dialogClubPrice"></b></div></div>
       <div class="dialog-detail-columns"><div><h3>Incluye</h3><ul id="dialogIncludes"></ul></div><div><h3>Condiciones clave</h3><ul id="dialogRestrictions"></ul></div></div>
       <div class="branch-list" id="dialogBranches"></div>
       <div class="dialog-actions"><button class="button button-primary button-block" id="buyOfferButton" type="button">Comprar esta oferta</button><small>Las compras estarán disponibles próximamente.</small></div>

@@ -11,6 +11,7 @@ const auth = read('auth.html');
 const main = read('Main.gs');
 const privacy = fs.readFileSync(new URL('../../privacidad.html', import.meta.url), 'utf8');
 const terms = fs.readFileSync(new URL('../../terminos.html', import.meta.url), 'utf8');
+const packageJson = JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
 const visibleSource = [app, read('components.html'), read('merchant.html'), read('admin.html'), read('phase3.html'), read('discovery.html'), scripts].join('\n');
 
 test('el portal público no muestra textos técnicos o de desarrollo', () => {
@@ -45,7 +46,7 @@ test('GitHub es la interfaz y Apps Script redirige al dominio oficial', () => {
 });
 
 test('el modal de acceso usa la mascota y el ny amarillo', () => {
-  assert.match(auth, /assets\/brand\/tazmany-isotipo\.png\?v=0\.3\.15/);
+  assert.ok(auth.includes(`assets/brand/tazmany-isotipo.png?v=${packageJson.version}`));
   assert.match(auth, /<span>Tazma<\/span><em>ny<\/em>/);
 });
 
