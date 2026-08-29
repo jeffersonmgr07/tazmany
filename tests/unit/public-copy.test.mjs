@@ -7,6 +7,8 @@ const app = read('app.html');
 const scripts = read('scripts.html');
 const config = read('Config.gs');
 const phase39 = read('Phase39Setup.gs');
+const auth = read('auth.html');
+const main = read('Main.gs');
 const privacy = fs.readFileSync(new URL('../../privacidad.html', import.meta.url), 'utf8');
 const terms = fs.readFileSync(new URL('../../terminos.html', import.meta.url), 'utf8');
 const visibleSource = [app, read('components.html'), read('merchant.html'), read('admin.html'), read('phase3.html'), read('discovery.html'), scripts].join('\n');
@@ -33,8 +35,25 @@ test('la captación pública de comercios permanece retirada', () => {
 });
 
 test('la vista desconectada no simula una suscripción real', () => {
-  assert.match(scripts, /if\(isStaticPreview\(\)\)\{status\.textContent='Las suscripciones estarán disponibles muy pronto\.'/);
+  assert.match(scripts, /if\(isStaticPreview\(\)\)\{status\.textContent='No pudimos conectar con el servicio\.'/);
   assert.match(scripts, /await callServerStrict\('apiSubscribeToOffers'/);
+});
+
+test('GitHub es la interfaz y Apps Script redirige al dominio oficial', () => {
+  assert.match(main, /publicUrl = 'https:\/\/tazmany\.com\/'/);
+  assert.doesNotMatch(main, /createTemplateFromFile\('index'\)/);
+});
+
+test('el modal de acceso usa la mascota y el ny amarillo', () => {
+  assert.match(auth, /assets\/brand\/tazmany-isotipo\.png\?v=0\.3\.14/);
+  assert.match(auth, /<span>Tazma<\/span><em>ny<\/em>/);
+});
+
+test('el portal conectado nunca sustituye una caída por datos visuales', () => {
+  assert.match(scripts, /if\(hasRemoteApi\(\)\)return callRemoteApi\(name,args\)/);
+  assert.match(scripts, /state\.backendAvailable=false/);
+  assert.match(scripts, /Servicio temporalmente no disponible/);
+  assert.doesNotMatch(scripts, /callRemoteApi\(name,args\).*catch\(\(\)=>fallbackValue\)/);
 });
 
 test('la compuerta previa a Fase 4 mantiene cobros bloqueados', () => {

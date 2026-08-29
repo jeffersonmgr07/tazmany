@@ -1,10 +1,10 @@
 var TAZMANY_CONFIG = Object.freeze({
   APP_NAME: 'Tazmany',
-  VERSION: '0.3.11',
+  VERSION: '0.3.14',
   TIME_ZONE: 'America/Lima',
   CURRENCY: 'PEN',
   DEFAULT_CITY_ID: 'city-lima',
-  DEFAULT_PUBLIC_LOGO_URL: 'https://tazmany.com/assets/brand/tazmany-logo.png?v=0.3.11',
+  DEFAULT_PUBLIC_LOGO_URL: 'https://tazmany.com/assets/brand/tazmany-logo.png?v=0.3.12',
   CACHE_SECONDS: 300,
   SCRIPT_PROPERTIES: Object.freeze({
     SPREADSHEET_ID: 'TAZMANY_SPREADSHEET_ID',

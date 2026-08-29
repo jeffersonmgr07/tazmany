@@ -39,6 +39,15 @@ function normalizePeruPhone_(value) {
   return '+51' + digits;
 }
 
+function normalizeInternationalPhone_(countryIso, value) {
+  var iso = String(countryIso || '').trim().toUpperCase();
+  var phone = String(value || '').trim().replace(/[\s().-]/g, '');
+  if (!/^[A-Z]{2}$/.test(iso) || !/^\+[1-9]\d{7,14}$/.test(phone)) {
+    throw createPublicError_('INVALID_PHONE', 'Selecciona el país e ingresa un número de WhatsApp válido.');
+  }
+  return { countryIso: iso, phoneE164: phone };
+}
+
 function validateDocument_(type, value) {
   var documentType = String(type || '').trim().toUpperCase();
   var documentNumber = String(value || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();

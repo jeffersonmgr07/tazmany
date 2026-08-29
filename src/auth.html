@@ -1,6 +1,9 @@
 <dialog class="auth-dialog" id="authDialog" aria-labelledby="authDialogTitle">
   <button class="dialog-close icon-button" type="button" aria-label="Cerrar" data-close-dialog><span class="icon" data-icon="close"></span></button>
-  <div class="auth-brand"><span class="brand-mark"><span>T</span></span><div><small>Bienvenido a</small><strong>Tazmany</strong></div></div>
+  <div class="auth-brand">
+    <img class="auth-brand-isotipo" src="assets/brand/tazmany-isotipo.png?v=0.3.14" alt="" aria-hidden="true">
+    <div><small>Bienvenido a</small><strong class="auth-wordmark"><span>Tazma</span><em>ny</em></strong></div>
+  </div>
   <h2 id="authDialogTitle">Ingresa para guardar y disfrutar tus ofertas</h2>
   <p class="auth-lead">Usa tu cuenta de Google o recibe un código seguro en tu correo.</p>
   <div id="googleAuthArea" class="google-auth-area">
@@ -28,14 +31,14 @@
   <button class="dialog-close icon-button" type="button" aria-label="Cerrar" data-close-dialog><span class="icon" data-icon="close"></span></button>
   <span class="section-kicker">Un último paso</span>
   <h2 id="profileDialogTitle">Completa tu perfil de cliente</h2>
-  <p>Necesitamos estos datos antes de habilitar una compra. La verificación del celular se completará más adelante.</p>
+  <p>Necesitamos estos datos antes de habilitar una compra. La verificación de WhatsApp se completará más adelante.</p>
   <form id="profileForm" class="profile-form">
     <div class="form-grid two-columns">
       <label>Nombres<input name="firstName" autocomplete="given-name" maxlength="60" required></label>
       <label>Apellidos<input name="lastName" autocomplete="family-name" maxlength="80" required></label>
       <label>Tipo de documento<select name="documentType" required><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option><option value="PASSPORT">Pasaporte</option></select></label>
       <label>Número de documento<input name="documentNumber" autocomplete="off" maxlength="12" required></label>
-      <label>Celular peruano<input name="phone" inputmode="tel" autocomplete="tel" placeholder="999 999 999" required></label>
+      <label class="whatsapp-field"><span>WhatsApp</span><span class="whatsapp-input-group"><select name="phoneCountryIso" id="profilePhoneCountry" aria-label="País y código de WhatsApp" autocomplete="tel-country-code" required></select><input name="phoneNationalNumber" id="profilePhoneNumber" inputmode="tel" autocomplete="tel-national" placeholder="999 999 999" maxlength="18" aria-label="Número de WhatsApp" required></span></label>
       <label>Ciudad principal<select name="primaryCityId" id="profileCity" required><option value="city-lima">Lima</option></select></label>
     </div>
     <label class="check-row"><input name="acceptTerms" type="checkbox" required><span>Acepto los Términos y condiciones vigentes.</span></label>

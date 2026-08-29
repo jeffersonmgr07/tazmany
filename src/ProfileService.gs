@@ -21,7 +21,7 @@ function validateCustomerProfilePayload_(payload) {
   var lastName = sanitizePlainText_(payload.lastName, 80);
   if (firstName.length < 2 || lastName.length < 2) throw createPublicError_('INVALID_NAME', 'Ingresa tus nombres y apellidos.');
   var document = validateDocument_(payload.documentType, payload.documentNumber);
-  var phoneE164 = normalizePeruPhone_(payload.phone);
+  var phone = normalizeInternationalPhone_(payload.phoneCountryIso, payload.phoneE164);
   var primaryCityId = assertSafeId_(payload.primaryCityId || TAZMANY_CONFIG.DEFAULT_CITY_ID, 'primaryCityId');
   var cityIds = Array.isArray(payload.cityIds) ? payload.cityIds : [primaryCityId];
   cityIds = cityIds.map(function (cityId) { return assertSafeId_(cityId, 'cityId'); });
@@ -33,7 +33,7 @@ function validateCustomerProfilePayload_(payload) {
   var privacyVersion = properties.getProperty(TAZMANY_CONFIG.SCRIPT_PROPERTIES.PRIVACY_VERSION) || '2026-08-27';
   return {
     firstName: firstName, lastName: lastName, documentType: document.type, documentNumber: document.number,
-    phoneE164: phoneE164, primaryCityId: primaryCityId, cityIds: cityIds,
+    phoneE164: phone.phoneE164, phoneCountryIso: phone.countryIso, primaryCityId: primaryCityId, cityIds: cityIds,
     marketingConsent: payload.marketingConsent === true, termsVersion: termsVersion, privacyVersion: privacyVersion
   };
 }
@@ -62,7 +62,8 @@ function saveCustomerProfile_(user, payload) {
     phone_verified_at: existingPrivate && existingPrivate.phone_e164 === payload.phoneE164 ? existingPrivate.phone_verified_at : '',
     document_type: payload.documentType, document_number_hash: hashSecret_('customer-document', payload.documentType + '|' + payload.documentNumber),
     document_last4: payload.documentNumber.slice(-4), created_at: existingPrivate ? existingPrivate.created_at : now,
-    updated_at: now, status: 'ACTIVE', version: Number(existingPrivate && existingPrivate.version || 0) + 1
+    updated_at: now, status: 'ACTIVE', version: Number(existingPrivate && existingPrivate.version || 0) + 1,
+    phone_country_iso: payload.phoneCountryIso
   };
   repository.upsert('CUSTOMER_PROFILES', [profile]);
   repository.upsert('CUSTOMER_PRIVATE_DATA', [privateData]);
@@ -111,6 +112,7 @@ function getCustomerProfileDto_(user) {
     firstName: profile ? profile.first_name : '', lastName: profile ? profile.last_name : '',
     documentType: profile ? profile.document_type : '', documentMasked: profile ? profile.document_masked : '',
     phoneMasked: profile ? profile.phone_masked : '', phoneVerified: Boolean(privateData && privateData.phone_verified_at),
+    phoneCountryIso: privateData && privateData.phone_country_iso || 'PE',
     primaryCityId: user.city_id || TAZMANY_CONFIG.DEFAULT_CITY_ID, cityIds: cityIds,
     marketingConsent: Boolean(profile && (profile.marketing_consent === true || String(profile.marketing_consent) === 'true'))
   };

@@ -6,7 +6,7 @@ var TAZMANY_SCHEMA = Object.freeze({
   OTP_CHALLENGES: ['id', 'email', 'code_hash', 'attempts', 'max_attempts', 'expires_at', 'consumed_at', 'device_label', 'created_at', 'updated_at', 'status', 'version'],
   USER_SESSIONS: ['id', 'user_id', 'token_hash', 'device_label', 'expires_at', 'revoked_at', 'created_at', 'updated_at', 'status', 'version'],
   CUSTOMER_PROFILES: ['id', 'user_id', 'first_name', 'last_name', 'document_type', 'document_masked', 'phone_masked', 'marketing_consent', 'created_at', 'updated_at', 'status', 'version'],
-  CUSTOMER_PRIVATE_DATA: ['id', 'user_id', 'phone_e164', 'phone_verified_at', 'document_type', 'document_number_hash', 'document_last4', 'created_at', 'updated_at', 'status', 'version'],
+  CUSTOMER_PRIVATE_DATA: ['id', 'user_id', 'phone_e164', 'phone_verified_at', 'document_type', 'document_number_hash', 'document_last4', 'created_at', 'updated_at', 'status', 'version', 'phone_country_iso'],
   USER_CITY_PREFERENCES: ['id', 'user_id', 'city_id', 'is_primary', 'created_at', 'updated_at', 'status', 'version'],
   TERMS_ACCEPTANCES: ['id', 'user_id', 'terms_version', 'privacy_version', 'marketing_consent', 'accepted_at', 'evidence_json', 'created_at', 'updated_at', 'status', 'version'],
   COUNTRIES: ['id', 'iso_code', 'name', 'currency', 'time_zone', 'sort_order', 'created_at', 'updated_at', 'status', 'version'],

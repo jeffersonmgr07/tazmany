@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.3.14 — 2026-08-29
+
+- Se cerró técnicamente la Fase 3 después de conectar dominio, GitHub, Cloudflare, Apps Script, Google Identity y OTP.
+- Google completa nombres y apellidos vacíos a partir de `given_name` y `family_name`, sin sobrescribir un perfil existente.
+- El formulario reemplazó “Celular peruano” por un WhatsApp internacional con Perú `+51` predeterminado.
+- Se añadieron más de 240 países y territorios con sus códigos de llamada.
+- Los números se guardan en formato E.164 y el país queda registrado en `CUSTOMER_PRIVATE_DATA.phone_country_iso`.
+- Se añadió la migración y el diagnóstico `setupTazmanyPhase314()`.
+- Mercado Pago, órdenes y cupones siguen desactivados hasta la Fase 4.
+
+## 0.3.13 — 2026-08-29
+
+- El relay de Cloudflare ahora publica al `/exec` de Apps Script sin añadir la ruta reservada `/api`.
+- Apps Script acepta las solicitudes autenticadas del relay en la raíz de la Web App.
+- Se corrigió el carácter de la URL activa de Apps Script (`K5TlZe`, con `l` minúscula).
+- Se añadió una prueba automática que impide volver a publicar contra `/exec/api`.
+
+## 0.3.12 — 2026-08-27
+
+- `tazmany.com` queda como única interfaz web: Apps Script conserva el API y redirige su acceso visual al dominio oficial.
+- El build de GitHub exige una URL HTTPS de relay y las validaciones ya no pueden reemplazar el index conectado por una vista desconectada.
+- El modal de acceso incorpora el isotipo oficial y el wordmark con `ny` amarillo/ámbar.
+- Se añadió `setupTazmanyPhase312()` para limpiar la caché pública y comprobar Google, orígenes y secreto del relay.
+- Se mantuvieron pagos, Club facturado y canjes desactivados.
+
 ## 0.3.11 — 2026-08-27
 
 - Se estableció `https://tazmany.com` como dominio canónico del portal, la política de privacidad, los términos y el logo oficial.

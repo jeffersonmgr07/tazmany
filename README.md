@@ -4,9 +4,24 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.11` — dominio oficial y Google Identity en staging: publica Tazmany en `tazmany.com`, conserva Privacidad y Términos bajo el mismo dominio y mantiene la compuerta previa a la Fase 4. Mercado Pago continúa bloqueado.
+Versión `0.3.14` — cierre técnico de la Fase 3. `tazmany.com` es la única interfaz conectada; Cloudflare comunica GitHub Pages con Apps Script y Apps Script queda exclusivamente como backend. Mercado Pago continúa bloqueado hasta iniciar la Fase 4.
 
-### Dominio oficial 0.3.11
+### Cierre de Fase 3 — 0.3.14
+
+- Google propone nombres y apellidos en el perfil cuando la cuenta los entrega, sin reemplazar información previamente guardada.
+- El documento sigue siendo solicitado porque Google no entrega DNI, carné de extranjería ni pasaporte.
+- El campo de contacto se presenta como WhatsApp y separa país/código internacional del número.
+- Perú (`+51`) queda predeterminado y el selector incluye más de 240 países y territorios.
+- El teléfono se normaliza en formato E.164 y el país elegido se conserva en datos privados.
+- `setupTazmanyPhase314()` aplica la columna final y `getTazmanyPhase314Diagnostics()` confirma el cierre de la fase.
+
+### Hotfix del relay 0.3.13
+
+- Cloudflare envía los POST a la raíz `/exec` de Apps Script; no usa `/exec/api`, que Google puede interceptar con un error 401.
+- La URL de la implementación activa se conserva exactamente como fue copiada desde Apps Script.
+- El navegador continúa consumiendo el endpoint público `/api` del Worker; este cambio solo afecta la conexión interna Worker → Apps Script.
+
+### Portal conectado 0.3.12
 
 - `tazmany.com` es el dominio canónico del portal, las páginas legales y los activos públicos.
 - El archivo `CNAME` preserva la configuración de GitHub Pages al actualizar el repositorio.
@@ -143,7 +158,7 @@ El navegador nunca lee ni escribe Sheets directamente. Cada ambiente debe tener 
 4. Selecciona la rama **main** y la carpeta **/(root)**; luego pulsa **Save**.
 5. Espera la publicación y abre la URL mostrada por GitHub Pages.
 
-El `index.html` raíz contiene los parciales compilados y usa el logotipo de `assets/brand/tazmany-logo.png`. Sin una URL de relay continúa como vista demo. Para convertirlo en la interfaz conectada sigue [`docs/despliegue/GUIA_GITHUB_RELAY_APPS_SCRIPT.md`](docs/despliegue/GUIA_GITHUB_RELAY_APPS_SCRIPT.md).
+El `index.html` raíz contiene los parciales compilados, el relay HTTPS y los activos de marca. El build público falla si no recibe `TAZMANY_API_BASE_URL`, por lo que no puede publicarse accidentalmente como una vista desconectada. Apps Script no sirve otra copia visual: su `doGet()` redirige a `https://tazmany.com` y `doPost()` conserva el API privado consumido por el relay.
 
 Si el repositorio todavía contiene `.github/workflows/pages.yml`, elimínalo una sola vez al cambiar a **Deploy from a branch**. Los workflows `ci.yml` y `deploy.yml` se conservan.
 
@@ -288,7 +303,7 @@ npm run build:preview
 npm run verify
 ```
 
-Abre `index.html` para revisar la vista de GitHub Pages. Sin `TAZMANY_API_BASE_URL` funciona como demo. Con el relay configurado, OTP, sesiones y paneles se prueban desde GitHub Pages sin el aviso visual de Apps Script.
+Abre `index.html` para revisar la interfaz conectada de GitHub Pages. Para reconstruirla utiliza `TAZMANY_API_BASE_URL="https://TU-WORKER.workers.dev" npm run build:github`; el comando se detiene si falta el relay. `npm run verify` genera solo el preview de `dist/` y no reemplaza el index público conectado.
 
 ## Seguridad relevante
 

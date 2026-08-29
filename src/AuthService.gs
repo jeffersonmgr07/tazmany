@@ -15,6 +15,7 @@ function apiAuthenticateGoogle(idToken, nonce, deviceLabel, idempotencyKey) {
         return item.provider === 'GOOGLE' && item.provider_subject === subject && item.status === 'ACTIVE';
       });
       var user = identity ? repository.findById('USERS', identity.user_id) : findOrCreateCustomerUser_(normalizeEmail_(claims.email), claims.name || claims.given_name || 'Cliente Tazmany');
+      prefillCustomerNamesFromGoogle_(repository, user, claims);
       var now = nowIso_();
       if (!identity) {
         identity = {
@@ -34,6 +35,43 @@ function apiAuthenticateGoogle(idToken, nonce, deviceLabel, idempotencyKey) {
       return buildAuthResponse_(user, { id: session.sessionId, expires_at: session.expiresAt }, 'GOOGLE', session.sessionToken);
     });
   });
+}
+
+function prefillCustomerNamesFromGoogle_(repository, user, claims) {
+  var firstName = sanitizePlainText_(claims && claims.given_name, 60);
+  var lastName = sanitizePlainText_(claims && claims.family_name, 80);
+  if (firstName.length < 2 || lastName.length < 2) {
+    var parts = sanitizePlainText_(claims && claims.name, 140).split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      if (firstName.length < 2) firstName = parts.shift().slice(0, 60);
+      if (lastName.length < 2) lastName = parts.join(' ').slice(0, 80);
+    }
+  }
+  if (firstName.length < 2 || lastName.length < 2) return;
+  var now = nowIso_();
+  var profileId = 'profile-' + user.id;
+  var profile = repository.findById('CUSTOMER_PROFILES', profileId);
+  var changed = false;
+  if (!profile) {
+    profile = {
+      id: profileId, user_id: user.id, first_name: firstName, last_name: lastName,
+      document_type: '', document_masked: '', phone_masked: '', marketing_consent: false,
+      created_at: now, updated_at: now, status: 'ACTIVE', version: 1
+    };
+    changed = true;
+  } else {
+    if (!profile.first_name) { profile.first_name = firstName; changed = true; }
+    if (!profile.last_name) { profile.last_name = lastName; changed = true; }
+    if (changed) {
+      profile.updated_at = now;
+      profile.version = Number(profile.version || 0) + 1;
+    }
+  }
+  if (changed) {
+    repository.upsert('CUSTOMER_PROFILES', [profile]);
+    appendAuditEvent_({ actor_user_id: user.id, action: 'GOOGLE_PROFILE_NAME_IMPORTED', entity_type: 'CUSTOMER_PROFILE', entity_id: profile.id });
+  }
+  if (!user.display_name || user.display_name === 'Cliente Tazmany') user.display_name = firstName + ' ' + lastName;
 }
 
 function apiRequestEmailOtp(email, deviceLabel, idempotencyKey) {

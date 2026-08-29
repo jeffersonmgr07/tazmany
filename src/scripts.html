@@ -12,12 +12,12 @@
   const date = value => value ? new Intl.DateTimeFormat('es-PE',{day:'2-digit',month:'short',year:'numeric',timeZone:'America/Lima'}).format(new Date(value)) : '';
   const escapeHtml = value => String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
-  const state = { view:'home', publicData:null, query:'', categoryId:'', favorites:new Set(), customerLoaded:false, merchantLoaded:false, adminLoaded:false, merchantWorkspace:null, auth:null, otpChallenge:null, googleNonce:'', location:readStoredLocation() };
+  const state = { view:'home', publicData:null, backendAvailable:false, query:'', categoryId:'', favorites:new Set(), customerLoaded:false, merchantLoaded:false, adminLoaded:false, merchantWorkspace:null, auth:null, otpChallenge:null, googleNonce:'', location:readStoredLocation() };
   const fallback = createFallbackData();
 
   document.addEventListener('DOMContentLoaded', init);
   async function init(){
-    applyLogo(); hydrateIcons(document); bindGlobalEvents(); await loadPublicData(); await restoreSession(); initGoogleIdentity(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);initDiscoveryExperience();
+    applyLogo(); hydrateIcons(document); populatePhoneCountries('PE'); bindGlobalEvents(); await loadPublicData(); await restoreSession(); initGoogleIdentity(); navigate(window.TAZMANY_INITIAL_VIEW || 'home', false);initDiscoveryExperience();
   }
   function applyLogo(){
     const url=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.logoUrl;
@@ -50,6 +50,7 @@
     document.getElementById('otpVerifyForm').addEventListener('submit',verifyOtp);
     document.getElementById('otpBackButton').addEventListener('click',resetOtpForm);
     document.getElementById('profileForm').addEventListener('submit',saveProfile);
+    document.getElementById('profilePhoneCountry').addEventListener('change',updateWhatsAppPlaceholder);
     document.getElementById('campaignForm').addEventListener('submit',event=>saveCampaign(event,false));
     document.getElementById('saveAndSubmitCampaignButton').addEventListener('click',event=>saveCampaign(event,true));
     document.getElementById('generateContractButton').addEventListener('click',generateContract);
@@ -71,13 +72,24 @@
   }
   function closeProfileMenu(){const menu=document.getElementById('profileMenu');menu.hidden=true;document.getElementById('profileSwitcher').setAttribute('aria-expanded','false')}
   function syncSearchInputs(value){document.getElementById('topSearchInput').value=value;document.getElementById('mobileSearchInput').value=value}
+  function phoneFlag(iso){return String(iso||'').toUpperCase().replace(/[A-Z]/g,char=>String.fromCodePoint(127397+char.charCodeAt(0)))}
+  function populatePhoneCountries(selectedIso){
+    const select=document.getElementById('profilePhoneCountry');if(!select)return;const countries=Array.isArray(window.TAZMANY_PHONE_COUNTRIES)?window.TAZMANY_PHONE_COUNTRIES:[];
+    select.innerHTML=countries.slice().sort((a,b)=>a.name.localeCompare(b.name,'es')).map(country=>`<option value="${escapeHtml(country.iso)}" data-dial="${escapeHtml(country.dial)}">${phoneFlag(country.iso)} ${escapeHtml(country.name)} (+${escapeHtml(country.dial)})</option>`).join('');
+    select.value=countries.some(country=>country.iso===selectedIso)?selectedIso:'PE';updateWhatsAppPlaceholder();
+  }
+  function updateWhatsAppPlaceholder(){const select=document.getElementById('profilePhoneCountry');const input=document.getElementById('profilePhoneNumber');if(!select||!input)return;input.placeholder=select.value==='PE'?'999 999 999':select.value==='ES'?'612 345 678':'Número de WhatsApp'}
+  function buildWhatsAppE164(countryIso,nationalValue){
+    const select=document.getElementById('profilePhoneCountry');const option=Array.from(select.options).find(item=>item.value===countryIso);const dial=option&&option.dataset.dial||'';let raw=String(nationalValue||'').trim();
+    if(raw.startsWith('+'))return '+'+raw.replace(/\D/g,'');if(raw.startsWith('00'))return '+'+raw.slice(2).replace(/\D/g,'');let digits=raw.replace(/\D/g,'').replace(/^0/,'');return `+${dial}${digits}`;
+  }
   function callServer(name,args,fallbackValue){
-    if(hasRemoteApi())return callRemoteApi(name,args).then(response=>response&&response.ok?response.data:fallbackValue).catch(()=>fallbackValue);
+    if(hasRemoteApi())return callRemoteApi(name,args).then(response=>response&&response.ok?response.data:Promise.reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'}));
     return new Promise(resolve=>{if(!(window.google&&google.script&&google.script.run)){resolve(fallbackValue);return}const runner=google.script.run.withSuccessHandler(response=>resolve(response&&response.ok?response.data:fallbackValue)).withFailureHandler(()=>resolve(fallbackValue));runner[name](...(args||[]))});
   }
   function callServerStrict(name,args){
     if(hasRemoteApi())return callRemoteApi(name,args).then(response=>response&&response.ok?response.data:Promise.reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'}));
-    return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run)){reject({code:'SERVICE_NOT_AVAILABLE',message:'Esta función estará disponible próximamente.'});return}const runner=google.script.run.withSuccessHandler(response=>response&&response.ok?resolve(response.data):reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'})).withFailureHandler(error=>reject({code:'SERVER_ERROR',message:error&&error.message||'No pudimos conectar con el servidor.'}));runner[name](...(args||[]))});
+    return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run)){reject({code:'SERVICE_NOT_AVAILABLE',message:'No pudimos conectar con el servicio.'});return}const runner=google.script.run.withSuccessHandler(response=>response&&response.ok?resolve(response.data):reject(response&&response.error||{code:'UNKNOWN_ERROR',message:'No pudimos completar la solicitud.'})).withFailureHandler(error=>reject({code:'SERVER_ERROR',message:error&&error.message||'No pudimos conectar con el servidor.'}));runner[name](...(args||[]))});
   }
   function hasAppsScriptBridge(){return Boolean(window.google&&google.script&&google.script.run)}
   function hasRemoteApi(){return Boolean(window.TAZMANY_CONFIG&&/^https:\/\//.test(String(window.TAZMANY_CONFIG.apiBaseUrl||'')))}
@@ -88,7 +100,9 @@
     if(!response.ok)throw payload&&payload.error||{code:'SERVER_ERROR',message:'No pudimos completar la solicitud.'};return payload;
   }
   async function loadPublicData(){
-    const cityId=state.location&&state.location.cityId||'';state.publicData=await callServer('apiGetPublicBootstrap',cityId?[cityId]:[],filterFallbackByCity(fallback,cityId));const remoteUrl=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.apiBaseUrl||'';
+    const cityId=state.location&&state.location.cityId||'';const remoteUrl=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.apiBaseUrl||'';
+    try{state.publicData=await callServer('apiGetPublicBootstrap',cityId?[cityId]:[],filterFallbackByCity(fallback,cityId));state.backendAvailable=true}
+    catch(error){state.backendAvailable=false;state.publicData={countries:fallback.countries,cities:fallback.cities,categories:[],offers:[],merchants:[],selectedCityId:cityId||'city-lima'};showToast('Servicio temporalmente no disponible','No pudimos cargar las ofertas. Inténtalo nuevamente en unos minutos.')}
     if(state.publicData&&state.publicData.config)window.TAZMANY_CONFIG=Object.assign({},window.TAZMANY_CONFIG,state.publicData.config,{apiBaseUrl:remoteUrl,isStaticPreview:!remoteUrl&&!hasAppsScriptBridge()});
     syncLocationLabels();renderCategories();renderOffers();renderMerchants();
   }
@@ -104,7 +118,7 @@
   function suggestNearestCity(){const status=document.getElementById('locationStatus');if(!navigator.geolocation){status.textContent='Tu navegador no permite sugerir una ubicación.';return}status.textContent='Buscando la ciudad más cercana…';navigator.geolocation.getCurrentPosition(position=>{const cities=(state.publicData&&state.publicData.cities||fallback.cities).filter(city=>Number.isFinite(Number(city.latitude))&&Number.isFinite(Number(city.longitude)));if(!cities.length){status.textContent='No hay coordenadas de ciudades configuradas.';return}const lat=position.coords.latitude,lng=position.coords.longitude;const nearest=cities.reduce((best,city)=>{const distance=Math.pow(lat-Number(city.latitude),2)+Math.pow(lng-Number(city.longitude),2);return !best||distance<best.distance?{city,distance}:best},null).city;document.getElementById('locationCountry').value=nearest.countryCode||'PE';populateLocationCities();document.getElementById('locationCity').value=nearest.id;status.textContent=`Sugerencia: ${nearest.name}. Confirma para aplicarla.`},()=>{status.textContent='No pudimos obtener tu ubicación. Puedes elegir la ciudad manualmente.'},{timeout:8000,maximumAge:600000})}
   function scheduleSubscriberDialog(){if(localStorage.getItem('tazmany_marketing_subscribed'))return;const dismissed=Number(localStorage.getItem('tazmany_subscriber_dismissed_at')||0);if(Date.now()-dismissed<14*24*60*60*1000)return;setTimeout(()=>{const dialog=document.getElementById('subscriberDialog');if(!document.querySelector('dialog[open]'))dialog.showModal()},1200)}
   function rememberSubscriberDismissal(){localStorage.setItem('tazmany_subscriber_dismissed_at',String(Date.now()))}
-  async function submitMarketingSubscription(event,source){event.preventDefault();const form=event.currentTarget;const email=form.querySelector('[type="email"]').value.trim();const consent=form.querySelector('[name="marketingConsent"]').checked;const city=currentCity();const status=form.querySelector('.form-status');const button=form.querySelector('[type="submit"]');button.disabled=true;status.textContent='Guardando tu preferencia…';status.classList.remove('error');try{if(isStaticPreview()){status.textContent='Las suscripciones estarán disponibles muy pronto.';status.classList.add('error');return}const payload={email,marketingConsent:consent,countryCode:city.countryCode||'PE',cityId:city.id,source,consentVersion:'marketing-2026-08-25'};await callServerStrict('apiSubscribeToOffers',[payload,newIdempotencyKey('marketing-subscribe')]);localStorage.setItem('tazmany_marketing_subscribed','1');status.textContent='Suscripción confirmada.';form.reset();showToast('Ya estás en la lista',`Te mostraremos novedades de ${city.name}.`);if(form.id==='subscriberForm')setTimeout(()=>document.getElementById('subscriberDialog').close(),700)}catch(error){status.textContent=error.message||'No pudimos guardar tu suscripción.';status.classList.add('error')}finally{button.disabled=false}}
+  async function submitMarketingSubscription(event,source){event.preventDefault();const form=event.currentTarget;const email=form.querySelector('[type="email"]').value.trim();const consent=form.querySelector('[name="marketingConsent"]').checked;const city=currentCity();const status=form.querySelector('.form-status');const button=form.querySelector('[type="submit"]');button.disabled=true;status.textContent='Guardando tu preferencia…';status.classList.remove('error');try{if(isStaticPreview()){status.textContent='No pudimos conectar con el servicio.';status.classList.add('error');return}const payload={email,marketingConsent:consent,countryCode:city.countryCode||'PE',cityId:city.id,source,consentVersion:'marketing-2026-08-25'};await callServerStrict('apiSubscribeToOffers',[payload,newIdempotencyKey('marketing-subscribe')]);localStorage.setItem('tazmany_marketing_subscribed','1');status.textContent='Suscripción confirmada.';form.reset();showToast('Ya estás en la lista',`Te mostraremos novedades de ${city.name}.`);if(form.id==='subscriberForm')setTimeout(()=>document.getElementById('subscriberDialog').close(),700)}catch(error){status.textContent=error.message||'No pudimos guardar tu suscripción.';status.classList.add('error')}finally{button.disabled=false}}
   function navigate(view,push=true){
     if(!['home','customer','merchant','admin'].includes(view))view='home';state.view=view;
     if(view!=='home'&&!state.auth){openAuthDialog();view='home';state.view='home'}
@@ -125,7 +139,7 @@
     state.publicData.categories.forEach(category=>{const button=make('button','category-chip'+(state.categoryId===category.id?' active':''),`<span class="chip-glyph">${categoryIconMarkup(category.icon)}</span> ${escapeHtml(category.name)}`);button.type='button';button.onclick=()=>{state.categoryId=category.id;renderCategories();renderOffers();document.getElementById('offersSection').scrollIntoView({behavior:'smooth'})};box.append(button)});
   }
   function renderOffers(){
-    if(!state.publicData)return;const query=normalize(state.query);const offers=state.publicData.offers.filter(offer=>(!state.categoryId||offer.categoryId===state.categoryId)&&(!query||normalize(`${offer.title} ${offer.merchantName} ${offer.categoryName} ${offer.districtLabel}`).includes(query)));const grid=document.getElementById('offerGrid');grid.innerHTML='';
+    if(!state.publicData)return;const grid=document.getElementById('offerGrid');if(hasRemoteApi()&&!state.backendAvailable){grid.hidden=false;grid.innerHTML='<article class="service-unavailable"><span class="icon" data-icon="support"></span><h3>No pudimos cargar las ofertas</h3><p>El servicio está temporalmente no disponible. Inténtalo nuevamente en unos minutos.</p><button class="button button-primary" type="button" onclick="location.reload()">Volver a intentar</button></article>';document.getElementById('offersEmpty').hidden=true;hydrateIcons(grid);return}const query=normalize(state.query);const offers=state.publicData.offers.filter(offer=>(!state.categoryId||offer.categoryId===state.categoryId)&&(!query||normalize(`${offer.title} ${offer.merchantName} ${offer.categoryName} ${offer.districtLabel}`).includes(query)));grid.innerHTML='';
     offers.forEach(offer=>grid.append(createOfferCard(offer)));document.getElementById('offersEmpty').hidden=offers.length>0;grid.hidden=offers.length===0;
     const summary=document.getElementById('filterSummary');summary.hidden=!state.query&&!state.categoryId;document.getElementById('filterSummaryText').textContent=`${offers.length} resultado${offers.length===1?'':'s'}${state.query?` para “${state.query}”`:''}`;
   }
@@ -227,7 +241,7 @@
     else{label.textContent='Ingresar';note.textContent='Tu cuenta';avatar.textContent='T';document.getElementById('loginMenuButton').hidden=false;document.getElementById('logoutMenuButton').hidden=true;document.getElementById('sessionsMenuButton').hidden=true}
     document.getElementById('adminMenuButton').hidden=!(hasClientPermission('admin.dashboard.read')||hasClientPermission('*'));
   }
-  function openAuthDialog(){closeProfileMenu();resetOtpForm();const message=document.getElementById('googleAuthMessage');if(isStaticPreview()){message.hidden=false;message.textContent='El ingreso estará disponible muy pronto.'}document.getElementById('authDialog').showModal();initGoogleIdentity()}
+  function openAuthDialog(){closeProfileMenu();resetOtpForm();const message=document.getElementById('googleAuthMessage');message.hidden=true;if((hasRemoteApi()&&!state.backendAvailable)||isStaticPreview()){message.hidden=false;message.textContent='El servicio de acceso está temporalmente no disponible.'}document.getElementById('authDialog').showModal();initGoogleIdentity()}
   function resetOtpForm(){state.otpChallenge=null;document.getElementById('otpRequestForm').hidden=false;document.getElementById('otpVerifyForm').hidden=true;setStatus('authStatus','',false)}
   function setStatus(id,message,isError){const box=document.getElementById(id);box.textContent=message||'';box.hidden=!message;box.classList.toggle('error',Boolean(isError))}
   function setFormBusy(form,busy){form.querySelectorAll('button,input,select,textarea').forEach(control=>control.disabled=busy)}
@@ -241,6 +255,7 @@
   }
   function initGoogleIdentity(){
     const config=window.TAZMANY_CONFIG&&window.TAZMANY_CONFIG.auth||{};const message=document.getElementById('googleAuthMessage');if(isStaticPreview())return;
+    if(hasRemoteApi()&&!state.backendAvailable)return;
     if(!config.googleClientId){message.hidden=false;message.textContent='Puedes ingresar con un código enviado a tu correo.';return}
     if(!(window.google&&google.accounts&&google.accounts.id)){setTimeout(initGoogleIdentity,300);return}
     if(document.getElementById('googleButton').dataset.ready)return;state.googleNonce=newIdempotencyKey('google-nonce');google.accounts.id.initialize({client_id:config.googleClientId,callback:handleGoogleCredential,nonce:state.googleNonce,ux_mode:'popup'});google.accounts.id.renderButton(document.getElementById('googleButton'),{theme:'outline',size:'large',shape:'pill',text:'continue_with',width:360});document.getElementById('googleButton').dataset.ready='1';
@@ -254,10 +269,10 @@
   }
   async function openProfileDialog(){
     if(!state.auth)return openAuthDialog();const form=document.getElementById('profileForm');const cities=state.publicData&&state.publicData.cities||fallback.cities;const select=document.getElementById('profileCity');select.innerHTML=cities.map(city=>`<option value="${escapeHtml(city.id)}">${escapeHtml(city.name)}</option>`).join('');
-    try{const profile=await callServerStrict('apiGetMyProfile',[sessionToken()]);form.firstName.value=profile.firstName||'';form.lastName.value=profile.lastName||'';form.documentType.value=profile.documentType||'DNI';form.phone.value='';form.primaryCityId.value=profile.primaryCityId||'city-lima';form.marketingConsent.checked=Boolean(profile.marketingConsent)}catch(error){}setStatus('profileStatus','',false);document.getElementById('profileDialog').showModal();
+    try{const profile=await callServerStrict('apiGetMyProfile',[sessionToken()]);form.firstName.value=profile.firstName||'';form.lastName.value=profile.lastName||'';form.documentType.value=profile.documentType||'DNI';populatePhoneCountries(profile.phoneCountryIso||'PE');form.phoneNationalNumber.value='';form.primaryCityId.value=profile.primaryCityId||'city-lima';form.marketingConsent.checked=Boolean(profile.marketingConsent)}catch(error){populatePhoneCountries('PE')}setStatus('profileStatus','',false);document.getElementById('profileDialog').showModal();
   }
   async function saveProfile(event){
-    event.preventDefault();const form=event.currentTarget;const data=new FormData(form);const payload={firstName:data.get('firstName'),lastName:data.get('lastName'),documentType:data.get('documentType'),documentNumber:data.get('documentNumber'),phone:data.get('phone'),primaryCityId:data.get('primaryCityId'),cityIds:[data.get('primaryCityId')],acceptTerms:data.get('acceptTerms')==='on',acceptPrivacy:data.get('acceptPrivacy')==='on',marketingConsent:data.get('marketingConsent')==='on'};setFormBusy(form,true);setStatus('profileStatus','Guardando de forma segura…',false);
+    event.preventDefault();const form=event.currentTarget;const data=new FormData(form);const phoneCountryIso=data.get('phoneCountryIso');const payload={firstName:data.get('firstName'),lastName:data.get('lastName'),documentType:data.get('documentType'),documentNumber:data.get('documentNumber'),phoneCountryIso,phoneE164:buildWhatsAppE164(phoneCountryIso,data.get('phoneNationalNumber')),primaryCityId:data.get('primaryCityId'),cityIds:[data.get('primaryCityId')],acceptTerms:data.get('acceptTerms')==='on',acceptPrivacy:data.get('acceptPrivacy')==='on',marketingConsent:data.get('marketingConsent')==='on'};setFormBusy(form,true);setStatus('profileStatus','Guardando de forma segura…',false);
     try{await callServerStrict('apiSaveCustomerProfile',[sessionToken(),payload,newIdempotencyKey('profile-save')]);state.auth.needsProfile=false;state.auth.user.displayName=`${payload.firstName} ${payload.lastName}`;updateAuthUi();document.getElementById('profileDialog').close();showToast('Perfil actualizado','Tu información y aceptaciones quedaron registradas.')}catch(error){setStatus('profileStatus',error.message||'No pudimos guardar tu perfil.',true)}finally{setFormBusy(form,false)}
   }
   async function openSessionsDialog(){
