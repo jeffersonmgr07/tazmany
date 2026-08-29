@@ -4,7 +4,15 @@ Marketplace peruano de ofertas y cupones digitales construido con GitHub, Google
 
 ## Estado
 
-Versión `0.3.14` — cierre técnico de la Fase 3. `tazmany.com` es la única interfaz conectada; Cloudflare comunica GitHub Pages con Apps Script y Apps Script queda exclusivamente como backend. Mercado Pago continúa bloqueado hasta iniciar la Fase 4.
+Versión `0.3.15` — ajuste visual final con la Fase 3 cerrada. `tazmany.com` es la única interfaz conectada; Cloudflare comunica GitHub Pages con Apps Script y Apps Script queda exclusivamente como backend. Mercado Pago continúa bloqueado hasta iniciar la Fase 4.
+
+### Ajuste visual final — 0.3.15
+
+- Las operaciones de acceso y perfil muestran un modal de carga con el nombre de la tarea y un indicador circular animado.
+- Los mensajes amarillos dejan de usarse como indicador de espera; permanecen disponibles para confirmaciones y los errores continúan visibles en el formulario.
+- El selector de WhatsApp muestra de forma compacta la bandera y el código internacional; Perú (`+51`) continúa predeterminado.
+- Club Tazmany queda configurado a S/ 4.90 el primer mes y S/ 9.90 al mes desde el segundo.
+- `setupTazmanyPhase315()` actualiza el plan existente y `getTazmanyPhase315Diagnostics()` verifica precios, beneficios y que los cobros sigan desactivados.
 
 ### Cierre de Fase 3 — 0.3.14
 
@@ -64,7 +72,7 @@ Versión `0.3.14` — cierre técnico de la Fase 3. `tazmany.com` es la única i
 - La geolocalización solo se solicita al pulsar “Sugerir con mi ubicación” y requiere confirmación.
 - Un correo suscrito se guarda en `MARKETING_SUBSCRIBERS`, nunca se convierte automáticamente en `USERS`.
 - `CAMPAIGNS` y `CAMPAIGN_OPTIONS` distinguen `offer_price_cents` y `club_price_cents`.
-- Club Tazmany queda configurado a S/ 9.90 el primer mes y S/ 19.90 después, con estado `COMING_SOON` y sin cobros.
+- Club Tazmany queda configurado a S/ 4.90 el primer mes y S/ 9.90 después, con estado `COMING_SOON` y sin cobros.
 - La UI conserva la paleta Tazmany y usa iconos SVG originales; no contiene recursos ni interfaz copiada de Groupon.
 
 Después de `clasp push`, ejecuta `getTazmanyPhase36Diagnostics()`, `getTazmanyFrontendBridgeDiagnostics()` y `getTazmanyPrePaymentReadinessDiagnostics()`.

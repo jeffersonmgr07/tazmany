@@ -45,7 +45,7 @@ test('GitHub es la interfaz y Apps Script redirige al dominio oficial', () => {
 });
 
 test('el modal de acceso usa la mascota y el ny amarillo', () => {
-  assert.match(auth, /assets\/brand\/tazmany-isotipo\.png\?v=0\.3\.14/);
+  assert.match(auth, /assets\/brand\/tazmany-isotipo\.png\?v=0\.3\.15/);
   assert.match(auth, /<span>Tazma<\/span><em>ny<\/em>/);
 });
 

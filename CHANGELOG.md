@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.15 — 2026-08-29
+
+- Se añadió un modal de carga con indicador circular para Google, OTP, carga y guardado del perfil.
+- El selector internacional de WhatsApp se hizo compacto y muestra bandera más código de llamada.
+- Club Tazmany cambió a S/ 4.90 el primer mes y S/ 9.90 mensuales desde el segundo.
+- Se incorporó `setupTazmanyPhase315()` para actualizar `CLUB_PLANS`, limpiar la caché pública y validar la configuración.
+- La Fase 3 permanece cerrada y los cobros continúan desactivados.
+
 ## 0.3.14 — 2026-08-29
 
 - Se cerró técnicamente la Fase 3 después de conectar dominio, GitHub, Cloudflare, Apps Script, Google Identity y OTP.

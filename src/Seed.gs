@@ -62,8 +62,8 @@ function seedDemoData() {
   var campaigns = getDemoCampaignSeed_(now);
   upsertRowsById_('CLUB_PLANS', [row({
     id: 'club-monthly-pe', country_code: 'PE', name: 'Club Tazmany', billing_period: 'MONTHLY',
-    regular_price_cents: 1990, intro_price_cents: 990, intro_cycles: 1,
-    benefits_json: '["Precios exclusivos en ofertas seleccionadas","Acceso anticipado a campañas","Beneficios configurables por ciudad"]',
+    regular_price_cents: 990, intro_price_cents: 490, intro_cycles: 1,
+    benefits_json: '["Precios exclusivos en ofertas seleccionadas","Acceso anticipado a nuevas campañas","Promociones especiales para miembros","Beneficios configurables por ciudad"]',
     status: 'COMING_SOON'
   })]);
   upsertRowsById_('CAMPAIGNS', campaigns);
